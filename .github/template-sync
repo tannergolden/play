@@ -116,8 +116,10 @@
 # keep mine: /.github/workflows/checks.yml
 # keep mine: /.github/workflows/ci-failure-alert.yml
 # keep mine: /.github/workflows/governance.yml
-# The move intake is this repository's alone. The template ships none of it,
-# and these keep it that way should it ever ship a file by the same name.
+# The move intake and its App guide are this repository's alone. The
+# template ships none of them, and these keep it that way should it ever
+# ship a file by the same name.
 !/.github/ISSUE_TEMPLATE/**
+!/.github/docs/GitHub-App.md
 !/.github/workflows/intake.yml
 !/intake/**
