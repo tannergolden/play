@@ -171,6 +171,21 @@ class TableTests(unittest.TestCase):
         self.assertIn('chess', routes)
         self.assertEqual(routes['chess']['workflow'], 'chess.yml')
 
+    def test_the_shipped_chess_pattern_reaches_every_game_and_move(self) -> None:
+        # A game can run past 17,000 moves before the seventy-five-move rule and fivefold repetition must end it,
+        # and the game takes up to nine digits for each: a move link for any of them is dispatched.
+        routes = route.load()
+        for game, move in ((1, 1), (1, 999), (1, 1000), (1, 17697), (10000, 1), (999999999, 999999999)):
+            with self.subTest(game=game, move=move):
+                decision = route.route(f'chess: e7e8q · game {game} · move {move}', player='octocat',
+                                       player_id='583231', issue='7', owner='tannergolden', routes=routes)
+                self.assertEqual(decision['action'], 'dispatch')
+                self.assertEqual(decision['body']['inputs']['game'], str(game))
+                self.assertEqual(decision['body']['inputs']['move_number'], str(move))
+        too_long = route.route('chess: e2e4 · game 1 · move 1000000000', player='octocat', player_id='583231',
+                               issue='7', owner='tannergolden', routes=routes)
+        self.assertEqual(too_long['action'], 'reject')
+
     def test_the_description_is_not_a_game(self) -> None:
         routes = route.load(self.folder.table({'//': 'what this is', 'chess': ROW}))
         self.assertEqual(list(routes), ['chess'])
