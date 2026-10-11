@@ -92,11 +92,11 @@ workflow receives.
 ## 🔑 The GitHub App
 
 Every move crosses into another repository, so the intake needs one GitHub
-App, owned by this account, installed here and on every game's repository.
-Each run asks it for a token that lives an hour at most, reaches only the one
-repository the move's row names, can do nothing there but start a workflow,
-and is revoked when the job ends. There is no long-lived token to leak, and
-none to expire and quietly stop the game.
+App, **Arbiter**, owned by this account and installed here and on every
+game's repository. Each run asks it for a token that lives an hour at most,
+reaches only the one repository the move's row names, can do nothing there
+but start a workflow, and is revoked when the job ends. There is no
+long-lived token to leak, and none to expire and quietly stop the game.
 
 > [!NOTE]
 > **Only the owner sets this up, and only once.** Players need nothing but a
@@ -116,9 +116,8 @@ Setting it up, once:
 1. **Create the App** under your account's **Settings → Developer settings →
    GitHub Apps**. It needs no webhook, so clear **Active** under Webhook. Give
    it the permissions above, and let it be installed on this account only.
-   Players see its name on every reply a game posts, as `your-app-name[bot]`,
-   so pick one worth showing, such as `tannergolden-play`. The intake's own
-   replies come from `github-actions[bot]`.
+   Name it **Arbiter**: players see it as `arbiter[bot]` on every reply a game
+   posts. The intake's own replies come from `github-actions[bot]`.
 2. **Generate a private key**, and note the App's **Client ID**.
 3. **Install it** on `tannergolden/play` and `tannergolden/tannergolden`, as
    selected repositories.

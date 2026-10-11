@@ -1,6 +1,6 @@
 <!--
 title: '🤖 GITHUB APP'
-description: 'How the GitHub App behind the games is set up, what it is allowed to do, and how its private key is stored and rotated.'
+description: 'How Arbiter, the GitHub App behind the games, is set up, what it is allowed to do, and how its private key is stored and rotated.'
 tags: [github-app, permissions, secrets, setup]
 category: docs
 -->
@@ -12,7 +12,7 @@ category: docs
 
 <a name="top"></a>
 
-**The one credential that lets a move cross from this repository to its game.**
+**Arbiter: the one credential that lets a move cross from this repository to its game.**
 
 _Set up once, by the owner. Never by a player._
 
@@ -24,8 +24,10 @@ _Set up once, by the owner. Never by a player._
 
 Every move arrives here as an issue, but the game it is for lives in another
 repository. Crossing between the two takes a credential, and this repository
-uses a GitHub App for it: **`tannergolden-play`**, owned by @tannergolden and
-installed on this repository and on every game's.
+uses a GitHub App for it: **Arbiter**, owned by @tannergolden and installed on
+this repository and on every game's. It takes its name from chess, where the
+arbiter is the official who rules on moves, and that is its job here: it hands
+each move to its game, and posts the game's ruling on the move's issue.
 
 An App rather than a personal access token, because every run asks it for a
 fresh token that:
@@ -44,8 +46,8 @@ fresh token that:
 ```mermaid
 graph LR
     A[Player submits a move issue] --> B[Move Intake in play]
-    B -->|token with Actions write on the game repository| C[Game workflow]
-    C -->|token with Issues write on play| D[Reply on the move issue]
+    B -->|Arbiter token, Actions write on the game repository| C[Game workflow]
+    C -->|Arbiter token, Issues write on play| D[Reply on the move issue]
 ```
 
 ---
@@ -75,28 +77,45 @@ About ten minutes, all in the browser, done once by the owner.
 - [ ] Open [github.com/settings/apps/new](https://github.com/settings/apps/new), or go to **Settings → Developer settings → GitHub Apps** and click <kbd>New GitHub App</kbd>.
 - [ ] Fill it in as below, then click <kbd>Create GitHub App</kbd>.
 
-| Field                                                      | Set it to                                                                                                                                                                                                                                      |
-| :--------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **GitHub App name**                                        | `tannergolden-play`                                                                                                                                                                                                                            |
-| **Description**                                            | Runs the games on the tannergolden profile README. When a move arrives through tannergolden/play, it starts that game's workflow, then posts the game's replies and turn notices on the move's issue. Players never install or authorize it. |
-| **Homepage URL**                                           | `https://github.com/tannergolden/play`                                                                                                                                                                                                         |
-| **Callback URL**                                           | Empty                                                                                                                                                                                                                                          |
-| **Expire user authorization tokens**                       | Leave it as it is: no player ever signs in, so it never applies                                                                                                                                                                                |
-| **Request user authorization (OAuth) during installation** | Unchecked                                                                                                                                                                                                                                      |
-| **Enable Device Flow**                                     | Unchecked                                                                                                                                                                                                                                      |
-| **Setup URL**, **Redirect on update**                      | Empty, and unchecked                                                                                                                                                                                                                           |
-| **Webhook → Active**                                       | **Unchecked.** No webhook URL or secret is needed                                                                                                                                                                                              |
-| **Repository permissions**                                 | **Actions:** Read and write. **Issues:** Read and write. Metadata turns Read-only on its own                                                                                                                                                   |
-| **Organization and account permissions**                   | No access                                                                                                                                                                                                                                      |
-| **Subscribe to events**                                    | Nothing                                                                                                                                                                                                                                        |
-| **Where can this GitHub App be installed?**                | **Only on this account**                                                                                                                                                                                                                       |
+| Field                                                      | Set it to                                                                                    |
+| :--------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| **GitHub App name**                                        | `Arbiter`, which players see as `arbiter[bot]`                                               |
+| **Description**                                            | The text below, word for word                                                                |
+| **Homepage URL**                                           | `https://github.com/tannergolden/play`                                                       |
+| **Callback URL**                                           | Empty                                                                                        |
+| **Expire user authorization tokens**                       | Leave it as it is: no player ever signs in, so it never applies                              |
+| **Request user authorization (OAuth) during installation** | Unchecked                                                                                    |
+| **Enable Device Flow**                                     | Unchecked                                                                                    |
+| **Setup URL**, **Redirect on update**                      | Empty, and unchecked                                                                         |
+| **Webhook → Active**                                       | **Unchecked.** Then no webhook URL or secret is needed                                       |
+| **Repository permissions**                                 | **Actions:** Read and write. **Issues:** Read and write. Metadata turns Read-only on its own |
+| **Organization and account permissions**                   | No access                                                                                    |
+| **Subscribe to events**                                    | Nothing                                                                                      |
+| **Where can this GitHub App be installed?**                | **Only on this account**                                                                     |
+
+The description:
+
+```text
+Arbiter rules on the games played on the tannergolden profile README.
+
+Every move on the profile is a link that opens a ready-made issue in tannergolden/play. When one is submitted, Arbiter starts that game's workflow, which checks the move, plays it and redraws the board. Arbiter then answers on the move's issue: the move is on the board, or why it could not be played, and whose turn it is now. When it is @tannergolden's turn, Arbiter says so with a mention.
+
+Beyond the read-only metadata every app has, it holds two permissions and nothing more: running workflows in each game's repository, and writing issues and comments in tannergolden/play. It cannot read or change code, open pull requests, or touch any other repository. Every run gets a token that lasts an hour at most, reaches a single repository, and is revoked when the run ends.
+
+Players never install or authorize Arbiter. A GitHub account and a click on a move is all it takes to play.
+```
+
+> [!TIP]
+> **"Webhook URL is required"** means the **Active** box under **Webhook** is
+> still ticked, as it is by default. Untick it and the field stops being
+> required. Arbiter never receives webhooks, so the URL and secret stay empty.
 
 ### 2. Collect Its Credentials
 
 On the App's **General** page:
 
 - [ ] Copy the **Client ID**, which starts with `Iv`. The workflows use it, not the numeric App ID.
-- [ ] Under **Private keys**, click <kbd>Generate a private key</kbd>. A file such as `tannergolden-play.2026-10-11.private-key.pem` downloads.
+- [ ] Under **Private keys**, click <kbd>Generate a private key</kbd>. A file such as `arbiter.2026-10-11.private-key.pem` downloads.
 - [ ] Optionally, upload a logo under **Display information**. It is the avatar players see beside every reply a game posts.
 
 ### 3. Install It
@@ -109,9 +128,9 @@ On the App's **General** page:
 Both repositories hold the same two values: this one to start a game, and
 each game's to reply here.
 
-| Name                   | Kind     | Value                                                                  | Stored in                                        |
-| :--------------------- | :------- | :--------------------------------------------------------------------- | :----------------------------------------------- |
-| `PLAY_APP_CLIENT_ID`   | Variable | The Client ID                                                          | `tannergolden/play`, `tannergolden/tannergolden` |
+| Name                   | Kind     | Value                                                                 | Stored in                                        |
+| :--------------------- | :------- | :-------------------------------------------------------------------- | :----------------------------------------------- |
+| `PLAY_APP_CLIENT_ID`   | Variable | The Client ID                                                         | `tannergolden/play`, `tannergolden/tannergolden` |
 | `PLAY_APP_PRIVATE_KEY` | Secret   | The whole `.pem` file, its `-----BEGIN` and `-----END` lines included | `tannergolden/play`, `tannergolden/tannergolden` |
 
 - [ ] In each repository, open **Settings → Secrets and variables → Actions**.
@@ -124,7 +143,7 @@ file rather than through a paste:
 ```bash
 for repo in tannergolden/play tannergolden/tannergolden; do
   gh variable set PLAY_APP_CLIENT_ID --repo "$repo" --body 'YOUR_CLIENT_ID'
-  gh secret set PLAY_APP_PRIVATE_KEY --repo "$repo" < path/to/tannergolden-play.private-key.pem
+  gh secret set PLAY_APP_PRIVATE_KEY --repo "$repo" < path/to/arbiter.private-key.pem
 done
 ```
 
@@ -143,17 +162,18 @@ owner.
 | Where                               | Shown as                                           |
 | :---------------------------------- | :------------------------------------------------- |
 | The intake's 🚀, reply and closing  | `github-actions[bot]`, this repository's own token |
-| Every reply and notice a game posts | `tannergolden-play[bot]`, with the App's logo      |
+| Every reply and notice a game posts | `arbiter[bot]`, with the App's logo                |
 | An install or authorize prompt      | Never                                              |
 
 The App's name is on show in every reply a game posts, which is why it is
-chosen with players in mind.
+Arbiter: to a player, each ruling comes from the arbiter, as it would at a
+board.
 
 ---
 
 ## ⚙️ Adding A Game
 
-- [ ] Open **Settings → Applications → Installed GitHub Apps**, click <kbd>Configure</kbd> beside `tannergolden-play`, add the game's repository under **Repository access**, and click <kbd>Save</kbd>.
+- [ ] Open **Settings → Applications → Installed GitHub Apps**, click <kbd>Configure</kbd> beside **Arbiter**, add the game's repository under **Repository access**, and click <kbd>Save</kbd>.
 - [ ] Store `PLAY_APP_CLIENT_ID` and `PLAY_APP_PRIVATE_KEY` in the game's repository, as in step 4.
 - [ ] Add the game's row to `intake/routes.json`, as [`intake/README.md`](../intake/README.md) describes.
 
