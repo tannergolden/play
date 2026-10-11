@@ -129,6 +129,9 @@ Setting it up, once:
 Until both exist, every move fails with a reply that @mentions the owner.
 Each game's repository keeps its own copy of the same two, for its replies.
 
+The full guide, with what players see, how to rotate the key and what to do
+when a move fails, is [`.github/docs/GitHub-App.md`](.github/docs/GitHub-App.md).
+
 ---
 
 ## 🛡️ Why It Is Safe
