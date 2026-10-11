@@ -155,7 +155,7 @@ chosen with players in mind.
 
 - [ ] Open **Settings → Applications → Installed GitHub Apps**, click <kbd>Configure</kbd> beside `tannergolden-play`, add the game's repository under **Repository access**, and click <kbd>Save</kbd>.
 - [ ] Store `PLAY_APP_CLIENT_ID` and `PLAY_APP_PRIVATE_KEY` in the game's repository, as in step 4.
-- [ ] Add the game's row to `intake/routes.json`, as [`intake/README.md`](../../intake/README.md) describes.
+- [ ] Add the game's row to `intake/routes.json`, as [`intake/README.md`](../intake/README.md) describes.
 
 There is no second App, and nothing new to store here.
 

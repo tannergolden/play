@@ -130,7 +130,7 @@ Until both exist, every move fails with a reply that @mentions the owner.
 Each game's repository keeps its own copy of the same two, for its replies.
 
 The full guide, with what players see, how to rotate the key and what to do
-when a move fails, is [`.github/docs/GitHub-App.md`](.github/docs/GitHub-App.md).
+when a move fails, is [`docs/GitHub-App.md`](docs/GitHub-App.md).
 
 ---
 
@@ -235,7 +235,7 @@ in [`.github/template-sync`](.github/template-sync), the list the sync reads:
 | `.github/workflows/checks.yml`                     | Runs the intake's tests        | `# keep mine`                                                     |
 | `.github/workflows/ci-failure-alert.yml`           | Watches 🎲 Move Intake         | `# keep mine`                                                     |
 | `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml` | This repository's own          | A `!` rule: stopped, should the template ship the same name       |
-| The seeded documents in `.github/docs/`            | The MIT footer                 | The per-file merge: the template's other changes arrive around it |
+| The seeded documents in `docs/`                    | The MIT footer                 | The per-file merge: the template's other changes arrive around it |
 
 A file you and the template changed in the same place is left exactly as you
 have it, so none of this is ever overwritten. Two things still need your eye
@@ -262,9 +262,10 @@ Alerts to watch, say. Copy across anything worth having.
 | Entry                                       | Purpose                                                                                                                                    |
 | :------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------- |
 | [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                     |
-| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the issue form, the seeds, scripts and workflows - logged below                              |
+| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the issue form, scripts and workflows - logged below                                         |
 | [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.       |
 | [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows.     |
+| [`docs/`](docs/README.md)                   | Where this project keeps its own documents, and where the engineering standards it follows actually live.                                  |
 | [`intake/`](intake/README.md)               | The router every move passes through: the table of games, the script that reads each title against it, and the tests that hold both to it. |
 | [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                             |
 | [`.env.example`](.env.example)              | Environment variable template for this project.                                                                                            |
@@ -286,7 +287,6 @@ after every push:
 
 | Entry                                              | Purpose                                                                                                                             |
 | :------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| [`docs/`](.github/docs/README.md)                  | Where this project keeps its own documents, and where the engineering standards it follows actually live.                           |
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/)       | The move form, and a chooser that offers nothing else                                                                               |
 | [`scripts/`](.github/scripts/README.md)            | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
 | [`workflows/`](.github/workflows/README.md)        | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |

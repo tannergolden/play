@@ -120,6 +120,6 @@
 # template ships none of them, and these keep it that way should it ever
 # ship a file by the same name.
 !/.github/ISSUE_TEMPLATE/**
-!/.github/docs/GitHub-App.md
+!/docs/GitHub-App.md
 !/.github/workflows/intake.yml
 !/intake/**

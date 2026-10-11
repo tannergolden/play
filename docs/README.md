@@ -25,7 +25,7 @@ _Standards are followed. Templates are filled in._
 | Kind          | Where it lives                                                                                        | What you do with it        |
 | :------------ | :---------------------------------------------------------------------------------------------------- | :------------------------- |
 | **Standards** | [`tannergolden/standards`](https://github.com/tannergolden/standards/blob/Development/docs/README.md) | Follow by link, never copy |
-| **Templates** | [`.github/docs/templates/`](templates/README.md)                                                              | Copy out, fill in, own     |
+| **Templates** | [`docs/templates/`](templates/README.md)                                                              | Copy out, fill in, own     |
 
 A standard describes how every repository works: branching, reviews, releases,
 secrets, hygiene. It is shared, it changes centrally, and copying it here would
@@ -58,14 +58,11 @@ level at a time.
 
 ## 🌱 Using A Template
 
-Seeds live in `.github/docs/`, dot-prefixed so they stay outside the structure you
-are building. Your instantiated documents go wherever you decide - `docs/` is
-the conventional choice and the examples below use it, but nothing enforces it.
-
-Copy a template out and edit it until it describes your project:
+Copy it out of `docs/templates/` to the matching path **without** `templates/`,
+then edit it until it describes your project:
 
 ```txt
-.github/docs/templates/technical/backend/API-Design-Standards.md
+docs/templates/technical/backend/API-Design-Standards.md
         ↓
 docs/technical/backend/API-Design-Standards.md
 ```
@@ -107,7 +104,7 @@ seeded folder does, and update it in the same change that adds a file.
 
 - [Standards Index](https://github.com/tannergolden/standards/blob/Development/docs/README.md) - every canonical guide
 - [Template catalogue](templates/README.md) - what each seed document is for
-- [Repository README](../../README.md) - setup, and how to configure CI
+- [Repository README](../README.md) - setup, and how to configure CI
 
 ---
 
