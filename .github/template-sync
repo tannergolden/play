@@ -109,3 +109,15 @@
 #/.github/workflows/template-parity.yml
 
 # --- Your rules ---------------------------------------------------------------
+# Three files the template keeps current, each with a change of this
+# repository's own: no welcome on a new issue, the intake's tests in CI, and
+# the intake on the failure watch. Where the template changes the same lines,
+# these stand; everything else it changes still arrives.
+# keep mine: /.github/workflows/checks.yml
+# keep mine: /.github/workflows/ci-failure-alert.yml
+# keep mine: /.github/workflows/governance.yml
+# The move intake is this repository's alone. The template ships none of it,
+# and these keep it that way should it ever ship a file by the same name.
+!/.github/ISSUE_TEMPLATE/**
+!/.github/workflows/intake.yml
+!/intake/**
