@@ -96,7 +96,7 @@ About ten minutes, all in the browser, done once by the owner.
 The description:
 
 ```text
-The Official Arbiter rules on the games played on the tannergolden profile README.
+Arbiter rules on the games played on the @tannergolden profile README.
 
 Every move on the profile is a link that opens a ready-made issue in tannergolden/play. When one is submitted, the Arbiter starts that game's workflow, which checks the move, plays it and redraws the board. It then answers on the move's issue: the move is on the board, or why it could not be played, and whose turn it is now. When it is @tannergolden's turn, it says so with a mention.
 
