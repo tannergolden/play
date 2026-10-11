@@ -109,6 +109,6 @@ Mapping the project-specific tools to the universal repository interface (Makefi
 
 <br />
 
-Built with ❤️ by the Engineering Team. Proprietary and confidential; all rights reserved.
+Built with ❤️ by the Engineering Team. Distributed under the MIT License.
 
 </div>

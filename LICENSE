@@ -1,44 +1,21 @@
-PROPRIETARY AND CONFIDENTIAL
+MIT License
 
-Copyright (c) 2026 Tanner Golden. All rights reserved.
+Copyright (c) 2026 Tanner Golden
 
-SPDX-License-Identifier: LicenseRef-Proprietary
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-1. NO LICENCE IS GRANTED
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-   This repository and everything in it - source code, configuration,
-   documentation, and any other material - is the private and confidential
-   property of the copyright holder.
-
-   No permission is granted to any person to use, copy, modify, merge,
-   publish, distribute, sublicense, sell, or create derivative works from any
-   part of it. No right, title, or interest is transferred by access,
-   receipt, or possession of a copy.
-
-   This is not open source. It is not free software. It is not available
-   under any public licence, and no such licence should be inferred from its
-   presence on any hosting platform, from the absence of a notice in any
-   individual file, or from any prior version of this repository having
-   carried a different licence.
-
-2. CONFIDENTIALITY
-
-   The contents are confidential. Anyone who obtains access, whether
-   deliberately, accidentally, or through error of configuration, must not
-   disclose, publish, or share them, and should notify the copyright holder
-   and destroy any copies in their possession.
-
-3. NO WARRANTY
-
-   THE MATERIAL IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
-   THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF,
-   OR IN CONNECTION WITH THE MATERIAL OR ITS USE.
-
-4. THIRD-PARTY COMPONENTS
-
-   This repository calls shared workflows and actions published separately
-   under their own licences. Those remain governed by their own terms; this
-   notice covers only the contents of this repository.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

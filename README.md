@@ -492,7 +492,7 @@ second.
 | Entry                                       | Purpose                                                                                                                                |
 | :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------- |
 | [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                 |
-| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the seeds, scripts and workflows - logged below                     |
+| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the seeds, scripts and workflows - logged below                                          |
 | [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.   |
 | [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows. |
 | [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                         |
@@ -500,7 +500,7 @@ second.
 | [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                        |
 | [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                            |
 | [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                      |
-| [`LICENSE`](LICENSE)                        | PROPRIETARY AND CONFIDENTIAL                                                                                                           |
+| [`LICENSE`](LICENSE)                        | MIT License                                                                                                                            |
 | [`README.md`](README.md)                    | This file.                                                                                                                             |
 
 <!-- AUTO-INDEX:END -->

@@ -88,6 +88,6 @@ Every item needs an owner and a tracking issue - untracked actions don't happen.
 
 <br />
 
-Built with ❤️ by the Engineering Team. Proprietary and confidential; all rights reserved.
+Built with ❤️ by the Engineering Team. Distributed under the MIT License.
 
 </div>
