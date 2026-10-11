@@ -44,7 +44,7 @@ This repository holds no game. It is the door every move comes through:
 
 1. **A player clicks a move** on the profile. Its link opens the **🎲 Play a
    move** form here, with the title filled in: `chess: e2e4 · game 1 · move 1`.
-2. **They submit it** as it opens.
+2. **They submit it** as it opens. A GitHub account is all a player needs.
 3. **🎲 Move Intake reads the title** against the table. Only a title that
    matches one game's pattern from end to end is a move.
 4. **The move goes to its game.** A short-lived token from the GitHub App
@@ -98,6 +98,13 @@ repository the move's row names, can do nothing there but start a workflow,
 and is revoked when the job ends. There is no long-lived token to leak, and
 none to expire and quietly stop the game.
 
+> [!NOTE]
+> **Only the owner sets this up, and only once.** Players need nothing but a
+> GitHub account: there is nothing for them to install, nothing to authorize,
+> and no token of their own. They submit the issue, and the workflow here does
+> the rest with this account's App. One App serves every game, so a new game
+> is only its repository added to the same installation.
+
 | Permission                | Where                  | Used by        | For                                            |
 | :------------------------ | :--------------------- | :------------- | :--------------------------------------------- |
 | **Actions:** Read & write | Each game's repository | 🎲 Move Intake | Starting the game's workflow                   |
@@ -109,6 +116,9 @@ Setting it up, once:
 1. **Create the App** under your account's **Settings → Developer settings →
    GitHub Apps**. It needs no webhook, so clear **Active** under Webhook. Give
    it the permissions above, and let it be installed on this account only.
+   Players see its name on every reply a game posts, as `your-app-name[bot]`,
+   so pick one worth showing, such as `tannergolden-play`. The intake's own
+   replies come from `github-actions[bot]`.
 2. **Generate a private key**, and note the App's **Client ID**.
 3. **Install it** on `tannergolden/play` and `tannergolden/tannergolden`, as
    selected repositories.
