@@ -1,20 +1,62 @@
 name: '🎲 Play a move'
-description: 'A move played from the tannergolden profile. Open one from a move link there, then submit it as it opens.'
+description: 'A move picked on the tannergolden profile, ready to send. Open one from a move link there, then submit it as it opens.'
 body:
   - type: markdown
     attributes:
       value: |
         ## 🎲 Your move is ready
 
-        The title above already holds your move, written the way its game reads it. **Submit the issue as it is.** A bot passes the move to its game, replies here, and closes the issue.
+        You picked a move on [@tannergolden's profile](https://github.com/tannergolden), and its link wrote that move into the title above. **Submit the issue as it is**, and the move is on its way.
 
-        Got here without a move link? Pick a move on [@tannergolden's profile](https://github.com/tannergolden) instead. An issue that is not a move is closed with a note on how to play.
+  - type: markdown
+    attributes:
+      value: |
+        ### 🏷️ Reading the title
+
+        A title such as `chess: e2e4 · game 1 · move 12` says four things:
+
+        - **`chess`** is the game.
+        - **`e2e4`** is the move: the piece on e2 goes to e4. A fifth letter is what a pawn becomes when it reaches the far side, so `e7e8q` makes a queen. Castling is written as the king's move, such as `e1g1`.
+        - **`game 1`** is the game on the profile the move is for.
+        - **`move 12`** is the move the board was on when you picked yours.
+
+        **Leave the title exactly as it is.** It is all the game reads, and a title that no longer reads as a move is closed without being played.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 🚀 What happens next
+
+        1. **A bot checks the title** and passes the move to its game, usually within a minute.
+        2. **It reacts with 🚀, replies, and closes this issue.** Closed here means received.
+        3. **The game plays the move** and redraws the board on the profile, usually within a few minutes.
+        4. **The game replies here** once the move is on the board, or says why it could not be played.
+
+        Every reply here notifies you, since the issue is yours.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### ⏱️ Whose turn it is
+
+        - **On GitHub's turn, anyone but @tannergolden can play**, and the first move to reach the game is the one played.
+        - **On @tannergolden's turn, only @tannergolden can.** A move from anyone else is turned away with a reply.
+        - **If the board moved on before your move arrived**, the game replies here with what happened to it. Pick a move from the new board to play again.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 👀 Good to know
+
+        - **This issue is public.** Your move and your GitHub username can appear on the profile, with the game's moves and in its Hall of Fame.
+        - **One move per issue.** To play again, come back for the next turn and pick a new move.
+        - **Got here without a move link?** Pick a move on [@tannergolden's profile](https://github.com/tannergolden) instead. An issue that is not a move is closed with a note on how to play.
 
   - type: textarea
     id: note
     attributes:
       label: '💬 A word with your move'
-      description: 'Optional, and only for people: the game reads the title alone.'
+      description: 'Optional, and only for people: it shows on this issue, and the game never reads it.'
       placeholder: 'Good luck.'
     validations:
       required: false
