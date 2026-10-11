@@ -1,0 +1,133 @@
+# --- This Repository's Own Workflow ---
+#
+# 🎲 Move Intake
+#
+# Purpose: takes every move played from the profile, checks it, and hands it
+# to its game - and turns away anything that is not a move.
+#
+# Every move on the profile is a link that opens a ready-made issue here, with
+# the move in its title. This runs once for each issue opened: intake/route.py
+# reads the title against intake/routes.json and decides, and the steps below
+# carry that out. A move starts its game's workflow through the GitHub App,
+# gets a 🚀 and a reply, and is closed as completed. Anything else from anyone
+# but the owner gets a reply saying how to play, and is closed as not
+# planned. The game itself decides whether a move stands, and says so on the
+# issue.
+#
+# ⚠️ THE TITLE IS WRITTEN BY WHOEVER OPENS THE ISSUE, and anyone can. It
+# reaches the router through an environment variable and nowhere else, so
+# there is no `${{ }}` inside any `run:` here, and nothing goes on but what
+# the router's table allows. The repository, workflow and inputs a dispatch
+# names come from that table, or from the issue's own number and author.
+#
+# ⚠️ THE APP'S TOKEN IS THE ONLY WAY OUT OF THIS REPOSITORY. It is minted for
+# one run, for the one repository the move's row names, with Actions write
+# and nothing more, and revoked when the job ends. The replies and the
+# closing use this repository's own token, which reaches nothing else. An
+# issue opened by an app or a bot - each game's own notices - never starts it.
+#
+# Needs the PLAY_APP_CLIENT_ID variable and the PLAY_APP_PRIVATE_KEY secret,
+# from the GitHub App installed here and on every game's repository: see
+# README.md. Until both exist, every move fails, with a reply on its issue.
+#
+# ---
+
+name: '🎲 Move Intake'
+
+on:
+  issues:
+    types: [opened]
+
+concurrency:
+  # One run per issue, and an issue is opened once, so a move never waits
+  # behind another.
+  group: ${{ github.workflow }}-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  route:
+    name: '🎲 Route The Move'
+    # Inert in a template; live here. Never for an issue an app or a bot
+    # opened, which is how each game posts its own notices.
+    if: ${{ !github.event.repository.is_template && github.event.issue.user.type != 'Bot' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # check out the router and its table
+      issues: write # react to, reply on, and close the move's issue
+    steps:
+      - name: '🛡️ Harden Runner'
+        uses: tannergolden/standards/actions/harden@v1
+        with:
+          egress-policy: audit
+          notice: '🎲 Move Intake: routes one move issue to its game.'
+
+      - name: '📂 Checkout The Router'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: intake
+
+      - name: '🧭 Read The Title'
+        id: route
+        env:
+          TITLE: ${{ github.event.issue.title }}
+          ISSUE: ${{ github.event.issue.number }}
+          PLAYER: ${{ github.event.issue.user.login }}
+          PLAYER_ID: ${{ github.event.issue.user.id }}
+        run: python3 intake/route.py
+
+      - name: '🔑 Mint The Game Token'
+        id: app
+        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.PLAY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.PLAY_APP_PRIVATE_KEY }}
+          owner: ${{ steps.route.outputs.owner }}
+          repositories: ${{ steps.route.outputs.repo }}
+          permission-actions: write
+
+      - name: '🎯 Start The Game'
+        id: dispatch
+        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          OWNER: ${{ steps.route.outputs.owner }}
+          REPO: ${{ steps.route.outputs.repo }}
+          WORKFLOW: ${{ steps.route.outputs.workflow }}
+        run: gh api --method POST "repos/$OWNER/$REPO/actions/workflows/$WORKFLOW/dispatches" --input "$RUNNER_TEMP/dispatch.json"
+
+      - name: '🚀 Reply And Close'
+        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$ISSUE/reactions" -f content=rocket --silent
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: '👋 Turn It Away'
+        if: ${{ steps.route.outputs.action == 'reject' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
+
+      - name: '🧯 Say It Did Not Go Through'
+        # A move that never reached its game. The player is told, and the
+        # owner is @mentioned, so the notice reaches them even with this
+        # repository watched for mentions only.
+        if: ${{ failure() && steps.route.outputs.action != 'reject' && steps.dispatch.outcome != 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" \
+            --body "⚠️ **This move did not reach its game**, so nothing was played. @$OWNER has been told. Try again from the profile in a few minutes."

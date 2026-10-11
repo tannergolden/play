@@ -1,0 +1,9 @@
+{
+  "//": "Every game the intake serves: where its moves go, and what a move for it looks like.",
+  "chess": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "chess.yml",
+    "ref": "Development",
+    "pattern": "(?P<uci>[a-h][1-8][a-h][1-8][qrbn]?) · game (?P<game>[1-9][0-9]{0,3}) · move (?P<move_number>[1-9][0-9]{0,2})"
+  }
+}

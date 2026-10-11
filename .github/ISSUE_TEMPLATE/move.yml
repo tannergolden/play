@@ -1,0 +1,20 @@
+name: '🎲 Play a move'
+description: 'A move played from the tannergolden profile. Open one from a move link there, then submit it as it opens.'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎲 Your move is ready
+
+        The title above already holds your move, written the way its game reads it. **Submit the issue as it is.** A bot passes the move to its game, replies here, and closes the issue.
+
+        Got here without a move link? Pick a move on [@tannergolden's profile](https://github.com/tannergolden) instead. An issue that is not a move is closed with a note on how to play.
+
+  - type: textarea
+    id: note
+    attributes:
+      label: '💬 A word with your move'
+      description: 'Optional, and only for people: the game reads the title alone.'
+      placeholder: 'Good luck.'
+    validations:
+      required: false

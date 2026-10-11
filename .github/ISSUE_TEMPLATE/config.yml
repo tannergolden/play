@@ -1,0 +1,19 @@
+# .github/ISSUE_TEMPLATE/config.yml
+#
+# Purpose: this repository takes moves and nothing else, so its chooser offers
+# the move form, a way back to the profile, and the private security channel.
+#
+# Any file in this folder stops this repository inheriting the account's issue
+# forms from tannergolden/.github - all or nothing - and that is the point: a
+# move link must land on the move form, never on a page of forms that do not
+# fit. The account's private security link goes with them, so it is listed
+# again below.
+
+blank_issues_enabled: false
+contact_links:
+  - name: '♟️ Play from the profile'
+    url: 'https://github.com/tannergolden'
+    about: 'Every game is on the profile. Pick a move there, and its link opens a ready-made issue here.'
+  - name: '🔒 Security Report (Private)'
+    url: 'https://github.com/tannergolden/.github/security/advisories/new'
+    about: 'Report a vulnerability privately, naming this repository. Never in a public issue.'

@@ -39,6 +39,8 @@ on:
       - '🔬 Verify Stub Ceilings'
       - '🧹 Prune Run History'
       - '🚀 Preview Deploy'
+      # This repository's own. A move that cannot reach its game fails here.
+      - '🎲 Move Intake'
       # Add any workflow whose silent failure would cost something.
       #
       # ⚠️ NEVER ADD THIS WORKFLOW TO ITS OWN LIST. It cannot escalate its
