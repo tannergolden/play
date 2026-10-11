@@ -1,0 +1,111 @@
+# --- 🔄 Template Sync ---
+#
+# Every path tannergolden/repo ships, and whether 🔄 Template Sync, when you run
+# it, keeps it current in this repository. How it all works:
+# .github/template-sync.md, beside this.
+#
+# A line naming a path keeps it current. A `#` with no space before a path -
+# `#/README.md` - leaves that path to you. A line starting `# ` is a note.
+#
+# To keep a file as yours, put a `#` in front of its line; to have the
+# template keep it current again, take the `#` away. Rules of your own - a
+# pattern like `!/.github/docs/**` to stop a whole folder - go under "Your
+# rules" at the end, and win over everything above them. Each sync redraws
+# this file from the template's latest list and keeps every choice you made
+# in it.
+#
+# To keep your own lines in one file and still take the template's other
+# changes to it, write a note under "Your rules" naming it, such as
+# `# keep mine: /.github/workflows/checks.yml`. Where you and the template
+# changed the same lines, yours then stand.
+
+# --- Kept current -------------------------------------------------------------
+/.devcontainer/README.md
+/.devcontainer/devcontainer.json
+
+/.editorconfig
+/.env.example
+/.gitattributes
+
+/.github/dependabot.yml
+/.github/docs/README.md
+/.github/docs/adrs/README.md
+/.github/docs/templates/ADR.md
+/.github/docs/templates/Communication.md
+/.github/docs/templates/Implementation-Plan.md
+/.github/docs/templates/Post-Mortem.md
+/.github/docs/templates/README.md
+/.github/docs/templates/Research-Log.md
+/.github/docs/templates/Technical-Design.md
+/.github/docs/templates/User-Story.md
+/.github/docs/templates/technical/Packages-&-Workspaces.md
+/.github/docs/templates/technical/README.md
+/.github/docs/templates/technical/Source-Code.md
+/.github/docs/templates/technical/Technology-Stack-&-Tooling.md
+/.github/docs/templates/technical/backend/API-Design-Standards.md
+/.github/docs/templates/technical/backend/Authentication-&-Security.md
+/.github/docs/templates/technical/backend/README.md
+/.github/docs/templates/technical/backend/Schema-&-Validation.md
+/.github/docs/templates/technical/benchmarks/Performance-Benchmarks.md
+/.github/docs/templates/technical/benchmarks/README.md
+/.github/docs/templates/technical/database/Data-Models-&-Entities.md
+/.github/docs/templates/technical/database/Migration-Policies.md
+/.github/docs/templates/technical/database/README.md
+/.github/docs/templates/technical/infrastructure/CI-CD-Pipelines.md
+/.github/docs/templates/technical/infrastructure/Deployment-Protocols.md
+/.github/docs/templates/technical/infrastructure/Environment-Configuration.md
+/.github/docs/templates/technical/infrastructure/README.md
+/.github/docs/templates/technical/interface/Formatting-&-Standards.md
+/.github/docs/templates/technical/interface/README.md
+/.github/docs/templates/technical/interface/Styling-&-Theming.md
+/.github/docs/templates/technical/interface/UI-Setup-&-Environment.md
+/.github/docs/templates/technical/testing/E2E-Testing.md
+/.github/docs/templates/technical/testing/README.md
+/.github/docs/templates/technical/testing/Unit-Test-Standards.md
+/.github/release.yml
+/.github/scripts/README.md
+/.github/scripts/test_gitignore.py
+/.github/scripts/test_validate_repository.py
+/.github/scripts/test_verify_stub_ceilings.py
+/.github/scripts/validate-repository.py
+/.github/scripts/verify-stub-ceilings.py
+/.github/template-sync.md
+/.github/workflows/README.md
+/.github/workflows/apply-standards.yml
+/.github/workflows/auto-format.yml
+/.github/workflows/auto-index.yml
+/.github/workflows/checks.yml
+/.github/workflows/ci-failure-alert.yml
+/.github/workflows/dependabot-automerge.yml
+/.github/workflows/governance.yml
+/.github/workflows/lifecycle.yml
+/.github/workflows/maintenance.yml
+/.github/workflows/preview-deploy.yml
+/.github/workflows/prune-runs.yml
+/.github/workflows/release.yml
+/.github/workflows/template-sync.yml
+/.github/workflows/verify-stubs.yml
+
+/.gitignore
+/.markdownlint.json
+
+/.vscode/README.md
+/.vscode/extensions.json
+/.vscode/settings.json
+
+# --- Yours: seeded once, never synced -----------------------------------------
+#/README.md
+#/LICENSE
+#/.github/CODEOWNERS
+#/assets/**
+
+# --- Only ever in the template ----------------------------------------------
+#/.github/TEMPLATE_INIT
+#/.github/workflows/cut-release.yml
+#/.github/template-parity.lock
+#/.github/template-parity.yml
+#/.github/scripts/template-parity.py
+#/.github/scripts/test_template_parity.py
+#/.github/workflows/template-parity.yml
+
+# --- Your rules ---------------------------------------------------------------

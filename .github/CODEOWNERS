@@ -1,0 +1,35 @@
+# =============================================================================
+# CODEOWNERS - review ownership
+#
+# NEVER INHERITED. GitHub reads this only from the repository that owns it, so
+# unlike the community health files it cannot come from the account's .github
+# repository and has to live here.
+#
+# ONE OWNER, SO ONE RULE. This template is private and single-maintainer, so
+# the owner is known at authoring time rather than guessed at. That is the
+# difference from the public template, which ships every rule commented out
+# because it cannot know who will generate from it - and a rule naming an
+# owner without write access is a GitHub error, not a warning.
+#
+# Additional path rules would all name the same person, which adds lines
+# without adding information. Add them when a second maintainer exists, or when
+# a specific directory should route somewhere else.
+#
+# ⚠️ THIS DOES NOT BLOCK YOUR OWN PULL REQUESTS. The shipped rulesets require
+# zero approvals and do not require code-owner review, so a solo maintainer
+# cannot deadlock on being unable to approve their own work. What this does
+# give you is an automatic review request on anything opened by somebody else -
+# Dependabot, or an agent acting on your behalf.
+#
+# PRECEDENCE: the LAST matching rule wins. Broad defaults first, specific
+# overrides below.
+# =============================================================================
+
+# Everything, unless a later rule says otherwise.
+*                           @tannergolden
+
+
+# --- Add path-specific owners here as the repository grows -------------------
+#
+# /src/                     @tannergolden
+# /infra/                   @some-other-user
