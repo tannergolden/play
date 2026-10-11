@@ -35,16 +35,14 @@ only Python 3, plus PyYAML for the ones that read YAML.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                                                          | Purpose                                                                         |
-| :------------------------------------------------------------- | :------------------------------------------------------------------------------ |
-| [`README.md`](README.md)                                       | This file.                                                                      |
-| [`template-parity.py`](template-parity.py)                     | Enforce the five-differences contract between this template and the public one. |
-| [`test_gitignore.py`](test_gitignore.py)                       | Tests for this repository's .gitignore.                                         |
-| [`test_template_parity.py`](test_template_parity.py)           | Tests for the five-differences contract enforcement.                            |
-| [`test_validate_repository.py`](test_validate_repository.py)   | Tests for the repository validator.                                             |
-| [`test_verify_stub_ceilings.py`](test_verify_stub_ceilings.py) | Tests for the stub ceiling checker.                                             |
-| [`validate-repository.py`](validate-repository.py)             | Validate this repository's own configuration.                                   |
-| [`verify-stub-ceilings.py`](verify-stub-ceilings.py)           | Check every stub's permission ceiling against the workflow it calls.            |
+| Entry                                                          | Purpose                                                              |
+| :------------------------------------------------------------- | :------------------------------------------------------------------- |
+| [`README.md`](README.md)                                       | This file.                                                           |
+| [`test_gitignore.py`](test_gitignore.py)                       | Tests for this repository's .gitignore.                              |
+| [`test_validate_repository.py`](test_validate_repository.py)   | Tests for the repository validator.                                  |
+| [`test_verify_stub_ceilings.py`](test_verify_stub_ceilings.py) | Tests for the stub ceiling checker.                                  |
+| [`validate-repository.py`](validate-repository.py)             | Validate this repository's own configuration.                        |
+| [`verify-stub-ceilings.py`](verify-stub-ceilings.py)           | Check every stub's permission ceiling against the workflow it calls. |
 
 <!-- AUTO-INDEX:END -->
 

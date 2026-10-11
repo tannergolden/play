@@ -492,7 +492,7 @@ second.
 | Entry                                       | Purpose                                                                                                                                |
 | :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------- |
 | [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                 |
-| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the parity contract, the seeds, scripts and workflows - logged below                     |
+| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the seeds, scripts and workflows - logged below                     |
 | [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.   |
 | [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows. |
 | [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                         |
@@ -514,19 +514,17 @@ tables after every push:
 
 <!-- AUTO-INDEX:BEGIN dir=./.github style=log -->
 
-| Entry                                                  | Purpose                                                                                                                             |
-| :----------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| [`docs/`](.github/docs/README.md)                      | Where this project keeps its own documents, and where the engineering standards it follows actually live.                           |
-| [`scripts/`](.github/scripts/README.md)                | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
-| [`workflows/`](.github/workflows/README.md)            | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |
-| [`CODEOWNERS`](.github/CODEOWNERS)                     | CODEOWNERS - review ownership                                                                                                       |
-| [`dependabot.yml`](.github/dependabot.yml)             | Dependabot - automated dependency updates                                                                                           |
-| [`release.yml`](.github/release.yml)                   | GitHub auto-generated release notes configuration.                                                                                  |
-| [`template-parity.lock`](.github/template-parity.lock) | Where each file here was last synced from.                                                                                          |
-| [`template-parity.yml`](.github/template-parity.yml)   | This file IS the contract that README.md describes in prose.                                                                        |
-| [`template-sync`](.github/template-sync)               | Every path tannergolden/repo ships, and whether &#x1F504; Template Sync, when you run it, keeps it current in this repository.      |
-| [`template-sync.md`](.github/template-sync.md)         | How this repository takes its template's later fixes when you run &#x1F504; Template Sync, what you control, and what waits on you. |
-| [`TEMPLATE_INIT`](.github/TEMPLATE_INIT)               | This repository has not been initialised yet.                                                                                       |
+| Entry                                              | Purpose                                                                                                                             |
+| :------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| [`docs/`](.github/docs/README.md)                  | Where this project keeps its own documents, and where the engineering standards it follows actually live.                           |
+| [`scripts/`](.github/scripts/README.md)            | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
+| [`workflows/`](.github/workflows/README.md)        | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |
+| [`CODEOWNERS`](.github/CODEOWNERS)                 | CODEOWNERS - review ownership                                                                                                       |
+| [`dependabot.yml`](.github/dependabot.yml)         | Dependabot - automated dependency updates                                                                                           |
+| [`release.yml`](.github/release.yml)               | GitHub auto-generated release notes configuration.                                                                                  |
+| [`template-sync`](.github/template-sync)           | Every path tannergolden/repo ships, and whether &#x1F504; Template Sync, when you run it, keeps it current in this repository.      |
+| [`template-sync.lock`](.github/template-sync.lock) | Where each file here was last synced from.                                                                                          |
+| [`template-sync.md`](.github/template-sync.md)     | How this repository takes its template's later fixes when you run &#x1F504; Template Sync, what you control, and what waits on you. |
 
 <!-- AUTO-INDEX:END -->
 
