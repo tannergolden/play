@@ -129,5 +129,7 @@ jobs:
           ISSUE: ${{ github.event.issue.number }}
           OWNER: ${{ github.repository_owner }}
         run: |
-          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" \
-            --body "⚠️ **This move did not reach its game**, so nothing was played. @$OWNER has been told. Try again from the profile in a few minutes."
+          printf '%s\n' "⚠️ **Your move didn't reach the board**, so nothing was played." \
+            "@$OWNER has been told. Try the same move again from [the board](https://github.com/$OWNER) in a few minutes." \
+            > "$RUNNER_TEMP/failed.md"
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/failed.md"

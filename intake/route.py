@@ -141,16 +141,14 @@ def reply(decision: dict, owner: str) -> str:
     profile = f"[@{owner}'s profile](https://github.com/{owner})"
     if decision['action'] == 'dispatch':
         return (
-            f"🚀 **Move received.** It is on its way to the {decision['game']} board on {profile},"
-            ' which redraws within a few minutes. If the move cannot be played, the game says why'
-            ' here.\n'
+            f"🚀 **Move received.** It's on its way to the {decision['game']} board on {profile}.\n"
+            "The Arbiter rules on it here within a few minutes, and says why if it can't be played.\n"
         )
     return (
-        f'👋 **This repository only takes moves for the games on {profile}**, and this issue is'
-        ' not one, so it is closed.\n'
-        '\n'
-        'To play, pick a move on the profile. Its link opens an issue here with the move already'
-        ' in the title: submit it as it opens.\n'
+        "👋 **This isn't a move, so it's closed.**\n"
+        f'This repository only takes moves for the games on {profile}. To play, pick a move under'
+        ' the board there: its link opens an issue here with the move already in the title. Submit'
+        ' it as it opens, without changing the title.\n'
     )
 
 

@@ -258,8 +258,9 @@ class MainTests(unittest.TestCase):
         self.assertEqual(body['ref'], 'Development')
         self.assertEqual(body['inputs']['uci'], 'e2e4')
         reply = self.written('reply.md').read_text(encoding='utf-8')
-        self.assertIn('Move received', reply)
-        self.assertIn('https://github.com/tannergolden', reply)
+        self.assertEqual(reply, "🚀 **Move received.** It's on its way to the chess board on [@tannergolden's"
+                                " profile](https://github.com/tannergolden).\nThe Arbiter rules on it here within a"
+                                " few minutes, and says why if it can't be played.\n")
         self.assertEqual(printed, 'Issue #7 by @octocat: dispatch to tannergolden/tannergolden, chess.yml.\n')
 
     def test_a_rejected_title_is_never_echoed(self) -> None:
@@ -269,7 +270,8 @@ class MainTests(unittest.TestCase):
         self.assertEqual(self.outputs(), {'action': 'reject'})
         self.assertFalse(self.written('dispatch.json').exists())
         reply = self.written('reply.md').read_text(encoding='utf-8')
-        self.assertIn('only takes moves', reply)
+        self.assertTrue(reply.startswith("👋 **This isn't a move, so it's closed.**\nThis repository only takes moves"))
+        self.assertIn('without changing the title', reply)
         self.assertNotIn('rm -rf', reply + printed)
 
     def test_the_owners_own_issue_writes_nothing_to_post(self) -> None:
