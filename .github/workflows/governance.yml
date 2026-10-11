@@ -21,8 +21,9 @@ on:
     # title, `reopened` re-triages. The extra firings are idempotent - the
     # labeler re-applies the same labels, the title check re-passes.
     types: [opened, edited, synchronize, reopened]
-  issues:
-    types: [opened]
+  # No `issues:` trigger, unlike the template. Every issue here is a move,
+  # and the welcome a new issue starts ("a maintainer will take a look
+  # shortly") is wrong for every one of them. 🎲 Move Intake replies instead.
   issue_comment:
     types: [created]
   schedule:
