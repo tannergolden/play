@@ -14,6 +14,13 @@
 # planned. The game itself decides whether a move stands, and says so on the
 # issue.
 #
+# A chess move its game could only turn away goes no further:
+# intake/chess_check.py reads the game's state and answers here, in the game's
+# own words, a move for a game that is over, a move already played, a move on
+# the other side's turn, or one from a player who has opened too many issues
+# this hour. Each player's issues run one at a time. Every issue answered
+# here is locked once closed, so nobody can use it to notify the owner later.
+#
 # ⚠️ THE TITLE IS WRITTEN BY WHOEVER OPENS THE ISSUE, and anyone can. It
 # reaches the router through an environment variable and nowhere else, so
 # there is no `${{ }}` inside any `run:` here, and nothing goes on but what
@@ -26,9 +33,12 @@
 # closing use this repository's own token, which reaches nothing else. An
 # issue opened by an app or a bot - each game's own notices - never starts it.
 #
-# Needs the PLAY_APP_CLIENT_ID variable and the PLAY_APP_PRIVATE_KEY secret,
-# from the GitHub App installed here and on every game's repository: see
-# README.md. Until both exist, every move fails, with a reply on its issue.
+# Needs the DISPATCH_APP_CLIENT_ID variable and DISPATCH_APP_PRIVATE_KEY
+# secret of the App that starts the games, or, until that App is split off,
+# PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY: see docs/GitHub-App.md. Until
+# one pair exists, every move fails, with a reply on its issue. A failure
+# tells the owner once, in a notice every failed move links to, which closes
+# itself when a move goes through again.
 #
 # ---
 
@@ -39,9 +49,10 @@ on:
     types: [opened]
 
 concurrency:
-  # One run per issue, and an issue is opened once, so a move never waits
-  # behind another.
-  group: ${{ github.workflow }}-${{ github.event.issue.number }}
+  # One run at a time for each player, so nobody can start a crowd of them at
+  # once: a player's next issue waits for the last, and GitHub keeps only the
+  # newest of those waiting. Players never wait on each other.
+  group: ${{ github.workflow }}-${{ github.event.issue.user.id }}
   cancel-in-progress: false
 
 permissions: {}
@@ -79,20 +90,55 @@ jobs:
           PLAYER_ID: ${{ github.event.issue.user.id }}
         run: python3 intake/route.py
 
+      # The game's state, and how many issues the player opened here this past
+      # hour, for the check below: read with this run's own token, which reads
+      # the game's public repository and writes nothing there. A board that
+      # can't be read leaves the move to the game.
+      - name: '♟️ Read The Board'
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.route.outputs.game == 'chess' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GAME_REPO: ${{ steps.route.outputs.owner }}/${{ steps.route.outputs.repo }}
+          PLAYER: ${{ github.event.issue.user.login }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          ref="$(jq -r .ref "$RUNNER_TEMP/dispatch.json")"
+          if gh api "repos/$GAME_REPO/contents/.github/chess/game.json?ref=$ref" \
+            -H 'Accept: application/vnd.github.raw+json' > "$RUNNER_TEMP/game.json" 2> "$RUNNER_TEMP/game.err"; then
+            :
+          elif grep -q 'HTTP 404' "$RUNNER_TEMP/game.err"; then
+            echo null > "$RUNNER_TEMP/game.json" # no game has started yet
+          else
+            rm -f "$RUNNER_TEMP/game.json" # unread: the game judges the move alone
+          fi
+          since="$(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%SZ)"
+          gh api "repos/$GITHUB_REPOSITORY/issues?creator=$PLAYER&state=all&since=$since&per_page=100" \
+            --jq "[.[] | select(.pull_request == null and .created_at >= \"$since\")] | length" \
+            > "$RUNNER_TEMP/recent" || rm -f "$RUNNER_TEMP/recent"
+
+      - name: '⚖️ Check The Move'
+        id: check
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.route.outputs.game == 'chess' }}
+        env:
+          OWNER_ID: ${{ github.repository_owner_id }}
+        run: python3 intake/chess_check.py
+
       - name: '🔑 Mint The Game Token'
         id: app
-        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.check.outputs.verdict != 'refuse' }}
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          client-id: ${{ vars.PLAY_APP_CLIENT_ID }}
-          private-key: ${{ secrets.PLAY_APP_PRIVATE_KEY }}
+          client-id: ${{ vars.DISPATCH_APP_CLIENT_ID || vars.PLAY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DISPATCH_APP_PRIVATE_KEY || secrets.PLAY_APP_PRIVATE_KEY }}
           owner: ${{ steps.route.outputs.owner }}
           repositories: ${{ steps.route.outputs.repo }}
           permission-actions: write
 
       - name: '🎯 Start The Game'
         id: dispatch
-        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.check.outputs.verdict != 'refuse' }}
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           OWNER: ${{ steps.route.outputs.owner }}
@@ -101,7 +147,7 @@ jobs:
         run: gh api --method POST "repos/$OWNER/$REPO/actions/workflows/$WORKFLOW/dispatches" --input "$RUNNER_TEMP/dispatch.json"
 
       - name: '🚀 Reply And Close'
-        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.check.outputs.verdict != 'refuse' }}
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ github.event.issue.number }}
@@ -109,6 +155,17 @@ jobs:
           gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$ISSUE/reactions" -f content=rocket --silent
           gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
           gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      # A move the game could only turn away, answered in the game's words.
+      - name: '⛔ Turn The Move Away'
+        if: ${{ steps.check.outputs.verdict == 'refuse' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
+          gh issue lock "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$ISSUE was left unlocked."
 
       - name: '👋 Turn It Away'
         if: ${{ steps.route.outputs.action == 'reject' }}
@@ -118,18 +175,40 @@ jobs:
         run: |
           gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
           gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
+          gh issue lock "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$ISSUE was left unlocked."
 
       - name: '🧯 Say It Did Not Go Through'
         # A move that never reached its game. The player is told, and the
-        # owner is @mentioned, so the notice reaches them even with this
-        # repository watched for mentions only.
-        if: ${{ failure() && steps.route.outputs.action != 'reject' && steps.dispatch.outcome != 'success' }}
+        # owner is @mentioned once, in a notice that every move stopped until
+        # it closes links to, so the notice reaches them even with this
+        # repository watched for mentions only, and a failure that stops many
+        # moves pings them once. The game closes the notice when a move goes
+        # through again.
+        if: ${{ failure() && steps.route.outputs.action != 'reject' && steps.check.outputs.verdict != 'refuse' && steps.dispatch.outcome != 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ github.event.issue.number }}
           OWNER: ${{ github.repository_owner }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
         run: |
+          set -euo pipefail
+          down="$(gh issue list --repo "$GITHUB_REPOSITORY" --label arbiter-outage --state open --limit 1 \
+            --json number --jq '.[0].number // empty')"
+          if [ -z "$down" ]; then
+            gh label create arbiter-outage --repo "$GITHUB_REPOSITORY" --color 6e7781 \
+              --description "The Arbiter's own notices" --force > /dev/null
+            down="$(gh issue create --repo "$GITHUB_REPOSITORY" --title '🧯 The Arbiter is down' --label arbiter-outage \
+              --body "$(printf '%s\n' \
+                "🧯 **The Arbiter is down**, so moves aren't reaching the board. @$OWNER, [this run]($RUN_URL) failed" \
+                "before it could send one on. Every move it stops links here, and nobody is pinged again; this" \
+                "closes itself when a move goes through.")")"
+            down="${down##*/}"
+            gh issue lock "$down" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$down was left unlocked."
+          fi
           printf '%s\n' "⚠️ **Your move didn't reach the board**, so nothing was played." \
-            "@$OWNER has been told. Try the same move again from [the board](https://github.com/$OWNER) in a few minutes." \
+            "It's being looked into in [#$down](https://github.com/$GITHUB_REPOSITORY/issues/$down): try the same move" \
+            "again from [the board](https://github.com/$OWNER) once that's closed." \
             > "$RUNNER_TEMP/failed.md"
           gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/failed.md"
+          gh issue lock "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$ISSUE was left unlocked."

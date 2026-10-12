@@ -33,13 +33,23 @@ the title against one table, and nothing else acts on it.
   matches the move against that game's pattern. A match becomes the inputs of
   the game's workflow; anything else is turned away. 🎲 Move Intake carries out
   what it decides, and nothing here talks to GitHub.
+- **`chess_check.py` spares the chess game what it could only refuse.** 🎲 Move
+  Intake hands it the game's state and how many issues the player opened here
+  this past hour, and it answers in the game's own words a move for a game that
+  is over, a move already played, a move on the other side's turn, or one from
+  a player past their hour's share. A state read here can only be behind the
+  game, so a move that looks ahead of the board always goes on to the game.
 
-| The issue                          | Decision   | What 🎲 Move Intake does                                               |
-| :--------------------------------- | :--------- | :--------------------------------------------------------------------- |
-| A move for a game in the table     | `dispatch` | Starts the game's workflow, reacts 🚀, replies, closes it as completed |
-| Anything else, from anyone else    | `reject`   | Replies with how to play, closes it as not planned                     |
-| Anything else, from the owner      | `ignore`   | Leaves it open: the owner files their own issues here too              |
-| Anything opened by an app or a bot | -          | Never runs: the game's own notices are left alone                      |
+| The issue                                  | Decision   | What 🎲 Move Intake does                                                   |
+| :----------------------------------------- | :--------- | :------------------------------------------------------------------------- |
+| A move for a game in the table             | `dispatch` | Starts the game's workflow, reacts 🚀, replies, closes it as completed     |
+| A chess move the game could only turn away | `refuse`   | Replies in the game's words, closes it as not planned, locks it            |
+| Anything else, from anyone else            | `reject`   | Replies with how to play, closes it as not planned, locks it               |
+| Anything else, from the owner              | `ignore`   | Leaves it open: the owner files their own issues here too                  |
+| Anything opened by an app or a bot         | -          | Never runs: the game's own notices, its logbook and outages are left alone |
+
+A move's own issue is locked by its game once it has replied, so nobody but the
+owner and the Arbiter writes on an answered issue again.
 
 ---
 
@@ -47,12 +57,14 @@ the title against one table, and nothing else acts on it.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                            | Purpose                                                                              |
-| :------------------------------- | :----------------------------------------------------------------------------------- |
-| [`README.md`](README.md)         | This file.                                                                           |
-| [`route.py`](route.py)           | Route one move issue to the game it names, or turn it away.                          |
-| [`routes.json`](routes.json)     | Every game the intake serves: where its moves go, and what a move for it looks like. |
-| [`test_route.py`](test_route.py) | Tests for the move router.                                                           |
+| Entry                                        | Purpose                                                                                        |
+| :------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| [`chess_check.py`](chess_check.py)           | Turn a chess move away here, before it starts its game, when the game could only turn it away. |
+| [`README.md`](README.md)                     | This file.                                                                                     |
+| [`route.py`](route.py)                       | Route one move issue to the game it names, or turn it away.                                    |
+| [`routes.json`](routes.json)                 | Every game the intake serves: where its moves go, and what a move for it looks like.           |
+| [`test_chess_check.py`](test_chess_check.py) | Tests for the chess pre-check.                                                                 |
+| [`test_route.py`](test_route.py)             | Tests for the move router.                                                                     |
 
 <!-- AUTO-INDEX:END -->
 

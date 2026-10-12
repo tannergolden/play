@@ -267,7 +267,8 @@ class MainTests(unittest.TestCase):
         code, printed = self.run_main('chess: e2e4 · game 1 · move 1')
         self.assertEqual(code, 0)
         self.assertEqual(self.outputs(), {
-            'action': 'dispatch', 'owner': 'tannergolden', 'repo': 'tannergolden', 'workflow': 'chess.yml',
+            'action': 'dispatch', 'game': 'chess', 'owner': 'tannergolden', 'repo': 'tannergolden',
+            'workflow': 'chess.yml',
         })
         body = json.loads(self.written('dispatch.json').read_text(encoding='utf-8'))
         self.assertEqual(body['ref'], 'Development')

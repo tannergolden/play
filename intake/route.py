@@ -15,11 +15,11 @@ WHAT IT DECIDES, one of three:
     reject    anything else: reply, and close the issue as not planned
     ignore    an issue of the owner's that is not a move: leave it open
 
-It writes the decision to $GITHUB_OUTPUT, the dispatch's request body to
-$RUNNER_TEMP/dispatch.json and the reply to $RUNNER_TEMP/reply.md. The
-workflow posts them as they are. Nothing here talks to GitHub, and nothing
-here prints the title, since a line in a run's log can be read as a workflow
-command.
+It writes the decision, and for a move the game it is for, to
+$GITHUB_OUTPUT, the dispatch's request body to $RUNNER_TEMP/dispatch.json
+and the reply to $RUNNER_TEMP/reply.md. The workflow posts them as they are.
+Nothing here talks to GitHub, and nothing here prints the title, since a
+line in a run's log can be read as a workflow command.
 
 Run its tests from the root of the repository:
 
@@ -178,7 +178,8 @@ def main() -> int:
     temp = pathlib.Path(env['RUNNER_TEMP'])
     outputs = {'action': decision['action']}
     if decision['action'] == 'dispatch':
-        outputs.update(owner=decision['owner'], repo=decision['repo'], workflow=decision['workflow'])
+        outputs.update(game=decision['game'], owner=decision['owner'], repo=decision['repo'],
+                       workflow=decision['workflow'])
         (temp / 'dispatch.json').write_text(json.dumps(decision['body']), encoding='utf-8')
     if decision['action'] != 'ignore':
         (temp / 'reply.md').write_text(reply(decision, owner), encoding='utf-8')
