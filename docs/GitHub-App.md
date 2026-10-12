@@ -153,18 +153,25 @@ done
 - [ ] Delete the downloaded key, or move it into a password manager. GitHub never shows it again, and a new one can be generated at any time.
 - [ ] Set this repository to **Watch → Participating and @mentions**, so a move that fails and a game's notice for you reach you, and nothing else does.
 
-Until both values exist here, every move fails with a reply that @mentions the
-owner.
+Until both values exist here, every move fails with a reply that links the
+outage notice, which @mentions the owner once.
 
 ---
 
 ## 🤖 What Players See
 
-| Where                               | Shown as                                           |
-| :---------------------------------- | :------------------------------------------------- |
-| The intake's 🚀, reply and closing  | `github-actions[bot]`, this repository's own token |
-| Every reply and notice a game posts | `official-arbiter[bot]`, with the App's logo       |
-| An install or authorize prompt      | Never                                              |
+| Where                                                   | Shown as                                           |
+| :------------------------------------------------------ | :------------------------------------------------- |
+| The intake's 🚀, reply and closing                      | `github-actions[bot]`, this repository's own token |
+| Every reply and notice a game posts                     | `official-arbiter[bot]`, with the App's logo       |
+| The logbook of the moves the Arbiter plays after a week | `official-arbiter[bot]`, an issue of its own       |
+| An install or authorize prompt                          | Never                                              |
+
+Every answered issue is locked, so only the owner and the Arbiter can write
+on it afterwards: nobody can use an old move's issue to notify the owner. The
+Arbiter tells a player once, on the issue of the move it answers, when it
+plays for the other side after a week; any move it plays after that goes in
+its logbook, where the owner is told when the next move is theirs.
 
 The App's name is on show in every reply a game posts, which is why it is the
 Official Arbiter: to a player, each ruling comes from the arbiter, as it would
@@ -179,6 +186,28 @@ at a board.
 - [ ] Add the game's row to `intake/routes.json`, as [`intake/README.md`](../intake/README.md) describes.
 
 There is no second App, and nothing new to store here.
+
+---
+
+## ✂️ Splitting It In Two
+
+One App holds both permissions, so one key, stored in both repositories,
+opens both doors: whoever reads it from either could start a game's workflow
+and post as the Arbiter. Splitting it gives each repository a key that opens
+only its own door. Each game also reads every move back from its issue before
+playing it, so even the key that starts games can't play a move no player
+sent. About ten minutes, done once:
+
+- [ ] **Register a second App**, as in step 1, named for what it does, such as `Arbiter Dispatch`, with **Actions: Read and write** and nothing else.
+- [ ] **Install it** on `tannergolden` only, the game's repository.
+- [ ] **Store its credentials here**, in this repository only, as `DISPATCH_APP_CLIENT_ID` (variable) and `DISPATCH_APP_PRIVATE_KEY` (secret). The intake prefers them to the shared pair the moment they exist.
+- [ ] **Narrow the Official Arbiter**: on its **Permissions & events** page, set **Actions** to **No access**; under **Install App → Configure**, remove `tannergolden` from its repository access, so it stays on `play` alone; accept the change on its installation.
+- [ ] **Delete `PLAY_APP_PRIVATE_KEY` and `PLAY_APP_CLIENT_ID` from this repository**, which no longer needs them. `tannergolden/tannergolden` keeps its pair: it is the Official Arbiter's, for replying here.
+
+| App                | Permission    | Installed on   | Key stored in               |
+| :----------------- | :------------ | :------------- | :-------------------------- |
+| `Arbiter Dispatch` | Actions write | `tannergolden` | `tannergolden/play`         |
+| `Official Arbiter` | Issues write  | `play`         | `tannergolden/tannergolden` |
 
 ---
 
@@ -202,18 +231,20 @@ in exactly two kinds of place: this repository's secrets and each game's.
 
 ## 🩺 When A Move Fails
 
-A failed move gets a reply on its issue that @mentions the owner, and its run
-in the Actions tab names the step that failed.
+A failed move gets a reply on its issue linking the open `🧯 The Arbiter is
+down` notice. The notice @mentions the owner once, however many moves fail
+while it is open, and closes itself when a move goes through again. The
+failed run in the Actions tab names the step that failed.
 
-| Step that failed       | What it says                             | Fix                                                                               |
-| :--------------------- | :--------------------------------------- | :-------------------------------------------------------------------------------- |
-| 🔑 Mint The Game Token | A client ID or private key is missing    | Store `PLAY_APP_CLIENT_ID` and `PLAY_APP_PRIVATE_KEY` here, as in step 4          |
-| 🔑 Mint The Game Token | The private key cannot be read           | Store the whole `.pem` file again, from `-----BEGIN` to `-----END`                |
-| 🔑 Mint The Game Token | No installation was found                | Install the App on the game's repository                                          |
-| 🎯 Start The Game      | `Resource not accessible by integration` | Give the App Actions write, and accept the change on its installation             |
-| 🎯 Start The Game      | `Not Found`                              | The workflow named in `intake/routes.json` does not exist on its `ref`            |
-| 🎯 Start The Game      | `No ref found for`                       | The `ref` in `intake/routes.json` names no branch or tag of the game's repository |
-| 🎯 Start The Game      | `Unexpected inputs provided`             | The game's workflow has to declare every input it is sent                         |
+| Step that failed       | What it says                             | Fix                                                                                                       |
+| :--------------------- | :--------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| 🔑 Mint The Game Token | A client ID or private key is missing    | Store `PLAY_APP_CLIENT_ID` and `PLAY_APP_PRIVATE_KEY` here, as in step 4, or the dispatch pair once split |
+| 🔑 Mint The Game Token | The private key cannot be read           | Store the whole `.pem` file again, from `-----BEGIN` to `-----END`                                        |
+| 🔑 Mint The Game Token | No installation was found                | Install the App on the game's repository                                                                  |
+| 🎯 Start The Game      | `Resource not accessible by integration` | Give the App Actions write, and accept the change on its installation                                     |
+| 🎯 Start The Game      | `Not Found`                              | The workflow named in `intake/routes.json` does not exist on its `ref`                                    |
+| 🎯 Start The Game      | `No ref found for`                       | The `ref` in `intake/routes.json` names no branch or tag of the game's repository                         |
+| 🎯 Start The Game      | `Unexpected inputs provided`             | The game's workflow has to declare every input it is sent                                                 |
 
 ---
 
