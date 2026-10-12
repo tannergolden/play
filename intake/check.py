@@ -11,11 +11,14 @@ only spares it the ones it would certainly refuse.
 
 WHAT IT KNOWS. The four games, in tier order (GAMES below): where each keeps
 its state, the keys a played move is kept under, who opens it, and the words
-for its sides. The house opens Checkers as Dark and Chess as White. In
-Tic-Tac-Toe and Connect Four, whose first player has a far higher chance of
-winning, the Arbiter opens every game with a random legal move, for a side
-drawn at random, which the game's state records as `opens`: that side plays X,
-or the dark discs, and the other side O, or the light discs.
+for each player's side, which never change: the house, @tannergolden, plays
+White in Chess, Checkers and Connect Four and X in Tic-Tac-Toe, and GitHub
+plays Black, or O. The house opens Chess, as White. GitHub opens Checkers, as
+Black, since Black moves first in American checkers. In Connect Four and
+Tic-Tac-Toe the Arbiter opens every game with a random legal move, for a side
+drawn at random, which the game's state records as `opens`, so O moves first
+in a game of Tic-Tac-Toe it opens for GitHub. Why the Arbiter opens those two
+is in docs/adrs/ADR-0001-Four-Games-One-Arbiter.md.
 
 WHAT IT READS. 🎲 Move Intake names the game in $GAME, fetches its state,
 `.github/<game>/game.json` from the game's repository, into
@@ -26,8 +29,8 @@ from $RUNNER_TEMP/dispatch.json, which the router wrote. A state can only ever
 be behind the game, never ahead of it, so this refuses on the state only what
 a later state would refuse too: a game already over, a move already played, a
 game that opens later. A move that looks ahead of the board goes on, for the
-game to judge, and so does every move whose side it can't tell: in
-Tic-Tac-Toe and Connect Four, a move for a game it has not seen opened.
+game to judge, and so does every move whose side it can't tell: in Connect
+Four and Tic-Tac-Toe, a move for a game it has not seen opened.
 
 It writes `verdict=refuse` or `verdict=dispatch` to $GITHUB_OUTPUT, and on a
 refusal the reply to $RUNNER_TEMP/reply.md. Nothing here talks to GitHub.
@@ -63,8 +66,8 @@ class Game:
     key: str  # the game's name in a move's title, its row in routes.json, and its folder in the game's repository
     code: str  # the input that carries the move, and the key a played move keeps it under in the state
     shown: str  # the key a played move's text notation is kept under in the state
-    colours: tuple[str, str]  # the words for the side that moves first, then for the other side
-    opens: str | None  # who opens every game: the house, or None where the Arbiter opens each for a side it draws
+    sides: tuple[str, str]  # the words for the house's side, then for GitHub's: the same in every game, whoever opens
+    opens: str | None  # who opens every game, the house or GitHub, or None where the Arbiter opens each for a side
 
     @property
     def state(self) -> str:
@@ -73,8 +76,8 @@ class Game:
 
 GAMES = {game.key: game for game in (
     Game('tictactoe', 'move', 'shown', ('X', 'O'), None),
-    Game('connectfour', 'move', 'shown', ('Dark', 'Light'), None),
-    Game('checkers', 'move', 'shown', ('Dark', 'Light'), 'house'),
+    Game('connectfour', 'move', 'shown', ('White', 'Black'), None),
+    Game('checkers', 'move', 'shown', ('White', 'Black'), 'github'),
     Game('chess', 'uci', 'san', ('White', 'Black'), 'house'),
 )}
 
@@ -169,12 +172,13 @@ def verdict(key: str, request: dict, state: object, recent: int | None, owner: s
             return (f"⌛ **Too late: move {ply} is already on the board**, so `{code}` wasn't played.\n"
                     f'{numbered(ply, shown)} got there first, played by {by}. Pick a move from {link} as it stands'
                     ' now.\n')
-    # Whose turn it is: the opener's on odd plies. The house opens every game of its own; the side the Arbiter
-    # opened a game for is known only once the state shows that game opened.
+    # Whose turn it is: the opener's on odd plies, the other side's on even ones. The house opens every game of Chess
+    # and GitHub every game of Checkers; the side the Arbiter opened a game of Connect Four or Tic-Tac-Toe for is
+    # known only once the state shows that game opened. Each side is named in its own words, whoever opened.
     first = spec.opens or (on.opens if on and on.moves and game == on.number else None)
     if not first:
         return ''
-    house, github = spec.colours if first == 'house' else spec.colours[::-1]
+    house, github = spec.sides
     turn = first if ply % 2 else 'github' if first == 'house' else 'house'
     if turn == 'house' and not mine:
         return (f"⏳ **It's {handle(owner)}'s turn as {house}**, so `{code}` wasn't played.\nGitHub plays {github}:"

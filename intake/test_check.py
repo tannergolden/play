@@ -54,30 +54,34 @@ CHESS = {'game': 3, 'started': '2026-10-11T16:00:00Z', 'moves': [
     {'uci': 'e2e4', 'san': 'e4', **TANNER_MOVED},
     {'uci': 'e7e5', 'san': 'e5', **OCTOCAT_MOVED},
 ]}
-# Game 6 of checkers, three moves in: the owner's 1. 11-15 as Dark, @octocat's 1... 22-18, and the owner's 2. 15x22.
+# Game 6 of checkers, three moves in. GitHub opens every game as Black, here with @octocat's 1. 11-15; then come the
+# owner's 1... 22-18 as White, and @octocat's 2. 15x22.
 CHECKERS = {'game': 6, 'started': '2026-10-10T16:00:00Z', 'moves': [
-    {'move': '11-15', 'shown': '11-15', **TANNER_MOVED},
-    {'move': '22-18', 'shown': '22-18', **OCTOCAT_MOVED},
-    {'move': '15x22', 'shown': '15x22', **TANNER_MOVED},
+    {'move': '11-15', 'shown': '11-15', **OCTOCAT_MOVED},
+    {'move': '22-18', 'shown': '22-18', **TANNER_MOVED},
+    {'move': '15x22', 'shown': '15x22', **OCTOCAT_MOVED},
 ]}
-# Game 9 of Tic-Tac-Toe, opened by the Arbiter's 1. Xb2: for the house here, and so the owner plays X and GitHub O.
+# Game 9 of Tic-Tac-Toe, where the owner always plays X and GitHub O. The Arbiter opened it for the house, so X moved
+# first, with the Arbiter's 1. Xb2; then came @octocat's 1... Oa1.
 TICTACTOE = {'game': 9, 'started': '2026-10-12T16:00:00Z', 'opens': 'house', 'moves': [
     {'move': 'b2', 'shown': 'Xb2', **ARBITER},
     {'move': 'a1', 'shown': 'Oa1', **OCTOCAT_MOVED},
 ]}
-# The same game the other way round: the Arbiter opened for GitHub, so GitHub plays X and the owner O.
+# The same game the other way round: the Arbiter opened it for GitHub, so O moved first, with the Arbiter's 1. Ob2;
+# then came the owner's 1... Xa1.
 TICTACTOE_GITHUB = {**TICTACTOE, 'opens': 'github', 'moves': [
-    {'move': 'b2', 'shown': 'Xb2', **ARBITER},
-    {'move': 'a1', 'shown': 'Oa1', **TANNER_MOVED},
+    {'move': 'b2', 'shown': 'Ob2', **ARBITER},
+    {'move': 'a1', 'shown': 'Xa1', **TANNER_MOVED},
 ]}
-# Game 4 of Connect Four, opened by the Arbiter's 1. ⚫4 for the house, which so drops the dark discs and GitHub the
-# light ones: @octocat's 1... ⚪4, then the owner's 2. ⚫3.
+# Game 4 of Connect Four, where the owner always drops the White discs and GitHub the Black. The Arbiter opened it for
+# the house, so White moved first, with the Arbiter's 1. ⚪4; then came @octocat's 1... ⚫4, and the owner's 2. ⚪3.
 CONNECTFOUR = {'game': 4, 'started': '2026-10-09T16:00:00Z', 'opens': 'house', 'moves': [
-    {'move': '4', 'shown': '⚫4', **ARBITER},
-    {'move': '4', 'shown': '⚪4', **OCTOCAT_MOVED},
-    {'move': '3', 'shown': '⚫3', **TANNER_MOVED},
+    {'move': '4', 'shown': '⚪4', **ARBITER},
+    {'move': '4', 'shown': '⚫4', **OCTOCAT_MOVED},
+    {'move': '3', 'shown': '⚪3', **TANNER_MOVED},
 ]}
-# The same game the other way round: opened for GitHub, which drops the dark discs, and the owner the light ones.
+# The same game the other way round: the Arbiter opened it for GitHub, so Black moved first, with the Arbiter's
+# 1. ⚫4; then came the owner's 1... ⚪4, and @octocat's 2. ⚫3.
 CONNECTFOUR_GITHUB = {**CONNECTFOUR, 'opens': 'github', 'moves': [
     {'move': '4', 'shown': '⚫4', **ARBITER},
     {'move': '4', 'shown': '⚪4', **TANNER_MOVED},
@@ -107,29 +111,35 @@ def waiting(number: int, started: str, **extra: object) -> dict:
 class SentOn(unittest.TestCase):
     def test_the_side_to_move_on_the_board_goes_on(self) -> None:
         self.assertEqual(verdict('chess', move('chess', 'g1f3', 3, 3, OWNER_ID)), '')
-        self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, HUBOT)), '')
+        self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, OWNER_ID)), '')
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID)), '')
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, HUBOT), TICTACTOE_GITHUB), '')
         self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, HUBOT)), '')
         self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, OWNER_ID), CONNECTFOUR_GITHUB), '')
 
     def test_the_first_move_of_the_first_game(self) -> None:
+        # The house opens Chess, as White, and GitHub opens Checkers, as Black.
         self.assertEqual(verdict('chess', move('chess', 'e2e4', 1, 1, OWNER_ID), state=None), '')
-        self.assertEqual(verdict('checkers', move('checkers', '11-15', 1, 1, OWNER_ID), state=None), '')
+        self.assertEqual(verdict('checkers', move('checkers', '11-15', 1, 1, HUBOT), state=None), '')
 
     def test_a_move_that_looks_ahead_of_the_board_is_the_game_s_to_judge(self) -> None:
         # The state read here can be behind the game, never ahead: a move past it may be the one on the board now.
         self.assertEqual(verdict('chess', move('chess', 'g8f6', 3, 4, HUBOT)), '')
         self.assertEqual(verdict('chess', move('chess', 'e2e4', 4, 1, OWNER_ID)), '')
-        self.assertEqual(verdict('checkers', move('checkers', '24-19', 6, 6, HUBOT)), '')
+        self.assertEqual(verdict('checkers', move('checkers', '24-19', 6, 6, OWNER_ID)), '')
+        self.assertEqual(verdict('checkers', move('checkers', '11-15', 7, 1, HUBOT)), '')
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 5, OWNER_ID)), '')
 
-    def test_a_state_that_couldn_t_be_read_refuses_only_the_wrong_side_in_the_house_s_games(self) -> None:
-        for key, code in (('chess', 'd7d5'), ('checkers', '22-18')):
+    def test_a_state_that_couldn_t_be_read_refuses_only_the_wrong_side_where_the_opener_never_changes(self) -> None:
+        # The house opens every game of Chess and GitHub every game of Checkers, so move 2 is GitHub's in Chess and
+        # the owner's in Checkers, whatever the state would have said.
+        for key, code, right, wrong, said in (
+            ('chess', 'd7d5', HUBOT, OWNER_ID, "It's GitHub's turn as Black"),
+            ('checkers', '22-18', OWNER_ID, HUBOT, f"It's {TANNER}'s turn as White"),
+        ):
             with self.subTest(key=key):
-                self.assertEqual(verdict(key, move(key, code, 3, 2, HUBOT), state=None, known=False), '')
-                self.assertIn("It's GitHub's turn as", verdict(key, move(key, code, 3, 2, OWNER_ID), state=None,
-                                                               known=False))
+                self.assertEqual(verdict(key, move(key, code, 3, 2, right), state=None, known=False), '')
+                self.assertIn(said, verdict(key, move(key, code, 3, 2, wrong), state=None, known=False))
 
     def test_in_the_arbiter_s_games_a_side_it_can_t_know_is_left_to_the_game(self) -> None:
         # Whose turn it is there depends on the side the Arbiter opened the game for, which only the state shows.
@@ -153,23 +163,24 @@ class SentOn(unittest.TestCase):
 
     def test_the_owner_is_never_limited(self) -> None:
         self.assertEqual(verdict('chess', move('chess', 'g1f3', 3, 3, OWNER_ID), recent=500), '')
-        self.assertEqual(verdict('checkers', move('checkers', '9-13', 6, 5, OWNER_ID), recent=500), '')
+        self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, OWNER_ID), recent=500), '')
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID), recent=500), '')
         self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, OWNER_ID), CONNECTFOUR_GITHUB,
                                  recent=500), '')
 
     def test_a_move_on_record_that_can_t_be_named_is_left_to_the_game(self) -> None:
-        nameless = {**CHECKERS, 'moves': [CHECKERS['moves'][0], {**CHECKERS['moves'][1], 'shown': None}]}
-        self.assertEqual(verdict('checkers', move('checkers', '24-20', 6, 2, HUBOT), nameless), '')
-        unsigned = {**CHECKERS, 'moves': [CHECKERS['moves'][0], {**CHECKERS['moves'][1], 'player': 'a b'}]}
-        self.assertEqual(verdict('checkers', move('checkers', '24-20', 6, 2, HUBOT), unsigned), '')
+        nameless = {**CHECKERS, 'moves': [{**CHECKERS['moves'][0], 'shown': None}, CHECKERS['moves'][1]]}
+        self.assertEqual(verdict('checkers', move('checkers', '9-14', 6, 1, HUBOT), nameless), '')
+        unsigned = {**CHECKERS, 'moves': [{**CHECKERS['moves'][0], 'player': 'a b'}, CHECKERS['moves'][1]]}
+        self.assertEqual(verdict('checkers', move('checkers', '9-14', 6, 1, HUBOT), unsigned), '')
 
 
 class TurnedAway(unittest.TestCase):
     def test_more_than_an_hour_s_share_across_all_four_games(self) -> None:
         self.assertEqual(check.LIMIT, 30)
         for key, state in STATES.items():
-            request = move(key, CODES[key], state['game'], 4, HUBOT)  # move 4 is GitHub's in each game here
+            # GitHub's turn in each game here: move 4, or move 5 in Checkers, which GitHub opens.
+            request = move(key, CODES[key], state['game'], 5 if key == 'checkers' else 4, HUBOT)
             with self.subTest(key=key):
                 self.assertEqual(verdict(key, request, recent=30), '', 'the thirtieth issue of the hour')
                 said = verdict(key, request, recent=31)
@@ -195,16 +206,20 @@ class TurnedAway(unittest.TestCase):
         for key, request, state, said in (
             ('chess', move('chess', 'd7d5', 3, 2, HUBOT), CHESS, late(2, 'd7d5', '1... e5', octocat)),
             ('chess', move('chess', 'd7d6', 3, 2, OCTOCAT), CHESS, late(2, 'd7d6', '1... e5', 'you')),
-            ('checkers', move('checkers', '24-20', 6, 2, HUBOT), CHECKERS, late(2, '24-20', '1... 22-18', octocat)),
-            ('checkers', move('checkers', '15x22', 6, 3, OWNER_ID), CHECKERS, late(3, '15x22', '2. 15x22', 'you')),
+            ('checkers', move('checkers', '15x22', 6, 3, HUBOT), CHECKERS, late(3, '15x22', '2. 15x22', octocat)),
+            ('checkers', move('checkers', '24-20', 6, 2, OWNER_ID), CHECKERS, late(2, '24-20', '1... 22-18', 'you')),
             ('tictactoe', move('tictactoe', 'a3', 9, 1, HUBOT), TICTACTOE, late(1, 'a3', '1. Xb2', 'the Arbiter')),
             ('tictactoe', move('tictactoe', 'c1', 9, 2, HUBOT), TICTACTOE, late(2, 'c1', '1... Oa1', octocat)),
-            ('tictactoe', move('tictactoe', 'c1', 9, 2, OWNER_ID), TICTACTOE_GITHUB, late(2, 'c1', '1... Oa1', 'you')),
-            ('connectfour', move('connectfour', '1', 4, 1, OWNER_ID), CONNECTFOUR, late(1, '1', '1. ⚫4',
+            ('tictactoe', move('tictactoe', 'a3', 9, 1, HUBOT), TICTACTOE_GITHUB, late(1, 'a3', '1. Ob2',
+                                                                                       'the Arbiter')),
+            ('tictactoe', move('tictactoe', 'c1', 9, 2, OWNER_ID), TICTACTOE_GITHUB, late(2, 'c1', '1... Xa1', 'you')),
+            ('connectfour', move('connectfour', '1', 4, 1, OWNER_ID), CONNECTFOUR, late(1, '1', '1. ⚪4',
                                                                                         'the Arbiter')),
-            ('connectfour', move('connectfour', '7', 4, 2, HUBOT), CONNECTFOUR, late(2, '7', '1... ⚪4', octocat)),
+            ('connectfour', move('connectfour', '7', 4, 2, HUBOT), CONNECTFOUR, late(2, '7', '1... ⚫4', octocat)),
+            ('connectfour', move('connectfour', '1', 4, 1, HUBOT), CONNECTFOUR_GITHUB, late(1, '1', '1. ⚫4',
+                                                                                            'the Arbiter')),
             ('connectfour', move('connectfour', '2', 4, 3, HUBOT), CONNECTFOUR_GITHUB, late(3, '2', '2. ⚫3',
-                                                                                          octocat)),
+                                                                                            octocat)),
         ):
             with self.subTest(key=key, request=request):
                 self.assertEqual(verdict(key, request, state), said)
@@ -220,44 +235,99 @@ class TurnedAway(unittest.TestCase):
                          ' but you. Your turn comes next.\n')
 
     def test_the_wrong_side_in_checkers(self) -> None:
-        self.assertEqual(verdict('checkers', move('checkers', '9-13', 6, 5, HUBOT)),
-                         f"⏳ **It's {TANNER}'s turn as Dark**, so `9-13` wasn't played.\nGitHub plays Light: once"
-                         f" Dark moves, pick Light's reply on {BOARD}.\n")
-        self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, OWNER_ID)),
-                         "⏳ **It's GitHub's turn as Light**, so `25x18` wasn't played.\nLight's moves are for"
+        # GitHub opens as Black, so Black has the odd moves and the owner, as White, the even ones.
+        self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, HUBOT)),
+                         f"⏳ **It's {TANNER}'s turn as White**, so `25x18` wasn't played.\nGitHub plays Black: once"
+                         f" White moves, pick Black's reply on {BOARD}.\n")
+        self.assertEqual(verdict('checkers', move('checkers', '9-13', 6, 5, OWNER_ID)),
+                         "⏳ **It's GitHub's turn as Black**, so `9-13` wasn't played.\nBlack's moves are for"
                          ' everyone but you. Your turn comes next.\n')
 
+    def test_checkers_opens_with_github_as_black(self) -> None:
+        # Black moves first in American checkers, and GitHub plays Black, so every fresh board is GitHub's to open:
+        # game 1's, before its state is first written and once it is, and a later game's once its start has passed.
+        said = ("⏳ **It's GitHub's turn as Black**, so `11-15` wasn't played.\nBlack's moves are for everyone but"
+                ' you. Your turn comes next.\n')
+        fresh = {'game': 1, 'started': '2026-10-12T16:00:00Z', 'moves': []}
+        for state, known in ((None, True), (None, False), (fresh, True), ({**fresh, 'game': 7}, True)):
+            number = state['game'] if state else 1
+            with self.subTest(state=state, known=known):
+                self.assertEqual(verdict('checkers', move('checkers', '11-15', number, 1, OWNER_ID), state,
+                                         known=known), said)
+                self.assertEqual(verdict('checkers', move('checkers', '11-15', number, 1, HUBOT), state,
+                                         known=known), '')
+        # Once GitHub has opened, the owner replies as White.
+        opened = {**fresh, 'moves': CHECKERS['moves'][:1]}
+        self.assertEqual(verdict('checkers', move('checkers', '22-18', 1, 2, OWNER_ID), opened), '')
+        self.assertEqual(verdict('checkers', move('checkers', '22-18', 1, 2, HUBOT), opened),
+                         f"⏳ **It's {TANNER}'s turn as White**, so `22-18` wasn't played.\nGitHub plays Black: once"
+                         f" White moves, pick Black's reply on {BOARD}.\n")
+
     def test_the_wrong_side_in_tic_tac_toe_both_ways_round(self) -> None:
-        # Opened for the house: the owner plays X, on the odd moves, and GitHub O.
+        # The owner always plays X and GitHub O. Opened for the house, X moves first, so the owner has the odd moves.
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, HUBOT)),
                          f"⏳ **It's {TANNER}'s turn as X**, so `c3` wasn't played.\nGitHub plays O: once X moves,"
                          f" pick O's reply on {BOARD}.\n")
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c1', 9, 4, OWNER_ID)),
                          "⏳ **It's GitHub's turn as O**, so `c1` wasn't played.\nO's moves are for everyone but you."
                          ' Your turn comes next.\n')
-        # Opened for GitHub: GitHub plays X, on the odd moves, and the owner O.
+        # Opened for GitHub, O moves first, so GitHub has the odd moves and the owner, still X, the even ones.
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID), TICTACTOE_GITHUB),
-                         "⏳ **It's GitHub's turn as X**, so `c3` wasn't played.\nX's moves are for everyone but you."
+                         "⏳ **It's GitHub's turn as O**, so `c3` wasn't played.\nO's moves are for everyone but you."
                          ' Your turn comes next.\n')
         self.assertEqual(verdict('tictactoe', move('tictactoe', 'c1', 9, 4, HUBOT), TICTACTOE_GITHUB),
-                         f"⏳ **It's {TANNER}'s turn as O**, so `c1` wasn't played.\nGitHub plays X: once O moves,"
-                         f" pick X's reply on {BOARD}.\n")
+                         f"⏳ **It's {TANNER}'s turn as X**, so `c1` wasn't played.\nGitHub plays O: once X moves,"
+                         f" pick O's reply on {BOARD}.\n")
+
+    def test_tic_tac_toe_opened_for_github_moves_o_first(self) -> None:
+        # Game 1 as the profile has it: the Arbiter opened it for GitHub with O's 1. Oa1, so the owner replies as X.
+        opened = {'game': 1, 'started': '2026-10-12T06:15:46Z', 'opens': 'github', 'moves': [
+            {'move': 'a1', 'shown': 'Oa1', **ARBITER},
+        ]}
+        self.assertEqual(verdict('tictactoe', move('tictactoe', 'b2', 1, 2, OWNER_ID), opened), '')
+        self.assertEqual(verdict('tictactoe', move('tictactoe', 'b2', 1, 2, HUBOT), opened),
+                         f"⏳ **It's {TANNER}'s turn as X**, so `b2` wasn't played.\nGitHub plays O: once X moves,"
+                         f" pick O's reply on {BOARD}.\n")
+        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 1, 3, HUBOT), opened), '')
+        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 1, 3, OWNER_ID), opened),
+                         "⏳ **It's GitHub's turn as O**, so `c3` wasn't played.\nO's moves are for everyone but you."
+                         ' Your turn comes next.\n')
+        self.assertIn('1. Oa1 got there first, played by the Arbiter.',
+                      verdict('tictactoe', move('tictactoe', 'b2', 1, 1, OWNER_ID), opened))
 
     def test_the_wrong_side_in_connect_four_both_ways_round(self) -> None:
-        # Opened for the house: the owner drops the dark discs, on the odd moves, and GitHub the light ones.
+        # The owner always drops the White discs and GitHub the Black. Opened for the house, White moves first, so
+        # GitHub has the even moves.
         self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, OWNER_ID)),
-                         "⏳ **It's GitHub's turn as Light**, so `5` wasn't played.\nLight's moves are for everyone"
+                         "⏳ **It's GitHub's turn as Black**, so `5` wasn't played.\nBlack's moves are for everyone"
                          ' but you. Your turn comes next.\n')
         self.assertEqual(verdict('connectfour', move('connectfour', '6', 4, 5, HUBOT)),
-                         f"⏳ **It's {TANNER}'s turn as Dark**, so `6` wasn't played.\nGitHub plays Light: once Dark"
-                         f" moves, pick Light's reply on {BOARD}.\n")
-        # Opened for GitHub: GitHub drops the dark discs, on the odd moves, and the owner the light ones.
+                         f"⏳ **It's {TANNER}'s turn as White**, so `6` wasn't played.\nGitHub plays Black: once White"
+                         f" moves, pick Black's reply on {BOARD}.\n")
+        # Opened for GitHub, Black moves first, so the owner, still White, has the even moves.
         self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, HUBOT), CONNECTFOUR_GITHUB),
-                         f"⏳ **It's {TANNER}'s turn as Light**, so `5` wasn't played.\nGitHub plays Dark: once Light"
-                         f" moves, pick Dark's reply on {BOARD}.\n")
+                         f"⏳ **It's {TANNER}'s turn as White**, so `5` wasn't played.\nGitHub plays Black: once White"
+                         f" moves, pick Black's reply on {BOARD}.\n")
         self.assertEqual(verdict('connectfour', move('connectfour', '6', 4, 5, OWNER_ID), CONNECTFOUR_GITHUB),
-                         "⏳ **It's GitHub's turn as Dark**, so `6` wasn't played.\nDark's moves are for everyone but"
+                         "⏳ **It's GitHub's turn as Black**, so `6` wasn't played.\nBlack's moves are for everyone but"
                          ' you. Your turn comes next.\n')
+
+    def test_connect_four_opened_for_the_house_moves_white_first(self) -> None:
+        # Game 1 as the profile has it: the Arbiter opened it for the house with White's 1. ⚪6, so GitHub replies as
+        # Black.
+        opened = {'game': 1, 'started': '2026-10-12T06:15:46Z', 'opens': 'house', 'moves': [
+            {'move': '6', 'shown': '⚪6', **ARBITER},
+        ]}
+        self.assertEqual(verdict('connectfour', move('connectfour', '4', 1, 2, HUBOT), opened), '')
+        self.assertEqual(verdict('connectfour', move('connectfour', '4', 1, 2, OWNER_ID), opened),
+                         "⏳ **It's GitHub's turn as Black**, so `4` wasn't played.\nBlack's moves are for everyone"
+                         ' but you. Your turn comes next.\n')
+        self.assertEqual(verdict('connectfour', move('connectfour', '3', 1, 3, OWNER_ID), opened), '')
+        self.assertEqual(verdict('connectfour', move('connectfour', '3', 1, 3, HUBOT), opened),
+                         f"⏳ **It's {TANNER}'s turn as White**, so `3` wasn't played.\nGitHub plays Black: once White"
+                         f" moves, pick Black's reply on {BOARD}.\n")
+        self.assertIn('1. ⚪6 got there first, played by the Arbiter.',
+                      verdict('connectfour', move('connectfour', '4', 1, 1, HUBOT), opened))
 
     def test_a_move_while_the_winning_board_is_up(self) -> None:
         # Game 6 ended at 16:00 UTC on 12 Oct, so game 7 opens two days later: 11:00 EST on 14 Oct.
@@ -275,13 +345,16 @@ class TurnedAway(unittest.TestCase):
         before = started - dt.timedelta(seconds=1)
         for key in check.GAMES:
             with self.subTest(key=key):
-                request = move(key, CODES[key], 7, 1, OWNER_ID)
+                # The game's first move, sent from the side that may open it: GitHub opens Checkers.
+                request = move(key, CODES[key], 7, 1, HUBOT if key == 'checkers' else OWNER_ID)
                 self.assertTrue(verdict(key, request, state, now=before).startswith('⏳ **Game 7 opens 14 Oct**'))
                 self.assertEqual(verdict(key, request, state, now=started), '')
                 self.assertEqual(verdict(key, request, state, now=started + dt.timedelta(hours=1)), '')
-        # Once it has opened, the house's games are the house's to open, and a move for the old game is over.
+        # Once it has opened, Chess is the house's to open and Checkers GitHub's, and a move for the old game is over.
         self.assertIn("It's [@tannergolden](https://github.com/tannergolden)'s turn as White",
                       verdict('chess', move('chess', 'e2e4', 7, 1, HUBOT), state, now=started))
+        self.assertIn("It's GitHub's turn as Black",
+                      verdict('checkers', move('checkers', '11-15', 7, 1, OWNER_ID), state, now=started))
         self.assertTrue(verdict('checkers', move('checkers', '11-15', 6, 9, HUBOT), state, now=started).startswith(
             '⌛ **Game 6 is over**'))
 
@@ -341,7 +414,7 @@ class MainTests(unittest.TestCase):
     def test_a_move_for_the_game_is_sent_on_and_nothing_written(self) -> None:
         for key, request in (
             ('chess', move('chess', 'g1f3', 3, 3, OWNER_ID)),
-            ('checkers', move('checkers', '25x18', 6, 4, HUBOT)),
+            ('checkers', move('checkers', '25x18', 6, 4, OWNER_ID)),
             ('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID)),
             ('connectfour', move('connectfour', '5', 4, 4, HUBOT)),
         ):
@@ -356,7 +429,7 @@ class MainTests(unittest.TestCase):
         self.assertTrue(reply.startswith('⌛ **Too late: move 2 is already on the board**'))
         output, reply, _ = self.run_check('connectfour', move('connectfour', '5', 4, 4, OWNER_ID))
         self.assertEqual(output, 'verdict=refuse\n')
-        self.assertTrue(reply.startswith("⏳ **It's GitHub's turn as Light**"))
+        self.assertTrue(reply.startswith("⏳ **It's GitHub's turn as Black**"))
 
     def test_the_next_game_is_judged_by_the_time_now(self) -> None:
         later = waiting(7, '2999-01-01T16:00:00Z', opens='github')
@@ -420,11 +493,13 @@ class AgreementTests(unittest.TestCase):
         self.assertEqual(check.GAMES['chess'].code, 'uci')
         self.assertEqual(check.GAMES['chess'].shown, 'san')
 
-    def test_the_house_opens_checkers_and_chess_and_the_arbiter_the_others(self) -> None:
-        self.assertEqual({key: (game.opens, game.colours) for key, game in check.GAMES.items()}, {
+    def test_each_player_keeps_one_side_and_the_house_github_or_the_arbiter_opens(self) -> None:
+        # The house plays White, or X, and GitHub Black, or O, in every game. The house opens Chess, GitHub opens
+        # Checkers, and the Arbiter opens Connect Four and Tic-Tac-Toe for a side it draws.
+        self.assertEqual({key: (game.opens, game.sides) for key, game in check.GAMES.items()}, {
             'tictactoe': (None, ('X', 'O')),
-            'connectfour': (None, ('Dark', 'Light')),
-            'checkers': ('house', ('Dark', 'Light')),
+            'connectfour': (None, ('White', 'Black')),
+            'checkers': ('github', ('White', 'Black')),
             'chess': ('house', ('White', 'Black')),
         })
 
