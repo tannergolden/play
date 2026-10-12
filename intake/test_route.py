@@ -156,6 +156,123 @@ class RejectTests(RouteTestCase):
                 self.assertEqual(route.route(title, **PLAYER, routes=routes)['action'], action)
 
 
+class ShippedTableTests(unittest.TestCase):
+    """The four games' rows in `routes.json`, read through the router as a move link reaches it."""
+
+    def setUp(self) -> None:
+        self.routes = route.load()
+
+    def decide(self, title: str, player: str = 'octocat', player_id: str = '583231') -> dict:
+        return route.route(title, player=player, player_id=player_id, issue='7', owner='tannergolden',
+                           routes=self.routes)
+
+    def test_the_four_games_in_tier_order(self) -> None:
+        self.assertEqual(list(self.routes), ['tictactoe', 'connectfour', 'checkers', 'chess'])
+        for name, game in self.routes.items():
+            with self.subTest(name=name):
+                self.assertEqual((game['owner'], game['repo'], game['ref'], game['workflow']),
+                                 ('tannergolden', 'tannergolden', 'Development', f'{name}.yml'))
+
+    def test_each_game_s_move_goes_to_its_workflow_with_its_inputs(self) -> None:
+        for title, game, inputs in (
+            ('tictactoe: b2 · game 9 · move 3', 'tictactoe', {'move': 'b2', 'game': '9', 'move_number': '3'}),
+            ('tictactoe: a1 · game 1 · move 2', 'tictactoe', {'move': 'a1', 'game': '1', 'move_number': '2'}),
+            ('tictactoe: c3 · game 12 · move 9', 'tictactoe', {'move': 'c3', 'game': '12', 'move_number': '9'}),
+            ('connectfour: 4 · game 4 · move 9', 'connectfour', {'move': '4', 'game': '4', 'move_number': '9'}),
+            ('connectfour: 1 · game 1 · move 2', 'connectfour', {'move': '1', 'game': '1', 'move_number': '2'}),
+            ('connectfour: 7 · game 30 · move 42', 'connectfour', {'move': '7', 'game': '30', 'move_number': '42'}),
+            ('checkers: 11-15 · game 6 · move 10', 'checkers', {'move': '11-15', 'game': '6', 'move_number': '10'}),
+            ('checkers: 22x15 · game 6 · move 11', 'checkers', {'move': '22x15', 'game': '6', 'move_number': '11'}),
+            ('checkers: 22x15x8 · game 6 · move 11', 'checkers',
+             {'move': '22x15x8', 'game': '6', 'move_number': '11'}),
+            ('checkers: 1-5 · game 2 · move 1', 'checkers', {'move': '1-5', 'game': '2', 'move_number': '1'}),
+            ('checkers: 32x23x14x5 · game 2 · move 80', 'checkers',
+             {'move': '32x23x14x5', 'game': '2', 'move_number': '80'}),
+            ('chess: e2e4 · game 1 · move 12', 'chess', {'uci': 'e2e4', 'game': '1', 'move_number': '12'}),
+        ):
+            with self.subTest(title=title):
+                decision = self.decide(title)
+                self.assertEqual(decision['action'], 'dispatch')
+                self.assertEqual((decision['game'], decision['owner'], decision['repo'], decision['workflow']),
+                                 (game, 'tannergolden', 'tannergolden', f'{game}.yml'))
+                self.assertEqual(decision['body'], {
+                    'ref': 'Development',
+                    'inputs': {**inputs, 'issue': '7', 'player': 'octocat', 'player_id': '583231'},
+                })
+
+    def test_the_owner_plays_every_game_through_the_same_door(self) -> None:
+        for title in ('tictactoe: b2 · game 9 · move 4', 'connectfour: 4 · game 4 · move 9',
+                      'checkers: 11-15 · game 6 · move 1'):
+            with self.subTest(title=title):
+                decision = self.decide(title, player='tannergolden', player_id='24684994')
+                self.assertEqual(decision['action'], 'dispatch')
+                self.assertEqual(decision['body']['inputs']['player'], 'tannergolden')
+
+    def test_every_game_and_move_number_a_link_can_carry(self) -> None:
+        for name, code in (('tictactoe', 'b2'), ('connectfour', '4'), ('checkers', '11-15')):
+            for game, number in ((1, 1), (999999999, 999999999)):
+                with self.subTest(name=name, game=game, number=number):
+                    decision = self.decide(f'{name}: {code} · game {game} · move {number}')
+                    self.assertEqual(decision['body']['inputs']['game'], str(game))
+                    self.assertEqual(decision['body']['inputs']['move_number'], str(number))
+
+    def test_near_misses_are_turned_away(self) -> None:
+        for title in (
+            'tictactoe: d4 · game 9 · move 3',
+            'tictactoe: a4 · game 9 · move 3',
+            'tictactoe: a0 · game 9 · move 3',
+            'tictactoe: B2 · game 9 · move 3',
+            'tictactoe: b · game 9 · move 3',
+            'tictactoe: b2b3 · game 9 · move 3',
+            'tictactoe: Xb2 · game 9 · move 3',
+            'tictactoe: b2 game 9 move 3',
+            'tictactoe: b2 · game 9 move 3',
+            'tictactoe: b2 . game 9 . move 3',
+            'tictactoe: b2 · game 9 · move 3 please',
+            'tictactoe: b2 · game 9 · move 3 · b3',
+            'tictactoe: b2 · game 0 · move 3',
+            'tictactoe: b2 · game 9 · move 03',
+            'tictactoe: b2 · game 1000000000 · move 3',
+            'tictactoe: b2',
+            'tic-tac-toe: b2 · game 9 · move 3',
+            'TicTacToe: b2 · game 9 · move 3',
+            'connectfour: 8 · game 4 · move 9',
+            'connectfour: 0 · game 4 · move 9',
+            'connectfour: 44 · game 4 · move 9',
+            'connectfour: 4+ · game 4 · move 9',
+            'connectfour: ⚫4 · game 4 · move 9',
+            'connectfour: d4 · game 4 · move 9',
+            'connectfour: 4 game 4 · move 9',
+            'connectfour: 4 · game 4 · move 9 now',
+            'connect-four: 4 · game 4 · move 9',
+            'checkers: 33-15 · game 6 · move 10',
+            'checkers: 11-33 · game 6 · move 10',
+            'checkers: 0-4 · game 6 · move 10',
+            'checkers: 05-09 · game 6 · move 10',
+            'checkers: 11- · game 6 · move 10',
+            'checkers: -15 · game 6 · move 10',
+            'checkers: 11 · game 6 · move 10',
+            'checkers: 1115 · game 6 · move 10',
+            'checkers: 11-15-19 · game 6 · move 10',
+            'checkers: 11-15x18 · game 6 · move 10',
+            'checkers: 22x · game 6 · move 10',
+            'checkers: 22X15 · game 6 · move 10',
+            'checkers: 11 - 15 · game 6 · move 10',
+            'checkers: 11-15 game 6 · move 10',
+            'checkers: 11-15 · game 6 · move 10 · move 11',
+            'checkers: 11-15 · game 6 · move 10 and 11',
+            'checkers: e2e4 · game 6 · move 10',
+            'chess: b2 · game 9 · move 3',
+            'chess: 4 · game 4 · move 9',
+            'chess: 11-15 · game 6 · move 10',
+            'tictactoe: e2e4 · game 1 · move 12',
+            'tictactoe: 4 · game 4 · move 9',
+            'connectfour: b2 · game 9 · move 3',
+        ):
+            with self.subTest(title=title):
+                self.assertEqual(self.decide(title), {'action': 'reject'})
+
+
 class TableTests(unittest.TestCase):
     def setUp(self) -> None:
         self.folder = Folder()

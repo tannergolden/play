@@ -1,5 +1,23 @@
 {
   "//": "Every game the intake serves: where its moves go, and what a move for it looks like.",
+  "tictactoe": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "tictactoe.yml",
+    "ref": "Development",
+    "pattern": "(?P<move>[a-c][1-3]) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  },
+  "connectfour": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "connectfour.yml",
+    "ref": "Development",
+    "pattern": "(?P<move>[1-7]) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  },
+  "checkers": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "checkers.yml",
+    "ref": "Development",
+    "pattern": "(?P<move>(?:3[0-2]|[12][0-9]|[1-9])(?:-(?:3[0-2]|[12][0-9]|[1-9])|(?:x(?:3[0-2]|[12][0-9]|[1-9]))+)) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  },
   "chess": {
     "repository": "tannergolden/tannergolden",
     "workflow": "chess.yml",
