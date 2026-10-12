@@ -50,9 +50,10 @@ trade-offs that shaped it before changing it.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log fields=status,date,evidence -->
 
-| Entry                    | Status | Date | Evidence | Purpose    |
-| :----------------------- | :----- | :--- | :------- | :--------- |
-| [`README.md`](README.md) | -      | -    | -        | This file. |
+| Entry                                                                      | Status   | Date       | Evidence | Purpose                                                                                                                                                                               |
+| :------------------------------------------------------------------------- | :------- | :--------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`ADR-0001-Four-Games-One-Arbiter.md`](ADR-0001-Four-Games-One-Arbiter.md) | Accepted | 2026-10-12 | N/A      | Chess, Checkers, Connect Four and Tic-Tac-Toe, and no other game, share one intake, one Arbiter, one Hall of Fame and one leaderboard, and each keeps its own voice, board and rules. |
+| [`README.md`](README.md)                                                   | -        | -          | -        | This file.                                                                                                                                                                            |
 
 <!-- AUTO-INDEX:END -->
 
