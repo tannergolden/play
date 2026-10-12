@@ -13,12 +13,23 @@ body:
       value: |
         ### 🏷️ Reading the title
 
-        A title such as `chess: e2e4 · game 1 · move 12` says four things:
+        Every game on the profile writes its titles the same way:
 
-        - **`chess`** is the game.
-        - **`e2e4`** is the move: the piece on e2 goes to e4. A fifth letter is what a pawn becomes when it reaches the far side, so `e7e8q` makes a queen. Castling is written as the king's move, such as `e1g1`.
-        - **`game 1`** is the game on the profile the move is for.
-        - **`move 12`** is the move the board was on when you picked yours.
+        | Game         | A title                              |
+        | :----------- | :----------------------------------- |
+        | Tic-Tac-Toe  | `tictactoe: b2 · game 9 · move 3`    |
+        | Connect Four | `connectfour: 4 · game 4 · move 9`   |
+        | Checkers     | `checkers: 11-15 · game 6 · move 10` |
+        | Chess        | `chess: e2e4 · game 1 · move 12`     |
+
+        - **The first word is the game**: `tictactoe`, `connectfour`, `checkers` or `chess`.
+        - **Then comes the move**, written the game's way:
+          - **Tic-Tac-Toe**: the cell you mark, `a` to `c` from the left and `1` to `3` from the bottom, so `b2` is the centre.
+          - **Connect Four**: the column your disc drops into, `1` to `7` from the left.
+          - **Checkers**: the square your piece leaves and each square it lands on, numbered 1 to 32. `11-15` moves from 11 to 15, `22x15` jumps from 22 to 15, and `22x15x8` jumps on to 8.
+          - **Chess**: the square a piece leaves and the one it lands on, so `e2e4` moves the piece on e2 to e4. A fifth letter is what a pawn becomes when it reaches the far side, so `e7e8q` makes a queen. Castling is written as the king's move, such as `e1g1`.
+        - **`game 9`** is the game on the profile the move is for.
+        - **`move 3`** is the move the board was on when you picked yours.
 
         **Leave the title exactly as it is.** It is all the game reads, and a title that no longer reads as a move is closed without being played.
 
@@ -27,27 +38,32 @@ body:
       value: |
         ### 🚀 What happens next
 
-        1. **A bot checks the title** and passes the move to its game, usually within a minute.
+        1. **A bot checks the title against the board** and passes the move to its game, usually within a minute.
         2. **It reacts with 🚀, replies, and closes this issue.** Closed here means received.
         3. **The game plays the move** and redraws the board on the profile, usually within a few minutes.
         4. **The game replies here** once the move is on the board, or says why it could not be played.
 
-        Every reply here notifies you, since the issue is yours.
+        A move its game could only turn away, such as one on the other side's turn, gets its reply from the bot instead, and goes no further. Every reply here notifies you, since the issue is yours.
 
   - type: markdown
     attributes:
       value: |
         ### ⏱️ Whose turn it is
 
+        - **@tannergolden opens every game of Checkers, as Dark, and of Chess, as White.**
+        - **The Arbiter opens every game of Tic-Tac-Toe and Connect Four**, with a random legal move for a side it draws at random, since going first is a big edge in both: Connect Four's first player can force a win, and in Tic-Tac-Toe X wins far more of the possible games than O.
+        - **Whoever goes first plays the first colour**: White in Chess, Dark in Checkers and Connect Four, and X in Tic-Tac-Toe. The other side plays Black, Light or O.
         - **On GitHub's turn, anyone but @tannergolden can play**, and the first move to reach the game is the one played.
         - **On @tannergolden's turn, only @tannergolden can.** A move from anyone else is turned away with a reply.
-        - **If the board moved on before your move arrived**, the game replies here with what happened to it. Pick a move from the new board to play again.
+        - **If the board moved on before your move arrived**, the reply here says what happened to it. Pick a move from the new board to play again.
 
   - type: markdown
     attributes:
       value: |
         ### 👀 Good to know
 
+        - **A finished game's winning board stays up for two days**, and then a fresh board comes by itself. A move for the next game before then is turned away with the day it opens.
+        - **The four games share one hourly limit**: 30 issues an hour from each player, whatever the game. A move past that is turned away, so pick your next one a little later.
         - **This issue is public.** Your move and your GitHub username can appear on the profile, with the game's moves and in its Hall of Fame.
         - **One move per issue.** To play again, come back for the next turn and pick a new move.
         - **Got here without a move link?** Pick a move on [@tannergolden's profile](https://github.com/tannergolden) instead. An issue that is not a move is closed with a note on how to play.
