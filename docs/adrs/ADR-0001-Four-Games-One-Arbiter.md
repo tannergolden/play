@@ -38,12 +38,12 @@ The profile plays one game today: chess, @tannergolden as White against GitHub, 
 
 Three more games are coming, chosen as tiers of complexity for GitHub to choose between:
 
-| Tier | Game         | Positions          | Solved                                                           |
-| :--- | :----------- | :----------------- | :--------------------------------------------------------------- |
-| 1    | Tic-Tac-Toe  | about 765          | Long ago: perfect play always draws                              |
-| 2    | Connect Four | about 4.5 × 10¹³   | Strongly, in 1988: the first player can force a win              |
-| 3    | Checkers     | about 5 × 10²⁰     | Weakly, in 2007: perfect play draws                              |
-| 4    | Chess        | about 10⁴³ to 10⁵⁰ | Not at all: more paths through a game than atoms in the universe |
+| Tier | Game         | Positions                                                  | Solved                                                             |
+| :--- | :----------- | :--------------------------------------------------------- | :----------------------------------------------------------------- |
+| 1    | Tic-Tac-Toe  | about 765                                                  | Long ago: perfect play always draws                                |
+| 2    | Connect Four | about 4.5 × 10¹² (4,531,985,219,092 by John Tromp's count) | Weakly in 1988, strongly in 1995: the first player can force a win |
+| 3    | Checkers     | about 5 × 10²⁰                                             | Weakly, in 2007: perfect play draws                                |
+| 4    | Chess        | about 10⁴³ to 10⁵⁰                                         | Not at all: more paths through a game than atoms in the universe   |
 
 No game follows these: four is the whole set. The question is what the four share, and what each keeps for itself, so that a player has one place to play and one standing, while each game still feels like its own.
 
@@ -75,21 +75,22 @@ No game follows these: four is the whole set. The question is what the four shar
 
 What the four share:
 
-- **The intake.** One router and one table, `intake/routes.json`, with a row per game. One pre-check step, run for each game's own check. One queue per player, one locking of answered issues, and one notice when the Arbiter is down.
-- **The hourly cap.** One overall budget per player, counted across all four games together and balanced so that a player active in every game never meets it while a flood does.
+- **The intake.** One router and one table, `intake/routes.json`, with a row per game. One pre-check, `intake/check.py`, that knows each game's state, its turns and its words. One queue per player, one locking of answered issues, and one notice when the Arbiter is down.
+- **The hourly cap.** One overall budget per player, 30 issues an hour, counted across all four games together and balanced so that a player active in every game never meets it while a flood does.
 - **The Arbiter.** One App, one way of laying out a reply, and one logbook for the moves it plays when a side lets a week pass.
-- **The clock.** A week to move, then the Arbiter plays a random legal move, in every game.
+- **The clock.** One clock for all four games, every hour on the hour, ticking every game in one run. A week to move, then the Arbiter plays a random legal move, in every game; and a fresh board comes once a winning board's two days are up.
+- **The winning board.** Every finished game, chess included, shows its winning board for two days, and then a fresh board comes by itself. A move for the next game before then is turned away with the day it opens.
 - **One Hall of Fame.** A shared podium across all four games, with each game's results under it.
 - **One leaderboard.** One table: the owner's row on top, then GitHub's players. Each game has its own column of wins, and moves and games count across all four.
 - **The page.** The kit's frame for drawing a board, its panel and its motion, and the README block round it: the banner, the folded list of legal moves, the Hall of Fame and the leaderboard.
 
 What each game keeps for itself:
 
-- **Its door**: its row in the table, its issue form, and its own pre-check, which turns away at the door, in the game's own words, what the game could only refuse.
+- **Its door**: its row in the table, its titles in the one issue form, and its own words in the one pre-check, which turns away at the door what the game could only refuse.
 - **Its rules**: its own engine, and its own words for how a game ends.
 - **Its voice**: chess names every move as an army's order; every other game gets a voice of its own, with its own move names and emoji.
 - **Its board**: its own pieces, notation and motion, drawn in the same frame and hand as chess, so the four read as one family.
-- **Its sides**: chess's owner always plays White. Who opens each other game is decided when it is built, since Connect Four's first player can force a win.
+- **Its sides**: the side that moves first plays the game's first colour, and the other side the second: White and Black in Chess, Dark and Light in Checkers and Connect Four, X and O in Tic-Tac-Toe. The house, @tannergolden, opens every game of Checkers as Dark and of Chess as White. The Arbiter opens every game of Tic-Tac-Toe and Connect Four, for a side drawn at random, with a random legal move, because in both the first player has a far higher chance of winning: Connect Four is solved, and its first player can force a win by opening in the centre column, as James D. Allen and Victor Allis showed independently in 1988; and of the 255,168 possible games of Tic-Tac-Toe, X wins 131,184 to O's 77,904, so any slip favours whoever moves first.
 - **Its column**: its own wins on the leaderboard.
 
 ---
@@ -125,7 +126,7 @@ What each game keeps for itself:
 
 ## 🔗 Traceability & Links
 
-- [The intake](../../intake/README.md): the router, its table and the chess pre-check.
+- [The intake](../../intake/README.md): the router, its table and the pre-check of all four games.
 - [The GitHub App](../GitHub-App.md): the Official Arbiter, and splitting its App in two.
 - [tannergolden/markdown](https://github.com/tannergolden/markdown): the kit that draws every board, the Hall of Fame and the leaderboard.
 
