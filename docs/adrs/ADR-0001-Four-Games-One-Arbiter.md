@@ -82,7 +82,7 @@ What the four share:
 - **The winning board.** Every finished game, chess included, shows its winning board for two days, and then a fresh board comes by itself. A move for the next game before then is turned away with the day it opens.
 - **One Hall of Fame.** A shared podium across all four games, with each game's results under it.
 - **One leaderboard.** One table: the owner's row on top, then GitHub's players. Each game has its own column of wins, then come the moves and the wins across all four. A win counts only for the player who makes the winning move, and nothing the Arbiter plays counts for anyone.
-- **The page.** The kit's frame for drawing a board, its panel and its motion, and the README block round it: the banner, the folded list of legal moves, the Hall of Fame and the leaderboard.
+- **The page.** The kit's frame for drawing a board, its panel and its motion, and the README block round it: the folded list of legal moves, the Hall of Fame and the leaderboard.
 
 What each game keeps for itself:
 
