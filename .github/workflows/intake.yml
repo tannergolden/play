@@ -207,14 +207,14 @@ jobs:
             gh label create arbiter-outage --repo "$GITHUB_REPOSITORY" --color 6e7781 \
               --description "The Arbiter's own notices" --force > /dev/null
             down="$(gh issue create --repo "$GITHUB_REPOSITORY" --title '🧯 The Arbiter is down' --label arbiter-outage \
-              --body "$(printf '%s\n' \
-                "🧯 **The Arbiter is down**, so moves aren't reaching the board. @$OWNER, [this run]($RUN_URL) failed" \
-                "before it could send one on. Every move it stops links here, and nobody is pinged again; this" \
-                "closes itself when a move goes through.")")"
+              --body "$(printf '%s\n%s %s\n' \
+                "🧯 **The Arbiter is down**, so moves aren't reaching the board." \
+                "@$OWNER, [this run]($RUN_URL) failed before it could send one on. Every move it stops links here," \
+                "and nobody is pinged again; this closes itself when a move goes through.")")"
             down="${down##*/}"
             gh issue lock "$down" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$down was left unlocked."
           fi
-          printf '%s\n' "⚠️ **Your move didn't reach the board**, so nothing was played." \
+          printf '%s\n%s %s\n' "⚠️ **Your move didn't reach the board**, so nothing was played." \
             "It's being looked into in [#$down](https://github.com/$GITHUB_REPOSITORY/issues/$down): try the same move" \
             "again from [the board](https://github.com/$OWNER) once that's closed." \
             > "$RUNNER_TEMP/failed.md"
