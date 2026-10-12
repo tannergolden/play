@@ -259,21 +259,21 @@ Alerts to watch, say. Copy across anything worth having.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                                       | Purpose                                                                                                                                    |
-| :------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                     |
-| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the issue form, scripts and workflows - logged below                                         |
-| [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.       |
-| [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows.     |
-| [`docs/`](docs/README.md)                   | Where this project keeps its own documents, and where the engineering standards it follows actually live.                                  |
-| [`intake/`](intake/README.md)               | The router every move passes through: the table of games, the script that reads each title against it, and the tests that hold both to it. |
-| [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                             |
-| [`.env.example`](.env.example)              | Environment variable template for this project.                                                                                            |
-| [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                            |
-| [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                |
-| [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                          |
-| [`LICENSE`](LICENSE)                        | MIT License                                                                                                                                |
-| [`README.md`](README.md)                    | This file.                                                                                                                                 |
+| Entry                                       | Purpose                                                                                                                                                |
+| :------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                                 |
+| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the issue form, scripts and workflows - logged below                                                     |
+| [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.                   |
+| [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows.                 |
+| [`docs/`](docs/README.md)                   | Where this project keeps its own documents, and where the engineering standards it follows actually live.                                              |
+| [`intake/`](intake/README.md)               | The router every move passes through, and the check that reads each move against its board: the table of the four games, both scripts and their tests. |
+| [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                                         |
+| [`.env.example`](.env.example)              | Environment variable template for this project.                                                                                                        |
+| [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                        |
+| [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                            |
+| [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                                      |
+| [`LICENSE`](LICENSE)                        | MIT License                                                                                                                                            |
+| [`README.md`](README.md)                    | This file.                                                                                                                                             |
 
 <!-- AUTO-INDEX:END -->
 

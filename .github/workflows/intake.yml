@@ -6,20 +6,23 @@
 # to its game - and turns away anything that is not a move.
 #
 # Every move on the profile is a link that opens a ready-made issue here, with
-# the move in its title. This runs once for each issue opened: intake/route.py
-# reads the title against intake/routes.json and decides, and the steps below
-# carry that out. A move starts its game's workflow through the GitHub App,
-# gets a 🚀 and a reply, and is closed as completed. Anything else from anyone
-# but the owner gets a reply saying how to play, and is closed as not
-# planned. The game itself decides whether a move stands, and says so on the
-# issue.
+# the move in its title, for one of the four games there: Tic-Tac-Toe, Connect
+# Four, Checkers and Chess. This runs once for each issue opened:
+# intake/route.py reads the title against intake/routes.json and decides, and
+# the steps below carry that out. A move starts its game's workflow through
+# the GitHub App, gets a 🚀 and a reply, and is closed as completed. Anything
+# else from anyone but the owner gets a reply saying how to play, and is
+# closed as not planned. The game itself decides whether a move stands, and
+# says so on the issue.
 #
-# A chess move its game could only turn away goes no further:
-# intake/chess_check.py reads the game's state and answers here, in the game's
-# own words, a move for a game that is over, a move already played, a move on
-# the other side's turn, or one from a player who has opened too many issues
-# this hour. Each player's issues run one at a time. Every issue answered
-# here is locked once closed, so nobody can use it to notify the owner later.
+# A move its game could only turn away goes no further: intake/check.py reads
+# the game's state, .github/<game>/game.json in the game's repository, and
+# answers here, in the game's own words, a move for a game that is over, a
+# move already played, a move on the other side's turn, a move for the next
+# game while the last one's winning board is still up, or one from a player
+# who has opened more than 30 issues this hour, all four games together. Each
+# player's issues run one at a time. Every issue answered here is locked once
+# closed, so nobody can use it to notify the owner later.
 #
 # ⚠️ THE TITLE IS WRITTEN BY WHOEVER OPENS THE ISSUE, and anyone can. It
 # reaches the router through an environment variable and nowhere else, so
@@ -90,22 +93,26 @@ jobs:
           PLAYER_ID: ${{ github.event.issue.user.id }}
         run: python3 intake/route.py
 
-      # The game's state, and how many issues the player opened here this past
-      # hour, for the check below: read with this run's own token, which reads
-      # the game's public repository and writes nothing there. A board that
-      # can't be read leaves the move to the game.
-      - name: '♟️ Read The Board'
-        if: ${{ steps.route.outputs.action == 'dispatch' && steps.route.outputs.game == 'chess' }}
+      # The state of the move's game, from the folder named for it in the
+      # game's repository, and how many issues the player opened here this
+      # past hour in any of the games, for the check below: read with this
+      # run's own token, which reads the game's public repository and writes
+      # nothing there. The game's name is always one the table names, since
+      # only a move for a game in the table gets this far. A board that can't
+      # be read leaves the move to the game.
+      - name: '👀 Read The Board'
+        if: ${{ steps.route.outputs.action == 'dispatch' }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
+          GAME: ${{ steps.route.outputs.game }}
           GAME_REPO: ${{ steps.route.outputs.owner }}/${{ steps.route.outputs.repo }}
           PLAYER: ${{ github.event.issue.user.login }}
         shell: bash
         run: |
           set -uo pipefail
           ref="$(jq -r .ref "$RUNNER_TEMP/dispatch.json")"
-          if gh api "repos/$GAME_REPO/contents/.github/chess/game.json?ref=$ref" \
+          if gh api "repos/$GAME_REPO/contents/.github/$GAME/game.json?ref=$ref" \
             -H 'Accept: application/vnd.github.raw+json' > "$RUNNER_TEMP/game.json" 2> "$RUNNER_TEMP/game.err"; then
             :
           elif grep -q 'HTTP 404' "$RUNNER_TEMP/game.err"; then
@@ -120,10 +127,11 @@ jobs:
 
       - name: '⚖️ Check The Move'
         id: check
-        if: ${{ steps.route.outputs.action == 'dispatch' && steps.route.outputs.game == 'chess' }}
+        if: ${{ steps.route.outputs.action == 'dispatch' }}
         env:
+          GAME: ${{ steps.route.outputs.game }}
           OWNER_ID: ${{ github.repository_owner_id }}
-        run: python3 intake/chess_check.py
+        run: python3 intake/check.py
 
       - name: '🔑 Mint The Game Token'
         id: app
