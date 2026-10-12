@@ -1,7 +1,7 @@
 <!--
 title: '🎲 PLAY'
 description: 'Public move intake for the interactive games on the tannergolden profile README: every move arrives as a pre-filled issue, is checked, and is passed to its game through a GitHub App.'
-tags: [issueops, github-actions, profile-readme, chess]
+tags: [issueops, github-actions, profile-readme, tic-tac-toe, connect-four, checkers, chess]
 category: docs
 -->
 
@@ -21,9 +21,10 @@ _Click a move. An issue opens. A bot checks it, passes it on, and closes it._
 
 ## 💡 What This Is
 
-The games on [@tannergolden's profile](https://github.com/tannergolden) are
-played with links. Every move on the board is a link that opens a ready-made
-issue in this repository, with the move already in its title. Submit it, and
+The four games on [@tannergolden's profile](https://github.com/tannergolden),
+Tic-Tac-Toe, Connect Four, Checkers and Chess, are played with links. Every
+move on a board is a link that opens a ready-made issue in this repository,
+with the move already in its title. Submit it, and
 **🎲 Move Intake** checks it, passes it to that game's repository, replies, and
 closes the issue, all within a minute. The game then decides whether the move
 stands, redraws the board, and says so on the same issue.
@@ -35,8 +36,10 @@ This repository holds no game. It is the door every move comes through:
   and where its moves go;
 - **one script**, [`intake/route.py`](intake/route.py), that reads each title
   against that table;
+- **one check**, [`intake/check.py`](intake/check.py), that turns away, in the
+  game's own words, a move its game could only refuse;
 - **one workflow**, [`intake.yml`](.github/workflows/intake.yml), that does
-  what the script decides.
+  what the two scripts decide.
 
 ---
 
@@ -47,16 +50,21 @@ This repository holds no game. It is the door every move comes through:
 2. **They submit it** as it opens. A GitHub account is all a player needs.
 3. **🎲 Move Intake reads the title** against the table. Only a title that
    matches one game's pattern from end to end is a move.
-4. **The move goes to its game.** A short-lived token from the GitHub App
+4. **It checks the move against the board**, and answers here a move the game
+   could only refuse: one for a game that is over, one already played, one on
+   the other side's turn, one for the next game while the last one's winning
+   board is still up, or one from a player past the hourly limit.
+5. **The move goes to its game.** A short-lived token from the GitHub App
    starts the game's workflow, with the move, the issue's number and the
    player.
-5. **The issue is answered:** a 🚀, a reply, and closed as completed. The game
+6. **The issue is answered:** a 🚀, a reply, and closed as completed. The game
    replies on the same issue once it has played the move, or says why it could
    not.
 
 | The issue                          | What happens                                              |
 | :--------------------------------- | :-------------------------------------------------------- |
 | A move for a game in the table     | Passed to its game, answered, and closed as completed     |
+| A move its game could only refuse  | A reply in the game's words, closed as not planned        |
 | Anything else, from anyone else    | A reply saying how to play, and closed as not planned     |
 | Anything else, from the owner      | Left open: the owner files their own issues here too      |
 | Anything opened by an app or a bot | Never touched, so each game can post its own notices here |
@@ -72,18 +80,42 @@ https://github.com/tannergolden/play/issues/new?template=move.yml&title=chess%3A
 
 ## 🗺️ The Routes
 
-| Game    | Its moves go to             | Workflow                   | A move's title                       |
-| :------ | :-------------------------- | :------------------------- | :----------------------------------- |
-| `chess` | `tannergolden/tannergolden` | `chess.yml` on Development | `chess: <uci> · game <n> · move <n>` |
+| Game          | Its moves go to             | Workflow                         | A move's title                                |
+| :------------ | :-------------------------- | :------------------------------- | :-------------------------------------------- |
+| `tictactoe`   | `tannergolden/tannergolden` | `tictactoe.yml` on Development   | `tictactoe: <cell> · game <n> · move <n>`     |
+| `connectfour` | `tannergolden/tannergolden` | `connectfour.yml` on Development | `connectfour: <column> · game <n> · move <n>` |
+| `checkers`    | `tannergolden/tannergolden` | `checkers.yml` on Development    | `checkers: <move> · game <n> · move <n>`      |
+| `chess`       | `tannergolden/tannergolden` | `chess.yml` on Development       | `chess: <uci> · game <n> · move <n>`          |
 
-`<uci>` is the move in UCI notation: the square the piece leaves, the square
-it lands on, and the piece a pawn becomes when it promotes, as in `e2e4` or
-`e7e8q`. The board stamps the game and the move number into every link it
-writes, so the game can tell a click on the current board from one on a board
-that has since moved on.
+- **`<cell>`** is a Tic-Tac-Toe cell, named as a chess square is: columns `a`
+  to `c` from the left, rows `1` to `3` from the bottom, so `b2` is the centre.
+- **`<column>`** is the Connect Four column a disc drops into, `1` to `7` from
+  the left.
+- **`<move>`** is a checkers move in standard notation, its squares numbered 1
+  to 32: `11-15` for a move, `22x15` for a jump, `22x15x8` for a jump that
+  goes on.
+- **`<uci>`** is a chess move in UCI notation: the square the piece leaves, the
+  square it lands on, and the piece a pawn becomes when it promotes, as in
+  `e2e4` or `e7e8q`.
 
-**Adding a game** is a row in the table, a workflow in the game's repository
-that accepts the move, and the GitHub App installed there.
+The board stamps the game and the move number into every link it writes, so
+the game can tell a click on the current board from one on a board that has
+since moved on.
+
+**Who opens.** @tannergolden opens every game of Checkers, as Dark, and of
+Chess, as White. In Tic-Tac-Toe and Connect Four, whoever moves first has a far
+higher chance of winning: Connect Four's first player can force a win, and in
+Tic-Tac-Toe X wins far more of the possible games than O. So the Arbiter opens
+every game of those two with a random legal move, for a side it draws at
+random. In every game the side that goes first plays the first colour and the
+other side the second: White and Black in Chess, Dark and Light in Checkers and
+Connect Four, X and O in Tic-Tac-Toe. A finished game's winning board stays up
+for two days before a fresh board comes, and one hourly limit, 30 issues from
+each player, covers all four games.
+
+**Adding a game** is a row in the table, the game taught to the check, a
+workflow in the game's repository that accepts the move, and the GitHub App
+installed there.
 [`intake/README.md`](intake/README.md) has the steps, and what every game's
 workflow receives.
 
@@ -152,10 +184,11 @@ workflow that reads it can start a workflow in another repository. So:
   which reaches nothing else.
 - **Nothing here runs a stranger's code.** The workflow checks out only the
   intake folder, from the default branch, without credentials, and runs only
-  the router.
-- **The game is the judge.** The intake only checks that a title is shaped
-  like a move. Whether it is legal, whose turn it is and whether the click is
-  current are the game's to decide, and its inputs are untrusted there too.
+  the router and the check.
+- **The game is the judge.** The intake checks that a title is shaped like a
+  move, and turns away at the door only what the game could only refuse, from
+  the game's state as it last read it. Whether a move is legal is always the
+  game's to decide, and its inputs are untrusted there too.
 
 Every action is pinned to a commit or to the standards' `v1`, every runner is
 hardened, and every workflow passes actionlint and zizmor's pedantic audit in
