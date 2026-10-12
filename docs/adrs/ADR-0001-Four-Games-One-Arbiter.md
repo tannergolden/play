@@ -40,10 +40,10 @@ Three more games are coming, chosen as tiers of complexity for GitHub to choose 
 
 | Tier | Game         | Positions                                                  | Solved                                                             |
 | :--- | :----------- | :--------------------------------------------------------- | :----------------------------------------------------------------- |
-| 1    | Tic-Tac-Toe  | about 765                                                  | Long ago: perfect play always draws                                |
-| 2    | Connect Four | about 4.5 × 10¹² (4,531,985,219,092 by John Tromp's count) | Weakly in 1988, strongly in 1995: the first player can force a win |
-| 3    | Checkers     | about 5 × 10²⁰                                             | Weakly, in 2007: perfect play draws                                |
 | 4    | Chess        | about 10⁴³ to 10⁵⁰                                         | Not at all: more paths through a game than atoms in the universe   |
+| 3    | Checkers     | about 5 × 10²⁰                                             | Weakly, in 2007: perfect play draws                                |
+| 2    | Connect Four | about 4.5 × 10¹² (4,531,985,219,092 by John Tromp's count) | Weakly in 1988, strongly in 1995: the first player can force a win |
+| 1    | Tic-Tac-Toe  | about 765                                                  | Long ago: perfect play always draws                                |
 
 No game follows these: four is the whole set. The question is what the four share, and what each keeps for itself, so that a player has one place to play and one standing, while each game still feels like its own.
 
@@ -90,7 +90,7 @@ What each game keeps for itself:
 - **Its rules**: its own engine, and its own words for how a game ends.
 - **Its voice**: chess names every move as an army's order; every other game gets a voice of its own, with its own move names and emoji.
 - **Its board**: its own pieces, notation and motion, drawn in the same frame and hand as chess, so the four read as one family.
-- **Its sides**: the side that moves first plays the game's first colour, and the other side the second: White and Black in Chess, Dark and Light in Checkers and Connect Four, X and O in Tic-Tac-Toe. The house, @tannergolden, opens every game of Checkers as Dark and of Chess as White. The Arbiter opens every game of Tic-Tac-Toe and Connect Four, for a side drawn at random, with a random legal move, because in both the first player has a far higher chance of winning: Connect Four is solved, and its first player can force a win by opening in the centre column, as James D. Allen and Victor Allis showed independently in 1988; and of the 255,168 possible games of Tic-Tac-Toe, X wins 131,184 to O's 77,904, so any slip favours whoever moves first.
+- **Its sides**: each player's side never changes, and who moves first changes only in the two games the Arbiter opens. The house, @tannergolden, always plays White in Chess, Checkers and Connect Four, and X in Tic-Tac-Toe; GitHub always plays Black, or O. The house opens every game of Chess, as White, the side that moves first in chess. GitHub opens every game of Checkers, as Black, since Checkers follows American checkers, where Black moves first. The Arbiter opens every game of Connect Four and Tic-Tac-Toe, for a side drawn at random, with a random legal move, because in both the first player has a far higher chance of winning: Connect Four is solved, and its first player can force a win by opening in the centre column, as James D. Allen and Victor Allis showed independently in 1988; and of the 255,168 possible games of Tic-Tac-Toe, counted with X moving first, X wins 131,184, O wins 77,904 and 46,080 are drawn, so any slip favours whoever moves first. The side the Arbiter opens for moves first, so O moves first in a game of Tic-Tac-Toe it opens for GitHub.
 - **Its column**: its own wins on the leaderboard.
 
 ---

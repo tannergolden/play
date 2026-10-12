@@ -1,7 +1,7 @@
 <!--
 title: '🎲 PLAY'
 description: 'Public move intake for the interactive games on the tannergolden profile README: every move arrives as a pre-filled issue, is checked, and is passed to its game through a GitHub App.'
-tags: [issueops, github-actions, profile-readme, tic-tac-toe, connect-four, checkers, chess]
+tags: [issueops, github-actions, profile-readme, chess, checkers, connect-four, tic-tac-toe]
 category: docs
 -->
 
@@ -22,7 +22,7 @@ _Click a move. An issue opens. A bot checks it, passes it on, and closes it._
 ## 💡 What This Is
 
 The four games on [@tannergolden's profile](https://github.com/tannergolden),
-Tic-Tac-Toe, Connect Four, Checkers and Chess, are played with links. Every
+Chess, Checkers, Connect Four and Tic-Tac-Toe, are played with links. Every
 move on a board is a link that opens a ready-made issue in this repository,
 with the move already in its title. Submit it, and
 **🎲 Move Intake** checks it, passes it to that game's repository, replies, and
@@ -82,36 +82,36 @@ https://github.com/tannergolden/play/issues/new?template=move.yml&title=chess%3A
 
 | Game          | Its moves go to             | Workflow                         | A move's title                                |
 | :------------ | :-------------------------- | :------------------------------- | :-------------------------------------------- |
-| `tictactoe`   | `tannergolden/tannergolden` | `tictactoe.yml` on Development   | `tictactoe: <cell> · game <n> · move <n>`     |
-| `connectfour` | `tannergolden/tannergolden` | `connectfour.yml` on Development | `connectfour: <column> · game <n> · move <n>` |
-| `checkers`    | `tannergolden/tannergolden` | `checkers.yml` on Development    | `checkers: <move> · game <n> · move <n>`      |
 | `chess`       | `tannergolden/tannergolden` | `chess.yml` on Development       | `chess: <uci> · game <n> · move <n>`          |
+| `checkers`    | `tannergolden/tannergolden` | `checkers.yml` on Development    | `checkers: <move> · game <n> · move <n>`      |
+| `connectfour` | `tannergolden/tannergolden` | `connectfour.yml` on Development | `connectfour: <column> · game <n> · move <n>` |
+| `tictactoe`   | `tannergolden/tannergolden` | `tictactoe.yml` on Development   | `tictactoe: <cell> · game <n> · move <n>`     |
 
-- **`<cell>`** is a Tic-Tac-Toe cell, named as a chess square is: columns `a`
-  to `c` from the left, rows `1` to `3` from the bottom, so `b2` is the centre.
-- **`<column>`** is the Connect Four column a disc drops into, `1` to `7` from
-  the left.
-- **`<move>`** is a checkers move in standard notation, its squares numbered 1
-  to 32: `11-15` for a move, `22x15` for a jump, `22x15x8` for a jump that
-  goes on.
 - **`<uci>`** is a chess move in UCI notation: the square the piece leaves, the
   square it lands on, and the piece a pawn becomes when it promotes, as in
   `e2e4` or `e7e8q`.
+- **`<move>`** is a checkers move in standard notation, its squares numbered 1
+  to 32: `11-15` for a move, `22x15` for a jump, `22x15x8` for a jump that
+  goes on.
+- **`<column>`** is the Connect Four column a disc drops into, `1` to `7` from
+  the left.
+- **`<cell>`** is a Tic-Tac-Toe cell, named as a chess square is: columns `a`
+  to `c` from the left, rows `1` to `3` from the bottom, so `b2` is the centre.
 
 The board stamps the game and the move number into every link it writes, so
 the game can tell a click on the current board from one on a board that has
 since moved on.
 
-**Who opens.** @tannergolden opens every game of Checkers, as Dark, and of
-Chess, as White. In Tic-Tac-Toe and Connect Four, whoever moves first has a far
-higher chance of winning: Connect Four's first player can force a win, and in
-Tic-Tac-Toe X wins far more of the possible games than O. So the Arbiter opens
-every game of those two with a random legal move, for a side it draws at
-random. In every game the side that goes first plays the first colour and the
-other side the second: White and Black in Chess, Dark and Light in Checkers and
-Connect Four, X and O in Tic-Tac-Toe. A finished game's winning board stays up
-for two days before a fresh board comes, and one hourly limit, 30 issues from
-each player, covers all four games.
+**Who plays which side, and who opens.** Each player's side never changes:
+@tannergolden always plays White in Chess, Checkers and Connect Four, and X in
+Tic-Tac-Toe, and GitHub, which is everyone else, always plays Black, or O. In
+Chess, @tannergolden opens, as White. In Checkers, GitHub opens, as Black,
+since Black moves first in American checkers. In Connect Four and Tic-Tac-Toe,
+the Arbiter opens, for a side drawn at random, with a random first move, so O
+moves first in a game of Tic-Tac-Toe it opens for GitHub.
+[ADR-0001](docs/adrs/ADR-0001-Four-Games-One-Arbiter.md) records why. A
+finished game's winning board stays up for two days before a fresh board comes,
+and one hourly limit, 30 issues from each player, covers all four games.
 
 **Adding a game** is a row in the table, the game taught to the check, a
 workflow in the game's repository that accepts the move, and the GitHub App

@@ -23,7 +23,7 @@ _One table. One router. One check. Every title read against all three._
 
 Every move on the profile is a link that opens an issue in this repository with
 the move already in its title, such as `chess: e2e4 · game 1 · move 1`, for one
-of the four games there: Tic-Tac-Toe, Connect Four, Checkers and Chess. Anyone
+of the four games there: Chess, Checkers, Connect Four and Tic-Tac-Toe. Anyone
 on GitHub can open an issue here, with any title at all, so one script reads
 the title against one table, and nothing else acts on it.
 
@@ -58,19 +58,24 @@ owner and the Arbiter writes on an answered issue again.
 
 ## 🗺️ The Four Games
 
-| Game         | A move's title                       | Workflow          | The move                                | Who opens                               | Its sides, first and second |
-| :----------- | :----------------------------------- | :---------------- | :-------------------------------------- | :-------------------------------------- | :-------------------------- |
-| Tic-Tac-Toe  | `tictactoe: b2 · game 9 · move 3`    | `tictactoe.yml`   | `move`: the cell, `a1` to `c3`          | The Arbiter, for a side drawn at random | X, then O                   |
-| Connect Four | `connectfour: 4 · game 4 · move 9`   | `connectfour.yml` | `move`: the column, `1` to `7`          | The Arbiter, for a side drawn at random | Dark, then Light            |
-| Checkers     | `checkers: 11-15 · game 6 · move 10` | `checkers.yml`    | `move`: `11-15`, `22x15` or `22x15x8`   | The house, @tannergolden                | Dark, then Light            |
-| Chess        | `chess: e2e4 · game 1 · move 12`     | `chess.yml`       | `uci`: `e2e4`, or `e7e8q` for promotion | The house, @tannergolden                | White, then Black           |
+| Game         | A move's title                       | Workflow          | The move                                | The house | GitHub | Who opens                               |
+| :----------- | :----------------------------------- | :---------------- | :-------------------------------------- | :-------- | :----- | :-------------------------------------- |
+| Chess        | `chess: e2e4 · game 1 · move 12`     | `chess.yml`       | `uci`: `e2e4`, or `e7e8q` for promotion | White     | Black  | The house, as White                     |
+| Checkers     | `checkers: 11-15 · game 6 · move 10` | `checkers.yml`    | `move`: `11-15`, `22x15` or `22x15x8`   | White     | Black  | GitHub, as Black                        |
+| Connect Four | `connectfour: 4 · game 4 · move 9`   | `connectfour.yml` | `move`: the column, `1` to `7`          | White     | Black  | The Arbiter, for a side drawn at random |
+| Tic-Tac-Toe  | `tictactoe: b2 · game 9 · move 3`    | `tictactoe.yml`   | `move`: the cell, `a1` to `c3`          | X         | O      | The Arbiter, for a side drawn at random |
 
 Every game's workflow is in `tannergolden/tannergolden`, on `Development`, and
-keeps the game on its board in `.github/<game>/game.json` there. Whoever opens
-a game plays its first side, on the odd moves. In Tic-Tac-Toe and Connect Four,
-whose first player has a far higher chance of winning, the Arbiter opens every
-game with a random legal move, for a side it draws at random, and the state
-records that side as `opens`: `house` or `github`.
+keeps the game on its board in `.github/<game>/game.json` there. Each player's
+side never changes: the house, @tannergolden, always plays White, or X, and
+GitHub, which is everyone else, always plays Black, or O. Whoever opens a
+game moves on the odd moves, and the other side on the even ones. The house
+opens Chess, as White. GitHub opens Checkers, as Black, since Black moves first
+in American checkers. The Arbiter opens Connect Four and Tic-Tac-Toe, for a
+side drawn at random, with a random first move, and the state records that
+side as `opens`: `house` or `github`. So O moves first in a game of Tic-Tac-Toe
+the Arbiter opens for GitHub.
+[ADR-0001](../docs/adrs/ADR-0001-Four-Games-One-Arbiter.md) records why.
 
 **What `check.py` says**, word for word as the game would, and only ever one of
 these:
@@ -92,11 +97,11 @@ these:
   come, and a move for it, or for an earlier game, is told the day it opens, as
   the page writes days, in EST.
 - **A side is only ever named when it is certain.** The house opens every game
-  of Checkers and Chess, so a state that could not be read still turns away a
-  move from the wrong side there. In Tic-Tac-Toe and Connect Four the side to
-  move depends on `opens`, so a state that could not be read, a game the
-  Arbiter has not opened yet, or a game after the one on the board leaves the
-  side to the game.
+  of Chess and GitHub every game of Checkers, so a state that could not be read
+  still turns away a move from the wrong side there. In Connect Four and
+  Tic-Tac-Toe the side to move depends on `opens`, so a state that could not be
+  read, a game the Arbiter has not opened yet, or a game after the one on the
+  board leaves the side to the game.
 
 ---
 
@@ -132,10 +137,10 @@ come from the issue rather than from its title:
 | `player`    | The login of whoever opened it                                  |
 | `player_id` | Their numeric ID, which stays the same when their login changes |
 
-For Tic-Tac-Toe, Connect Four and Checkers that adds `move`, `game` and
-`move_number`, and for chess `uci`, `game` and `move_number`. Every value a
-pattern captures is one short token of letters, digits and `_.+#=-`, whatever
-the pattern itself would allow, so a loose pattern can never pass a sentence
+For Chess that adds `uci`, `game` and `move_number`, and for Checkers, Connect
+Four and Tic-Tac-Toe `move`, `game` and `move_number`. Every value a pattern
+captures is one short token of letters, digits and `_.+#=-`, whatever the
+pattern itself would allow, so a loose pattern can never pass a sentence
 along.
 
 > [!IMPORTANT]
@@ -156,7 +161,7 @@ along.
    the intake can start its workflow there.
 4. **Teach `check.py` the game**, in `GAMES`: the input its move comes in, the
    key its state keeps a move's notation under, who opens it, and the words
-   for its two sides.
+   for the house's side and for GitHub's.
 5. **Add the new game's titles to `test_route.py`**, both the ones that go
    through and the ones that must not, and its refusals to `test_check.py`,
    word for word.
