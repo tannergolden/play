@@ -27,7 +27,8 @@ repository. Crossing between the two takes a credential, and this repository
 uses a GitHub App for it: the **Official Arbiter**, owned by @tannergolden and
 installed on this repository and on every game's. It takes its name from chess,
 where the arbiter is the official who rules on moves, and that is its job here:
-it hands each move to its game, and posts the game's ruling on the move's issue.
+it hands each move to its game, posts the game's ruling on the move's issue,
+and posts the replay of every game a player's own move won.
 
 An App rather than a personal access token, because every run asks it for a
 fresh token that:
@@ -48,23 +49,27 @@ graph LR
     A[Player submits a move issue] --> B[Move Intake in play]
     B -->|Arbiter token, Actions write on the game repository| C[Game workflow]
     C -->|Arbiter token, Issues write on play| D[Reply on the move issue]
+    C -->|Arbiter token, Actions write on play, after a win| E[Replays in play]
+    E -->|Arbiter token, Issues write on play| F[Replay on the winning move issue]
 ```
 
 ---
 
 ## 🛡️ What It May Do
 
-| Permission   | Access         | Needed on              | Used by        | For                                                 |
-| :----------- | :------------- | :--------------------- | :------------- | :-------------------------------------------------- |
-| **Actions**  | Read and write | Each game's repository | 🎲 Move Intake | Starting the game's workflow                        |
-| **Issues**   | Read and write | This repository        | Each game      | Its replies on a move's issue, and its turn notices |
-| **Metadata** | Read-only      | Both                   | -              | Granted to every App                                |
+| Permission   | Access         | Needed on                            | Used by                   | For                                                             |
+| :----------- | :------------- | :----------------------------------- | :------------------------ | :-------------------------------------------------------------- |
+| **Actions**  | Read and write | Each game's repository, and this one | 🎲 Move Intake, each game | Starting the game's workflow, and 🎬 Replays after a win        |
+| **Issues**   | Read and write | This repository                      | Each game, and 🎬 Replays | Its replies on a move's issue, its turn notices and each replay |
+| **Metadata** | Read-only      | Both                                 | -                         | Granted to every App                                            |
 
 **Nothing else.** No contents, no pull requests, no organization or account
 permissions, no webhook, and no events. A permission an App holds applies on
 every repository it is installed on, so each run narrows its own token
-further: the intake asks for Actions write on the one game's repository, and
-a game asks for Issues write on this one.
+further: the intake asks for Actions write on the one game's repository; a
+game asks for Issues write on this one, and for Actions write on this one to
+start 🎬 Replays after a win; and 🎬 Replays asks for Issues write here, to
+post each replay.
 
 ---
 
@@ -126,8 +131,8 @@ On the App's **General** page:
 
 ### 4. Store The Credentials
 
-Both repositories hold the same two values: this one to start a game, and
-each game's to reply here.
+Both repositories hold the same two values: this one to start a game and to
+post each replay, and each game's to reply here.
 
 | Name                   | Kind     | Value                                                                 | Stored in                                        |
 | :--------------------- | :------- | :-------------------------------------------------------------------- | :----------------------------------------------- |
@@ -154,7 +159,8 @@ done
 - [ ] Set this repository to **Watch → Participating and @mentions**, so a move that fails and a game's notice for you reach you, and nothing else does.
 
 Until both values exist here, every move fails with a reply that links the
-outage notice, which @mentions the owner once.
+outage notice, which @mentions the owner once, and every replay waits to be
+posted.
 
 ---
 
@@ -165,6 +171,7 @@ outage notice, which @mentions the owner once.
 | The intake's 🚀, reply and closing                      | `github-actions[bot]`, this repository's own token |
 | Every reply and notice a game posts                     | `official-arbiter[bot]`, with the App's logo       |
 | The logbook of the moves the Arbiter plays after a week | `official-arbiter[bot]`, an issue of its own       |
+| The replay of a game a player won                       | `official-arbiter[bot]`, on the winning move       |
 | An install or authorize prompt                          | Never                                              |
 
 Every answered issue is locked, so only the owner and the Arbiter can write
@@ -201,13 +208,13 @@ sent. About ten minutes, done once:
 - [ ] **Register a second App**, as in step 1, named for what it does, such as `Arbiter Dispatch`, with **Actions: Read and write** and nothing else.
 - [ ] **Install it** on `tannergolden` only, the game's repository.
 - [ ] **Store its credentials here**, in this repository only, as `DISPATCH_APP_CLIENT_ID` (variable) and `DISPATCH_APP_PRIVATE_KEY` (secret). The intake prefers them to the shared pair the moment they exist.
-- [ ] **Narrow the Official Arbiter**: on its **Permissions & events** page, set **Actions** to **No access**; under **Install App → Configure**, remove `tannergolden` from its repository access, so it stays on `play` alone; accept the change on its installation.
-- [ ] **Delete `PLAY_APP_PRIVATE_KEY` and `PLAY_APP_CLIENT_ID` from this repository**, which no longer needs them. `tannergolden/tannergolden` keeps its pair: it is the Official Arbiter's, for replying here.
+- [ ] **Narrow the Official Arbiter**: under **Install App → Configure**, remove `tannergolden` from its repository access, so it stays on `play` alone, and accept the change on its installation. Keep its **Actions** write: on `play` alone, it is how a game starts 🎬 Replays after a win. Set it to **No access** instead, and each replay waits for the workflow's hourly look.
+- [ ] **Keep `PLAY_APP_PRIVATE_KEY` and `PLAY_APP_CLIENT_ID` here**: 🎬 Replays posts each replay through the Official Arbiter, and the intake stops using them once the dispatch pair exists. `tannergolden/tannergolden` keeps its pair too: it is the Official Arbiter's, for replying here.
 
-| App                | Permission    | Installed on   | Key stored in               |
-| :----------------- | :------------ | :------------- | :-------------------------- |
-| `Arbiter Dispatch` | Actions write | `tannergolden` | `tannergolden/play`         |
-| `Official Arbiter` | Issues write  | `play`         | `tannergolden/tannergolden` |
+| App                | Permission                      | Installed on   | Key stored in                                    |
+| :----------------- | :------------------------------ | :------------- | :----------------------------------------------- |
+| `Arbiter Dispatch` | Actions write                   | `tannergolden` | `tannergolden/play`                              |
+| `Official Arbiter` | Issues write, and Actions write | `play`         | `tannergolden/tannergolden`, `tannergolden/play` |
 
 ---
 

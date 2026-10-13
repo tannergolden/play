@@ -41,6 +41,10 @@ This repository holds no game. It is the door every move comes through:
 - **one workflow**, [`intake.yml`](.github/workflows/intake.yml), that does
   what the two scripts decide.
 
+It also keeps the replays: every game a player's own move won, played again
+move by move, in [`replays/`](replays/README.md) and the
+[gallery below](#-replays).
+
 ---
 
 ## 🧭 How A Move Travels
@@ -126,6 +130,28 @@ workflow receives.
 
 ---
 
+## 🎬 Replays
+
+**Every game won by a player's own move is played again**, move by move, on
+its own board. The game writes down what each turn did, and
+**🎬 Replays** has [tannergolden/markdown](https://github.com/tannergolden/markdown)
+draw it, by day and by dark, each player a halftone of their avatar. It keeps
+each game's newest 25 in [`replays/`](replays/README.md), and the Official
+Arbiter posts each on its winning move's issue. A draw gets none, and neither
+does a win the Arbiter's move made, or a Pentago turn that made five for the
+other side.
+
+Each picture plays its whole game as the page opens, so only the newest
+twelve of all four games are pictures here, and every other replay is a link.
+
+<!-- replays:start -->
+
+_No game has been won by a player's own move yet, so there is no replay to show._
+
+<!-- replays:end -->
+
+---
+
 ## 🔑 The GitHub App
 
 Every move crosses into another repository, so the intake needs one GitHub
@@ -142,11 +168,11 @@ long-lived token to leak, and none to expire and quietly stop the game.
 > the rest with this account's App. One App serves every game, so a new game
 > is only its repository added to the same installation.
 
-| Permission                | Where                  | Used by        | For                                            |
-| :------------------------ | :--------------------- | :------------- | :--------------------------------------------- |
-| **Actions:** Read & write | Each game's repository | 🎲 Move Intake | Starting the game's workflow                   |
-| **Issues:** Read & write  | This repository        | Each game      | Its replies on a move's issue, and its notices |
-| **Metadata:** Read-only   | Both                   | -              | Granted to every App                           |
+| Permission                | Where                                | Used by                   | For                                                      |
+| :------------------------ | :----------------------------------- | :------------------------ | :------------------------------------------------------- |
+| **Actions:** Read & write | Each game's repository, and this one | 🎲 Move Intake, each game | Starting the game's workflow, and 🎬 Replays after a win |
+| **Issues:** Read & write  | This repository                      | Each game, and 🎬 Replays | Its replies on a move's issue, its notices and replays   |
+| **Metadata:** Read-only   | Both                                 | -                         | Granted to every App                                     |
 
 Setting it up, once:
 
@@ -163,8 +189,9 @@ Setting it up, once:
    the Client ID as the variable `PLAY_APP_CLIENT_ID`, and the whole private
    key file as the secret `PLAY_APP_PRIVATE_KEY`.
 
-Until both exist, every move fails with a reply that @mentions the owner.
-Each game's repository keeps its own copy of the same two, for its replies.
+Until both exist, every move fails with a reply that @mentions the owner,
+and every replay waits to be posted. Each game's repository keeps its own copy
+of the same two, for its replies.
 
 The full guide, with what players see, how to rotate the key and what to do
 when a move fails, is [`docs/GitHub-App.md`](docs/GitHub-App.md).
@@ -194,6 +221,11 @@ workflow that reads it can start a workflow in another repository. So:
   move, and turns away at the door only what the game could only refuse, from
   the game's state as it last read it. Whether a move is legal is always the
   game's to decide, and its inputs are untrusted there too.
+- **A replay is drawn only from what the game wrote.** 🎬 Replays reads each
+  won game's facts from the game's repository, checks every field it writes
+  into a page before writing it, and has the kit, at its `v1`, draw them. The
+  Arbiter's token it posts with is minted after the push, with Issues write
+  here alone, and no step that draws ever holds it.
 
 Every action is pinned to a commit or to the standards' `v1`, every runner is
 hardened, and every workflow passes actionlint and zizmor's pedantic audit in
@@ -211,35 +243,36 @@ Participating and @mentions**, and what reaches you is what needs you:
 - **anything a game @mentions you in**, such as its notice that it is your
   turn.
 
-🚨 CI Failure Alerts also opens an issue when 🎲 Move Intake fails, but it
-mentions no one, so under this setting it shows on the Issues tab rather than
-in your notifications.
+🚨 CI Failure Alerts also opens an issue when 🎲 Move Intake or 🎬 Replays
+fails, but it mentions no one, so under this setting it shows on the Issues
+tab rather than in your notifications.
 
 ---
 
 ## 🌿 The Workflows
 
-| Workflow                   | Gives you                                                                   |
-| :------------------------- | :-------------------------------------------------------------------------- |
-| `intake.yml`               | 🎲 Move Intake: every move issue, routed to its game. This repository's own |
-| `checks.yml`               | Lint and tests, the intake's included; secret scan, CodeQL, workflow lint   |
-| `governance.yml`           | PR title and DCO checks, triage, stale sweep, slash commands                |
-| `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎲 Move Intake included       |
-| `release.yml`              | Draft notes, publish assets, prune superseded releases                      |
-| `maintenance.yml`          | Prunes stale deployments and draft releases                                 |
-| `lifecycle.yml`            | Claimed this repository once; flags a new major of the standards            |
-| `dependabot-automerge.yml` | Approves and queues patch and minor updates                                 |
-| `apply-standards.yml`      | Dispatch-only. The label taxonomy, the settings and branch protection       |
-| `auto-format.yml`          | Formats what a push touched, once a formatter is configured                 |
-| `auto-index.yml`           | Redraws every folder log and index after a push                             |
-| `preview-deploy.yml`       | Deploys pushes to a preview target, once configured                         |
-| `prune-runs.yml`           | Deletes old workflow runs, with their logs and artifacts                    |
-| `verify-stubs.yml`         | Proves every stub's permission ceiling matches its called workflow          |
-| `template-sync.yml`        | Proposes the template's later fixes as one pull request, when run           |
+| Workflow                   | Gives you                                                                                  |
+| :------------------------- | :----------------------------------------------------------------------------------------- |
+| `intake.yml`               | 🎲 Move Intake: every move issue, routed to its game. This repository's own                |
+| `replay.yml`               | 🎬 Replays: every won game drawn again, kept and posted. This repository's own             |
+| `checks.yml`               | Lint and tests, the intake's and the replays' included; secret scan, CodeQL, workflow lint |
+| `governance.yml`           | PR title and DCO checks, triage, stale sweep, slash commands                               |
+| `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎲 Move Intake and 🎬 Replays included       |
+| `release.yml`              | Draft notes, publish assets, prune superseded releases                                     |
+| `maintenance.yml`          | Prunes stale deployments and draft releases                                                |
+| `lifecycle.yml`            | Claimed this repository once; flags a new major of the standards                           |
+| `dependabot-automerge.yml` | Approves and queues patch and minor updates                                                |
+| `apply-standards.yml`      | Dispatch-only. The label taxonomy, the settings and branch protection                      |
+| `auto-format.yml`          | Formats what a push touched, once a formatter is configured                                |
+| `auto-index.yml`           | Redraws every folder log and index after a push                                            |
+| `preview-deploy.yml`       | Deploys pushes to a preview target, once configured                                        |
+| `prune-runs.yml`           | Deletes old workflow runs, with their logs and artifacts                                   |
+| `verify-stubs.yml`         | Proves every stub's permission ceiling matches its called workflow                         |
+| `template-sync.yml`        | Proposes the template's later fixes as one pull request, when run                          |
 
 `cut-release.yml` belongs to the template, and its guard keeps it from ever
-running here. Of the rest, all but `intake.yml` and `verify-stubs.yml`, which
-run scripts kept here, are stubs that call
+running here. Of the rest, all but `intake.yml`, `replay.yml` and
+`verify-stubs.yml`, which run scripts kept here, are stubs that call
 [`tannergolden/standards`](https://github.com/tannergolden/standards), so a fix
 there reaches this repository without a commit here.
 
@@ -251,7 +284,8 @@ off** with `git commit -s`; the DCO check is required once the rulesets are on.
 > **GitHub pauses scheduled workflows in a public repository after 60 days
 > without activity.** 🎲 Move Intake runs on issues, not on a schedule, so the
 > game never pauses; the weekly sweeps can be switched back on from the
-> Actions tab.
+> Actions tab. So can 🎬 Replays, should it pause after 60 days without a
+> commit here: its first run once it is back on draws every replay it missed.
 
 ---
 
@@ -266,14 +300,14 @@ template is private; see [`.github/template-sync.md`](.github/template-sync.md).
 Every change this repository made to a file the template ships is protected
 in [`.github/template-sync`](.github/template-sync), the list the sync reads:
 
-| File                                               | Changed here                   | Kept by                                                           |
-| :------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------- |
-| `README.md`, `LICENSE`                             | This page, and the MIT licence | Yours from the start: the sync never touches them                 |
-| `.github/workflows/governance.yml`                 | No welcome on a new issue      | `# keep mine`: where you both changed a line, yours stands        |
-| `.github/workflows/checks.yml`                     | Runs the intake's tests        | `# keep mine`                                                     |
-| `.github/workflows/ci-failure-alert.yml`           | Watches 🎲 Move Intake         | `# keep mine`                                                     |
-| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml` | This repository's own          | A `!` rule: stopped, should the template ship the same name       |
-| The seeded documents in `docs/`                    | The MIT footer                 | The per-file merge: the template's other changes arrive around it |
+| File                                                                         | Changed here                             | Kept by                                                           |
+| :--------------------------------------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------- |
+| `README.md`, `LICENSE`                                                       | This page, and the MIT licence           | Yours from the start: the sync never touches them                 |
+| `.github/workflows/governance.yml`                                           | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
+| `.github/workflows/checks.yml`                                               | Runs the intake's and the replays' tests | `# keep mine`                                                     |
+| `.github/workflows/ci-failure-alert.yml`                                     | Watches 🎲 Move Intake and 🎬 Replays    | `# keep mine`                                                     |
+| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `replays/`, `replay.yml` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
+| The seeded documents in `docs/`                                              | The MIT footer                           | The per-file merge: the template's other changes arrive around it |
 
 A file you and the template changed in the same place is left exactly as you
 have it, so none of this is ever overwritten. Two things still need your eye
@@ -305,6 +339,7 @@ Alerts to watch, say. Copy across anything worth having.
 | [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows.                 |
 | [`docs/`](docs/README.md)                   | Where this project keeps its own documents, and where the engineering standards it follows actually live.                                              |
 | [`intake/`](intake/README.md)               | The router every move passes through, and the check that reads each move against its board: the table of the four games, both scripts and their tests. |
+| [`replays/`](replays/README.md)             | Every game a player's own move won, played again: each game's newest 25 replays, the index of every one ever made, and the script that keeps them.     |
 | [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                                         |
 | [`.env.example`](.env.example)              | Environment variable template for this project.                                                                                                        |
 | [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                        |
