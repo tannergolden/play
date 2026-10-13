@@ -1,7 +1,7 @@
 <!--
 title: '🎲 PLAY'
 description: 'Public move intake for the interactive games on the tannergolden profile README: every move arrives as a pre-filled issue, is checked, and is passed to its game through a GitHub App.'
-tags: [issueops, github-actions, profile-readme, chess, checkers, connect-four, tic-tac-toe]
+tags: [issueops, github-actions, profile-readme, chess, checkers, pentago, tic-tac]
 category: docs
 -->
 
@@ -22,7 +22,7 @@ _Click a move. An issue opens. A bot checks it, passes it on, and closes it._
 ## 💡 What This Is
 
 The four games on [@tannergolden's profile](https://github.com/tannergolden),
-Chess, Checkers, Connect Four and Tic-Tac-Toe, are played with links. Every
+Chess, Checkers, Pentago and Tic-Tac, are played with links. Every
 move on a board is a link that opens a ready-made issue in this repository,
 with the move already in its title. Submit it, and
 **🎲 Move Intake** checks it, passes it to that game's repository, replies, and
@@ -80,12 +80,12 @@ https://github.com/tannergolden/play/issues/new?template=move.yml&title=chess%3A
 
 ## 🗺️ The Routes
 
-| Game          | Its moves go to             | Workflow                         | A move's title                                |
-| :------------ | :-------------------------- | :------------------------------- | :-------------------------------------------- |
-| `chess`       | `tannergolden/tannergolden` | `chess.yml` on Development       | `chess: <uci> · game <n> · move <n>`          |
-| `checkers`    | `tannergolden/tannergolden` | `checkers.yml` on Development    | `checkers: <move> · game <n> · move <n>`      |
-| `connectfour` | `tannergolden/tannergolden` | `connectfour.yml` on Development | `connectfour: <column> · game <n> · move <n>` |
-| `tictactoe`   | `tannergolden/tannergolden` | `tictactoe.yml` on Development   | `tictactoe: <cell> · game <n> · move <n>`     |
+| Game       | Its moves go to             | Workflow                      | A move's title                            |
+| :--------- | :-------------------------- | :---------------------------- | :---------------------------------------- |
+| `chess`    | `tannergolden/tannergolden` | `chess.yml` on Development    | `chess: <uci> · game <n> · move <n>`      |
+| `checkers` | `tannergolden/tannergolden` | `checkers.yml` on Development | `checkers: <move> · game <n> · move <n>`  |
+| `pentago`  | `tannergolden/tannergolden` | `pentago.yml` on Development  | `pentago: <marble> · game <n> · move <n>` |
+| `tictac`   | `tannergolden/tannergolden` | `tictac.yml` on Development   | `tictac: <square> · game <n> · move <n>`  |
 
 - **`<uci>`** is a chess move in UCI notation: the square the piece leaves, the
   square it lands on, and the piece a pawn becomes when it promotes, as in
@@ -93,25 +93,30 @@ https://github.com/tannergolden/play/issues/new?template=move.yml&title=chess%3A
 - **`<move>`** is a checkers move in standard notation, its squares numbered 1
   to 32: `11-15` for a move, `22x15` for a jump, `22x15x8` for a jump that
   goes on.
-- **`<column>`** is the Connect Four column a disc drops into, `1` to `7` from
-  the left.
-- **`<cell>`** is a Tic-Tac-Toe cell, named as a chess square is: columns `a`
-  to `c` from the left, rows `1` to `3` from the bottom, so `b2` is the centre.
+- **`<marble>`** is a Pentago move: the hole a marble goes in, then the
+  quarter that turns, `ul`, `ur`, `ll` or `lr`, and which way, `cw` or `acw`,
+  as in `e4-ur-cw`; or a ghost's hole alone, as in `b5`.
+- **`<square>`** is a Tic-Tac square, a ghost's or a mark's, named as a chess
+  square is: files `a` to `i` from the left and ranks `1` to `9` from the
+  bottom, across all nine boards, so `e5` is the centre of the centre board.
 
 The board stamps the game and the move number into every link it writes, so
 the game can tell a click on the current board from one on a board that has
 since moved on.
 
 **Who plays which side, and who opens.** Each player's side never changes:
-@tannergolden always plays White in Chess, Checkers and Connect Four, and X in
-Tic-Tac-Toe, and GitHub, which is everyone else, always plays Black, or O. In
+@tannergolden always plays White in Chess, Checkers and Pentago, and X in
+Tic-Tac, and GitHub, which is everyone else, always plays Black, or O. In
 Chess, @tannergolden opens, as White. In Checkers, GitHub opens, as Black,
-since Black moves first in American checkers. In Connect Four and Tic-Tac-Toe,
-the Arbiter opens, for a side drawn at random, with a random first move, so O
-moves first in a game of Tic-Tac-Toe it opens for GitHub.
-[ADR-0001](docs/adrs/ADR-0001-Four-Games-One-Arbiter.md) records why. A
-finished game's winning board stays up for two days before a fresh board comes,
-and one hourly limit, 30 issues from each player, covers all four games.
+since Black moves first in American checkers. Pentago and Tic-Tac open under
+the Ghost Rule: each side first places a ghost, the Arbiter drawing the side
+that places first, and then the Arbiter draws the side that moves first. Their
+move numbers count the ghosts, so move 3 is the first move.
+[ADR-0001](docs/adrs/ADR-0001-Four-Games-One-Arbiter.md) and
+[its amendment](docs/adrs/ADR-0001-Four-Games-One-Arbiter.md#-amendment-the-ghost-rule)
+record why. A finished game's winning board stays up for two days before a
+fresh board comes, and one hourly limit, 30 issues from each player, covers
+all four games.
 
 **Adding a game** is a row in the table, the game taught to the check, a
 workflow in the game's repository that accepts the move, and the GitHub App

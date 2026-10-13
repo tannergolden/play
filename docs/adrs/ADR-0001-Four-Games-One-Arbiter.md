@@ -22,6 +22,11 @@ _Formalized rationale. Transparent intent. Auditable evolution._
 
 ---
 
+> [!NOTE]
+> **Amended on 2026-10-13.** Tic-Tac and Pentago have taken the places of Tic-Tac-Toe and Connect Four, and both open under the Ghost Rule in place of the Arbiter's random first move. The record below stands as it was decided, and [its amendment](#-amendment-the-ghost-rule) says what changed.
+
+---
+
 ## 📋 Meta Information
 
 | Attribute     | Specification                              |
@@ -121,6 +126,25 @@ What each game keeps for itself:
 
 - ✅ One door and one standing, with four games that each feel like their own.
 - ❌ Every shared part needs a place for each game's own words and look, designed in from the start.
+
+---
+
+## 👻 Amendment: The Ghost Rule
+
+_Amended on 2026-10-13. The decision above stands, but for what follows._
+
+**Two of the four games changed.** Tic-Tac took Tic-Tac-Toe's place as tier 1: Tic-Tac-Toe on nine boards at once, also known as Ultimate Tic-Tac-Toe, where the square a mark takes sends the other side to the board in that place, and three boards in a row wins. Pentago took Connect Four's place as tier 2: six holes by six in four quarters that turn, where a move sets a marble and then turns any quarter a quarter turn, and five in a row wins.
+
+**The Ghost Rule replaced the Arbiter's random first move** in both, to take the first move's edge from both sides:
+
+1. **Once a fresh board's start has come, the Arbiter draws the side that places the first ghost**, which the game's state records as `places`.
+2. **That side places its ghost, and then the other side places the second.** In Tic-Tac a ghost locks a square that nobody can take and no line runs through; in Pentago it is a marble that is nobody's, which turns with its quarter.
+3. **As the second ghost goes down, the Arbiter draws the side that makes the first move**, anywhere, which the state records as `opens`. From there the two sides take turns.
+
+- **The draws count for nobody**, as nothing the Arbiter plays does. A ghost is a turn like any move: a side that lets a week pass without placing its ghost has one placed for it, at random.
+- **Each player's side still never changes.** The house, @tannergolden, plays X in Tic-Tac and White in Pentago, Checkers and Chess, and GitHub plays O, or Black. The draws decide only the order of play, and Chess and Checkers open as before.
+- **A move's number counts the ghosts.** Moves 1 and 2 are the ghosts and move 3 is the first move. The score sheet writes the ghosts on a row of their own, `G. e5` and `G... b8`, and numbers each move among the moves alone, so move 3 is `1. Xd4`.
+- **The door knows the rule.** The pre-check reads `places`, `ghosts` and `opens` from the game's state and turns away, in the game's own words, a ghost or a move from the side whose turn it isn't. Until the state shows a draw, it leaves the side to the game.
 
 ---
 
