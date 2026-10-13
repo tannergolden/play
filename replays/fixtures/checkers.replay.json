@@ -1,0 +1,644 @@
+{
+  "replay": 1,
+  "kind": "checkers",
+  "game": 1,
+  "winner": "house",
+  "by": "tannergolden",
+  "by_id": 24684994,
+  "issue": 136,
+  "reason": "no move left",
+  "line": null,
+  "started": "2026-10-13T12:00:00Z",
+  "ended": "2026-10-30T06:00:00Z",
+  "final": "B:WK2,13,K16,26,29,30,32:B",
+  "players": [
+    {
+      "player": "monalisa",
+      "player_id": 2154,
+      "moves": 10
+    },
+    {
+      "player": "hubot",
+      "player_id": 480938,
+      "moves": 5
+    },
+    {
+      "player": "octocat",
+      "player_id": 583231,
+      "moves": 3
+    }
+  ],
+  "house_moves": 18,
+  "plies": [
+    {
+      "side": "github",
+      "notation": "1. 12-16",
+      "move": "12-16",
+      "words": "Man from 12 to 16",
+      "by": "hubot",
+      "by_id": 480938,
+      "when": "13 Oct",
+      "path": [
+        12,
+        16
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "1... 21-17",
+      "move": "21-17",
+      "words": "Man from 21 to 17",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "14 Oct",
+      "path": [
+        21,
+        17
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "2. 16-20",
+      "move": "16-20",
+      "words": "Man from 16 to 20",
+      "by": "hubot",
+      "by_id": 480938,
+      "when": "14 Oct",
+      "path": [
+        16,
+        20
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "2... 23-18",
+      "move": "23-18",
+      "words": "Man from 23 to 18",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "15 Oct",
+      "path": [
+        23,
+        18
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "3. 10-15",
+      "move": "10-15",
+      "words": "Man from 10 to 15",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "15 Oct",
+      "path": [
+        10,
+        15
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "3... 17-14",
+      "move": "17-14",
+      "words": "Man from 17 to 14",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "15 Oct",
+      "path": [
+        17,
+        14
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "4. 7-10",
+      "move": "7-10",
+      "words": "Man from 7 to 10",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "16 Oct",
+      "path": [
+        7,
+        10
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "4... 14x7",
+      "move": "14x7",
+      "words": "Man from 14 jumps 10, landing on 7",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "16 Oct",
+      "path": [
+        14,
+        7
+      ],
+      "captures": [
+        10
+      ],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "5. 3x10",
+      "move": "3x10",
+      "words": "Man from 3 jumps 7, landing on 10",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "17 Oct",
+      "path": [
+        3,
+        10
+      ],
+      "captures": [
+        7
+      ],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "5... 27-23",
+      "move": "27-23",
+      "words": "Man from 27 to 23",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "17 Oct",
+      "path": [
+        27,
+        23
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "6. 20x27",
+      "move": "20x27",
+      "words": "Man from 20 jumps 24, landing on 27",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "18 Oct",
+      "path": [
+        20,
+        27
+      ],
+      "captures": [
+        24
+      ],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "6... 31x24",
+      "move": "31x24",
+      "words": "Man from 31 jumps 27, landing on 24",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "18 Oct",
+      "path": [
+        31,
+        24
+      ],
+      "captures": [
+        27
+      ],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "7. 9-14",
+      "move": "9-14",
+      "words": "Man from 9 to 14",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "19 Oct",
+      "path": [
+        9,
+        14
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "7... 18x9",
+      "move": "18x9",
+      "words": "Man from 18 jumps 14, landing on 9",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "19 Oct",
+      "path": [
+        18,
+        9
+      ],
+      "captures": [
+        14
+      ],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "8. 6x13",
+      "move": "6x13",
+      "words": "Man from 6 jumps 9, landing on 13",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "20 Oct",
+      "path": [
+        6,
+        13
+      ],
+      "captures": [
+        9
+      ],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "8... 24-19",
+      "move": "24-19",
+      "words": "Man from 24 to 19",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "20 Oct",
+      "path": [
+        24,
+        19
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "9. 15x24",
+      "move": "15x24",
+      "words": "Man from 15 jumps 19, landing on 24",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "20 Oct",
+      "path": [
+        15,
+        24
+      ],
+      "captures": [
+        19
+      ],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "9... 28x19",
+      "move": "28x19",
+      "words": "Man from 28 jumps 24, landing on 19",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "20 Oct",
+      "path": [
+        28,
+        19
+      ],
+      "captures": [
+        24
+      ],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "10. 13-17",
+      "move": "13-17",
+      "words": "Man from 13 to 17",
+      "by": "hubot",
+      "by_id": 480938,
+      "when": "21 Oct",
+      "path": [
+        13,
+        17
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "10... 22x13",
+      "move": "22x13",
+      "words": "Man from 22 jumps 17, landing on 13",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "21 Oct",
+      "path": [
+        22,
+        13
+      ],
+      "captures": [
+        17
+      ],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "11. 2-6",
+      "move": "2-6",
+      "words": "Man from 2 to 6",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "22 Oct",
+      "path": [
+        2,
+        6
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "11... 23-18",
+      "move": "23-18",
+      "words": "Man from 23 to 18",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "22 Oct",
+      "path": [
+        23,
+        18
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "12. 11-16",
+      "move": "11-16",
+      "words": "Man from 11 to 16",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "22 Oct",
+      "path": [
+        11,
+        16
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "12... 19x12x3",
+      "move": "19x12x3",
+      "words": "Man from 19 jumps 16 and 8, landing on 3, crowned",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "22 Oct",
+      "path": [
+        19,
+        12,
+        3
+      ],
+      "captures": [
+        16,
+        8
+      ],
+      "crowns": true,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "13. 4-8",
+      "move": "4-8",
+      "words": "Man from 4 to 8",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "23 Oct",
+      "path": [
+        4,
+        8
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "13... 3x12",
+      "move": "3x12",
+      "words": "King from 3 jumps 8, landing on 12",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "23 Oct",
+      "path": [
+        3,
+        12
+      ],
+      "captures": [
+        8
+      ],
+      "crowns": false,
+      "piece": "L"
+    },
+    {
+      "side": "github",
+      "notation": "14. 10-14",
+      "move": "10-14",
+      "words": "Man from 10 to 14",
+      "by": "hubot",
+      "by_id": 480938,
+      "when": "24 Oct",
+      "path": [
+        10,
+        14
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "14... 18x9x2",
+      "move": "18x9x2",
+      "words": "Man from 18 jumps 14 and 6, landing on 2, crowned",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "24 Oct",
+      "path": [
+        18,
+        9,
+        2
+      ],
+      "captures": [
+        14,
+        6
+      ],
+      "crowns": true,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "15. 5-9",
+      "move": "5-9",
+      "words": "Man from 5 to 9",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "25 Oct",
+      "path": [
+        5,
+        9
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "15... 13x6",
+      "move": "13x6",
+      "words": "Man from 13 jumps 9, landing on 6",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "26 Oct",
+      "path": [
+        13,
+        6
+      ],
+      "captures": [
+        9
+      ],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "16. 1x10",
+      "move": "1x10",
+      "words": "Man from 1 jumps 6, landing on 10",
+      "by": "hubot",
+      "by_id": 480938,
+      "when": "27 Oct",
+      "path": [
+        1,
+        10
+      ],
+      "captures": [
+        6
+      ],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "16... 25-22",
+      "move": "25-22",
+      "words": "Man from 25 to 22",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "27 Oct",
+      "path": [
+        25,
+        22
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "l"
+    },
+    {
+      "side": "github",
+      "notation": "17. 10-14",
+      "move": "10-14",
+      "words": "Man from 10 to 14",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "28 Oct",
+      "path": [
+        10,
+        14
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "17... 12-16",
+      "move": "12-16",
+      "words": "King from 12 to 16",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "28 Oct",
+      "path": [
+        12,
+        16
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "L"
+    },
+    {
+      "side": "github",
+      "notation": "18. 14-17",
+      "move": "14-17",
+      "words": "Man from 14 to 17",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "29 Oct",
+      "path": [
+        14,
+        17
+      ],
+      "captures": [],
+      "crowns": false,
+      "piece": "d"
+    },
+    {
+      "side": "house",
+      "notation": "18... 22x13",
+      "move": "22x13",
+      "words": "Man from 22 jumps 17, landing on 13",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "30 Oct",
+      "path": [
+        22,
+        13
+      ],
+      "captures": [
+        17
+      ],
+      "crowns": false,
+      "piece": "l"
+    }
+  ]
+}

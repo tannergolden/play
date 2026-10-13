@@ -1,0 +1,233 @@
+# --- This Repository's Own Workflow ---
+#
+# 🎬 Replays
+#
+# Purpose: draws the replay of every game a player's own move won on the
+# profile, keeps each game's newest 25, and posts each on its winning move's
+# issue.
+#
+# When a person's own move wins a game on the profile, the game's engine in
+# tannergolden/tannergolden writes down what every turn did, as
+# .github/<game>/games/game-<N>.replay.json, and starts this workflow through
+# the Official Arbiter's App. replays/build.py finds each won game the index
+# doesn't list yet, and the kit, tannergolden/markdown at v1, draws it: every
+# move again on the game's own board, by day and by dark, each player a
+# halftone of their avatar, in the print the page was won in. Each replay goes
+# into replays/<game>/ with its facts and its page, into replays/index.json,
+# which lists every replay ever made, and into the README's gallery. Each game
+# keeps its newest 25: the 26th takes its game's oldest out of the folder in
+# the same commit, and the index and git's history keep it.
+#
+# Once a replay is pushed, the Official Arbiter posts it on the winning move's
+# issue, its pictures pinned to the commit that saved them, so the comment
+# plays it after it has left the folder. A second, small commit records each
+# comment in the index.
+#
+# Three triggers, one run at a time, and none of them cancelled:
+#
+#   workflow_dispatch  the profile, after every win: best effort, so a
+#                      dispatch that fails only means the hourly look finds it
+#   hourly, at :38     the replays a failed dispatch left behind
+#   daily, at 09:11    the same, and every account behind a replay still here,
+#                      looked up once: a winner's account that is gone takes
+#                      its replay down, and another player's has it drawn
+#                      again with an empty dial. Run by hand with `accounts`
+#                      ticked, it does the same.
+#
+# Only GitHub's 404 says an account is gone, as on the profile's Hall of
+# Fame: any other answer leaves the account as it was. Nothing here rewrites
+# history: a replay taken down, or past its game's newest 25, leaves only the
+# folder.
+#
+# ⚠️ THE APP'S TOKEN WRITES ONLY ON THIS REPOSITORY'S ISSUES. It is minted
+# after the push, only when a comment is due, with Issues write here and
+# nothing more, and no step that draws a replay or fetches an avatar ever
+# holds it. Needs the PLAY_APP_CLIENT_ID variable and PLAY_APP_PRIVATE_KEY
+# secret of the Official Arbiter: see docs/GitHub-App.md. Until both exist, a
+# replay is still drawn and saved, the run fails, and its comment waits for
+# the next run that can post it.
+#
+# ---
+
+name: '🎬 Replays'
+
+on:
+  workflow_dispatch:
+    inputs:
+      accounts:
+        description: 'Also look up every account behind a replay here, as the daily run does.'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '38 * * * *' # hourly, off the hour: whatever a failed dispatch left
+    - cron: '11 9 * * *' # daily: the same, and the accounts behind every replay here
+
+concurrency:
+  # One run at a time, and none cancelled: every run saves, pushes and posts,
+  # and two at once could each draw the same replay. A run that starts while
+  # one is going waits for it, and GitHub keeps only the newest waiting run,
+  # which finds whatever the ones it replaced would have found.
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  replays:
+    name: '🎬 Draw, Keep And Post'
+    # Inert in a template. Only ever on the default branch, whose commits each
+    # comment's pictures are pinned to: a schedule always runs there, and its
+    # event carries no repository to ask, so only a dispatch is checked.
+    if: ${{ !github.event.repository.is_template && (github.event_name == 'schedule' || github.ref_name == github.event.repository.default_branch) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # save the replays, the index and the gallery
+    steps:
+      - name: '🛡️ Harden Runner'
+        uses: tannergolden/standards/actions/harden@v1
+        with:
+          egress-policy: audit
+          notice: '🎬 Replays: draws, keeps and posts the replay of every game a player won.'
+
+      - name: '📂 Checkout Play'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The branch as it is now, not as it was when the run was queued:
+          # a run that waited on another starts from what that one saved.
+          ref: ${{ github.ref_name }}
+          persist-credentials: true # zizmor: ignore[artipacked] - the job pushes the replays it saves.
+
+      - name: '📥 Fetch The Facts'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: tannergolden/tannergolden
+          path: .profile
+          persist-credentials: false
+          # Only each won game's facts, and the Markdown workflow, whose
+          # `theme:` is the page's theme.
+          sparse-checkout: |
+            .github/*/games/*.replay.json
+            .github/workflows/markdown.yml
+          sparse-checkout-cone-mode: false
+
+      - name: '🙈 Keep The Kit And The Facts Out Of Git'
+        run: printf '%s\n' .markdown-kit/ .profile/ >> .git/info/exclude
+
+      # Which won games the index doesn't list, and, on the daily run or when
+      # asked, every account behind a replay still here, each looked up once
+      # with this run's own token, which writes nothing anywhere else.
+      - name: '🧭 Plan The Run'
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACCOUNTS: ${{ github.event.schedule == '11 9 * * *' || inputs.accounts == true }}
+          OWNER_ID: ${{ github.repository_owner_id }}
+        run: python3 replays/build.py plan --profile .profile
+
+      - name: '📥 Fetch The Kit'
+        if: ${{ steps.plan.outputs.draw == 'true' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: tannergolden/markdown
+          ref: v1
+          path: .markdown-kit
+          persist-credentials: false
+          sparse-checkout: src # the kit's source is all its replay command reads
+
+      # The runner image has no ImageMagick. Without it every player is drawn
+      # by their initials, which is no reason to fail the run.
+      - name: '🧰 Install ImageMagick'
+        if: ${{ steps.plan.outputs.draw == 'true' }}
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends imagemagick
+
+      # Draws what the plan names, writes the folder, the index and the
+      # gallery, and pushes them as the bot. A push that loses the race is
+      # replayed onto the branch as it is by then.
+      - name: '🎬 Draw And Save'
+        id: save
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 replays/build.py save --profile .profile --kit .markdown-kit/src/markdown-kit.py
+          git add -A -- replays README.md
+          if git diff --cached --quiet; then
+            exit 0 # nothing new to keep
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit --quiet -F "$RUNNER_TEMP/replays/commit.txt"
+          branch="$(git symbolic-ref --quiet --short HEAD)"
+          for attempt in 1 2 3 4 5; do
+            if git push --quiet origin "HEAD:$branch"; then
+              break
+            fi
+            if [ "$attempt" = 5 ]; then
+              echo "::error::could not save the replays to $branch after five attempts"
+              exit 1
+            fi
+            sleep $((attempt * 2))
+            git fetch --quiet origin "$branch"
+            git rebase --quiet "origin/$branch"
+          done
+
+      - name: '🔑 Mint The Arbiter Token'
+        id: app
+        if: ${{ !cancelled() && steps.save.outcome == 'success' && steps.save.outputs.comment == 'true' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.PLAY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.PLAY_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: play
+          permission-issues: write
+
+      # Fills in the commit each drawing was saved in; then, as the Official
+      # Arbiter, posts each new replay on its winning move's issue, points a
+      # redrawn one's comment at its new commit and says on a taken-down
+      # one's why; and commits the index again. A comment that doesn't go
+      # through, or a token that wasn't minted, waits for the next run.
+      - name: '💬 Post And Record'
+        if: ${{ !cancelled() && steps.save.outcome == 'success' && steps.save.outputs.record == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 replays/build.py post
+          git add -- replays/index.json
+          if git diff --cached --quiet; then
+            exit 0 # nothing to record
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit --quiet -F "$RUNNER_TEMP/replays/record.txt"
+          branch="$(git symbolic-ref --quiet --short HEAD)"
+          for attempt in 1 2 3 4 5; do
+            if git push --quiet origin "HEAD:$branch"; then
+              break
+            fi
+            if [ "$attempt" = 5 ]; then
+              echo "::error::could not record the replays on $branch after five attempts"
+              exit 1
+            fi
+            sleep $((attempt * 2))
+            git fetch --quiet origin "$branch"
+            git rebase --quiet "origin/$branch"
+          done
+
+      # A replay the kit could not draw is left out of the folder and the
+      # index, and tried again on the next run; the owner hears of it here.
+      - name: '🧯 Fail On A Replay Not Drawn'
+        if: ${{ !cancelled() && steps.save.outputs.failed != '' && steps.save.outputs.failed != '0' }}
+        env:
+          FAILED: ${{ steps.save.outputs.failed }}
+        run: |
+          echo "::error::$FAILED replays could not be drawn, and each is tried again on the next run."
+          exit 1

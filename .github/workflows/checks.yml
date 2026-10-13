@@ -88,7 +88,7 @@ jobs:
     with:
       lint-command: 'python3 .github/scripts/validate-repository.py'
 
-      test-command: "python3 -m unittest discover -s .github/scripts -p 'test_*.py' && python3 -m unittest discover -s intake -p 'test_*.py'"
+      test-command: "python3 -m unittest discover -s .github/scripts -p 'test_*.py' && python3 -m unittest discover -s intake -p 'test_*.py' && python3 -m unittest discover -s replays -p 'test_*.py'"
 
   # RULESET-LOAD-BEARING JOB ID: reports as 'secrets / 🔍 Scan for Secrets'.
   secrets:

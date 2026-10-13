@@ -1,0 +1,233 @@
+{
+  "replay": 1,
+  "kind": "pentago",
+  "game": 1,
+  "winner": "github",
+  "by": "octocat",
+  "by_id": 583231,
+  "issue": 115,
+  "reason": "five in a row",
+  "line": [
+    "a6",
+    "b6",
+    "c6",
+    "d6",
+    "e6"
+  ],
+  "started": "2026-10-13T12:00:00Z",
+  "ended": "2026-10-21T16:00:00Z",
+  "places": "house",
+  "opens": "github",
+  "final": "BBBBB./...GBW/WG..../W...../W....W/...BW.",
+  "players": [
+    {
+      "player": "octocat",
+      "player_id": 583231,
+      "moves": 5
+    },
+    {
+      "player": "monalisa",
+      "player_id": 2154,
+      "moves": 2
+    },
+    {
+      "player": "hubot",
+      "player_id": 480938,
+      "moves": 1
+    }
+  ],
+  "house_moves": 7,
+  "plies": [
+    {
+      "side": "house",
+      "notation": "G. c5",
+      "move": "c5",
+      "words": "A ghost on c5, the right edge of the upper left quarter",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "14 Oct",
+      "cell": "c5",
+      "ghost": true
+    },
+    {
+      "side": "github",
+      "notation": "G... e6",
+      "move": "e6",
+      "words": "A ghost on e6, the top edge of the upper right quarter",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "14 Oct",
+      "cell": "e6",
+      "ghost": true
+    },
+    {
+      "side": "github",
+      "notation": "1. d1-ll-acw",
+      "move": "d1-ll-acw",
+      "words": "A black marble on d1, then the lower left quarter turns anticlockwise",
+      "by": "hubot",
+      "by_id": 480938,
+      "when": "15 Oct",
+      "cell": "d1",
+      "quarter": "ll",
+      "way": "acw",
+      "unturned": false
+    },
+    {
+      "side": "house",
+      "notation": "1... c2-ur-cw",
+      "move": "c2-ur-cw",
+      "words": "A white marble on c2, then the upper right quarter turns clockwise",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "15 Oct",
+      "cell": "c2",
+      "quarter": "ur",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "github",
+      "notation": "2. a5-ul-cw",
+      "move": "a5-ul-cw",
+      "words": "A black marble on a5, then the upper left quarter turns clockwise",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "16 Oct",
+      "cell": "a5",
+      "quarter": "ul",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "house",
+      "notation": "2... c1-ll-cw",
+      "move": "c1-ll-cw",
+      "words": "A white marble on c1, then the lower left quarter turns clockwise",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "16 Oct",
+      "cell": "c1",
+      "quarter": "ll",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "github",
+      "notation": "3. e4-lr-cw",
+      "move": "e4-lr-cw",
+      "words": "A black marble on e4, then the lower right quarter turns clockwise",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "17 Oct",
+      "cell": "e4",
+      "quarter": "lr",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "house",
+      "notation": "3... d2-ur-cw",
+      "move": "d2-ur-cw",
+      "words": "A white marble on d2, then the upper right quarter turns clockwise",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "18 Oct",
+      "cell": "d2",
+      "quarter": "ur",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "github",
+      "notation": "4. e5-ll-cw",
+      "move": "e5-ll-cw",
+      "words": "A black marble on e5, then the lower left quarter turns clockwise",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "18 Oct",
+      "cell": "e5",
+      "quarter": "ll",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "house",
+      "notation": "4... e6-ur-cw",
+      "move": "e6-ur-cw",
+      "words": "A white marble on e6, then the upper right quarter turns clockwise",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "18 Oct",
+      "cell": "e6",
+      "quarter": "ur",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "github",
+      "notation": "5. a6-lr-acw",
+      "move": "a6-lr-acw",
+      "words": "A black marble on a6, then the lower right quarter turns anticlockwise",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "18 Oct",
+      "cell": "a6",
+      "quarter": "lr",
+      "way": "acw",
+      "unturned": false
+    },
+    {
+      "side": "house",
+      "notation": "5... f2-lr-cw",
+      "move": "f2-lr-cw",
+      "words": "A white marble on f2, then the lower right quarter turns clockwise",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "19 Oct",
+      "cell": "f2",
+      "quarter": "lr",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "github",
+      "notation": "6. c6-ur-cw",
+      "move": "c6-ur-cw",
+      "words": "A black marble on c6, then the upper right quarter turns clockwise",
+      "by": "monalisa",
+      "by_id": 2154,
+      "when": "20 Oct",
+      "cell": "c6",
+      "quarter": "ur",
+      "way": "cw",
+      "unturned": false
+    },
+    {
+      "side": "house",
+      "notation": "6... a4-lr-acw",
+      "move": "a4-lr-acw",
+      "words": "A white marble on a4, then the lower right quarter turns anticlockwise",
+      "by": "tannergolden",
+      "by_id": 24684994,
+      "when": "20 Oct",
+      "cell": "a4",
+      "quarter": "lr",
+      "way": "acw",
+      "unturned": false
+    },
+    {
+      "side": "github",
+      "notation": "7. f6-ur-acw#",
+      "move": "f6-ur-acw#",
+      "words": "A black marble on f6, then the upper right quarter turns anticlockwise",
+      "by": "octocat",
+      "by_id": 583231,
+      "when": "21 Oct",
+      "cell": "f6",
+      "quarter": "ur",
+      "way": "acw",
+      "unturned": false
+    }
+  ]
+}
