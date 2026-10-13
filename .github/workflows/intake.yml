@@ -7,7 +7,7 @@
 #
 # Every move on the profile is a link that opens a ready-made issue here, with
 # the move in its title, for one of the four games there: Chess, Checkers,
-# Connect Four and Tic-Tac-Toe. This runs once for each issue opened:
+# Pentago and Tic-Tac. This runs once for each issue opened:
 # intake/route.py reads the title against intake/routes.json and decides, and
 # the steps below carry that out. A move starts its game's workflow through
 # the GitHub App, gets a 🚀 and a reply, and is closed as completed. Anything

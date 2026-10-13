@@ -5,10 +5,11 @@ WHY THIS EXISTS. `check.py` answers a move here, before its game runs, only
 when the game could do nothing but turn it away. If it ever refused a move
 the game would have played, a player would lose their move, so the moves it
 sends on are pinned as carefully as the ones it refuses: a state that is
-behind the game, a state that couldn't be read, a game whose opener it can't
+behind the game, a state that couldn't be read, a game whose sides it can't
 know yet, and the owner, who is never limited. Every refusal is held to the
-game's own words, word for word, in every game, and both ways round in the
-two games the Arbiter opens for a side drawn at random.
+game's own words, word for word, in every game, and in the two games that
+open under the Ghost Rule every way round the Arbiter can draw: either side
+to place the first ghost, and either side to make the first move.
 
 Nothing here reads or writes outside a throwaway folder. Run it from the root
 of the repository:
@@ -39,7 +40,7 @@ NOW = dt.datetime(2026, 10, 12, 18, 0, tzinfo=dt.timezone.utc)
 
 
 def by(player: str | None, player_id: str | None, issue: int | None = None) -> dict:
-    """Who played a move on record: a player, or the Arbiter when there is none."""
+    """Who played a turn on record: a player, or the Arbiter when there is none."""
     if player is None:
         return {'player': None, 'player_id': None, 'issue': None, 'arbiter': True}
     return {'player': player, 'player_id': int(player_id), 'issue': issue, 'arbiter': False}
@@ -61,34 +62,53 @@ CHECKERS = {'game': 6, 'started': '2026-10-10T16:00:00Z', 'moves': [
     {'move': '22-18', 'shown': '22-18', **TANNER_MOVED},
     {'move': '15x22', 'shown': '15x22', **OCTOCAT_MOVED},
 ]}
-# Game 9 of Tic-Tac-Toe, where the owner always plays X and GitHub O. The Arbiter opened it for the house, so X moved
-# first, with the Arbiter's 1. Xb2; then came @octocat's 1... Oa1.
-TICTACTOE = {'game': 9, 'started': '2026-10-12T16:00:00Z', 'opens': 'house', 'moves': [
-    {'move': 'b2', 'shown': 'Xb2', **ARBITER},
+# Game 9 of Tic-Tac, where the owner always plays X and GitHub O, four turns in under the Ghost Rule. The Arbiter drew
+# the house to place the first ghost: the owner's G. e5, then @octocat's G... b8. It drew the house to open, so X made
+# the first mark, the owner's 1. Xd4, which sent O to the lower left board, and @octocat's 1... Oa1 there sent X to it.
+TICTAC = {'game': 9, 'started': '2026-10-12T16:00:00Z', 'places': 'house', 'ghosts': [
+    {'move': 'e5', 'shown': 'e5', **TANNER_MOVED},
+    {'move': 'b8', 'shown': 'b8', **OCTOCAT_MOVED},
+], 'opens': 'house', 'moves': [
+    {'move': 'd4', 'shown': 'Xd4', **TANNER_MOVED},
     {'move': 'a1', 'shown': 'Oa1', **OCTOCAT_MOVED},
 ]}
-# The same game the other way round: the Arbiter opened it for GitHub, so O moved first, with the Arbiter's 1. Ob2;
-# then came the owner's 1... Xa1.
-TICTACTOE_GITHUB = {**TICTACTOE, 'opens': 'github', 'moves': [
-    {'move': 'b2', 'shown': 'Ob2', **ARBITER},
+# The same game the other way round: the Arbiter drew GitHub to place the first ghost, @octocat's G. e5, then came the
+# owner's G... b8; and it drew GitHub to open, so O made the first mark, @octocat's 1. Od4, and the owner replied
+# 1... Xa1.
+TICTAC_GITHUB = {**TICTAC, 'places': 'github', 'ghosts': [
+    {'move': 'e5', 'shown': 'e5', **OCTOCAT_MOVED},
+    {'move': 'b8', 'shown': 'b8', **TANNER_MOVED},
+], 'opens': 'github', 'moves': [
+    {'move': 'd4', 'shown': 'Od4', **OCTOCAT_MOVED},
     {'move': 'a1', 'shown': 'Xa1', **TANNER_MOVED},
 ]}
-# Game 4 of Connect Four, where the owner always drops the White discs and GitHub the Black. The Arbiter opened it for
-# the house, so White moved first, with the Arbiter's 1. ⚪4; then came @octocat's 1... ⚫4, and the owner's 2. ⚪3.
-CONNECTFOUR = {'game': 4, 'started': '2026-10-09T16:00:00Z', 'opens': 'house', 'moves': [
-    {'move': '4', 'shown': '⚪4', **ARBITER},
-    {'move': '4', 'shown': '⚫4', **OCTOCAT_MOVED},
-    {'move': '3', 'shown': '⚪3', **TANNER_MOVED},
+# Game 4 of Pentago, where the owner always plays White and GitHub Black, five turns in under the Ghost Rule. The
+# Arbiter drew GitHub to set the first ghost, @octocat's G. b5, then came the owner's G... e2; and it drew the house to
+# open, so White set the first marble, the owner's 1. c4-ul-cw, then came @octocat's 1... d3-lr-acw and the owner's
+# 2. a1-ll-cw.
+PENTAGO = {'game': 4, 'started': '2026-10-09T16:00:00Z', 'places': 'github', 'ghosts': [
+    {'move': 'b5', 'shown': 'b5', **OCTOCAT_MOVED},
+    {'move': 'e2', 'shown': 'e2', **TANNER_MOVED},
+], 'opens': 'house', 'moves': [
+    {'move': 'c4-ul-cw', 'shown': 'c4-ul-cw', **TANNER_MOVED},
+    {'move': 'd3-lr-acw', 'shown': 'd3-lr-acw', **OCTOCAT_MOVED},
+    {'move': 'a1-ll-cw', 'shown': 'a1-ll-cw', **TANNER_MOVED},
 ]}
-# The same game the other way round: the Arbiter opened it for GitHub, so Black moved first, with the Arbiter's
-# 1. ⚫4; then came the owner's 1... ⚪4, and @octocat's 2. ⚫3.
-CONNECTFOUR_GITHUB = {**CONNECTFOUR, 'opens': 'github', 'moves': [
-    {'move': '4', 'shown': '⚫4', **ARBITER},
-    {'move': '4', 'shown': '⚪4', **TANNER_MOVED},
-    {'move': '3', 'shown': '⚫3', **OCTOCAT_MOVED},
+# The same game the other way round: the Arbiter drew the house to set the first ghost, the owner's G. b5, and set
+# GitHub's itself, G... e2, after a week without one; and it drew GitHub to open, so Black set the first marble,
+# @octocat's 1. c4-ul-cw, then came the owner's 1... d3-lr-acw and @octocat's 2. a1-ll-cw.
+PENTAGO_GITHUB = {**PENTAGO, 'places': 'house', 'ghosts': [
+    {'move': 'b5', 'shown': 'b5', **TANNER_MOVED},
+    {'move': 'e2', 'shown': 'e2', **ARBITER},
+], 'opens': 'github', 'moves': [
+    {'move': 'c4-ul-cw', 'shown': 'c4-ul-cw', **OCTOCAT_MOVED},
+    {'move': 'd3-lr-acw', 'shown': 'd3-lr-acw', **TANNER_MOVED},
+    {'move': 'a1-ll-cw', 'shown': 'a1-ll-cw', **OCTOCAT_MOVED},
 ]}
-STATES = {'tictactoe': TICTACTOE, 'connectfour': CONNECTFOUR, 'checkers': CHECKERS, 'chess': CHESS}
-CODES = {'tictactoe': 'c3', 'connectfour': '5', 'checkers': '25x18', 'chess': 'g1f3'}
+STATES = {'tictac': TICTAC, 'pentago': PENTAGO, 'checkers': CHECKERS, 'chess': CHESS}
+CODES = {'tictac': 'c3', 'pentago': 'f6-ur-cw', 'checkers': '25x18', 'chess': 'g1f3'}
+GHOST_CODES = {'tictac': 'e5', 'pentago': 'b5'}  # a ghost's square, or its hole
+GHOSTLY = ('tictac', 'pentago')  # the two games that open under the Ghost Rule
 
 
 def move(key: str, code: str, game: int, number: int, player_id: str) -> dict:
@@ -108,14 +128,54 @@ def waiting(number: int, started: str, **extra: object) -> dict:
     return {'game': number, 'started': started, 'moves': [], **extra}
 
 
+def ghosting(places: str, ghosts: int, opens: str | None = None, moves: int = 0) -> dict:
+    """Game 2 under the Ghost Rule, from its start: the side drawn to place the first ghost, the ghosts down, each by
+    its own side, and once both are, the side drawn to open and the moves made."""
+    sides = [places, 'github' if places == 'house' else 'house']
+    if opens:
+        sides += [opens if ply % 2 else 'github' if opens == 'house' else 'house' for ply in range(1, moves + 1)]
+    turns = [{'move': 'a1', 'shown': 'a1', **(TANNER_MOVED if side == 'house' else OCTOCAT_MOVED)}
+             for side in sides]
+    state = {'game': 2, 'started': '2026-10-12T16:00:00Z', 'places': places, 'ghosts': turns[:ghosts],
+             'moves': turns[2:2 + moves]}
+    return {**state, 'opens': opens} if opens else state
+
+
+def house_turn(house: str, github: str, code: str) -> str:
+    return (f"⏳ **It's {TANNER}'s turn as {house}**, so `{code}` wasn't played.\nGitHub plays {github}: once {house}"
+            f" moves, pick {github}'s reply on {BOARD}.\n")
+
+
+def github_turn(github: str, code: str) -> str:
+    return (f"⏳ **It's GitHub's turn as {github}**, so `{code}` wasn't played.\n{github}'s moves are for everyone but"
+            ' you. Your turn comes next.\n')
+
+
+def house_ghost(verb: str, code: str, spot: str = 'square') -> str:
+    return (f"⏳ **It's {TANNER}'s turn to {verb} a ghost**, so `{code}` wasn't played.\nOnce {TANNER}'s ghost is"
+            f" down, pick a {spot} for GitHub's on {BOARD}.\n")
+
+
+def github_ghost(verb: str, code: str) -> str:
+    return (f"⏳ **It's GitHub's turn to {verb} a ghost**, so `{code}` wasn't played.\nGitHub's ghost is for everyone"
+            ' but you. Your turn comes next.\n')
+
+
 class SentOn(unittest.TestCase):
     def test_the_side_to_move_on_the_board_goes_on(self) -> None:
         self.assertEqual(verdict('chess', move('chess', 'g1f3', 3, 3, OWNER_ID)), '')
         self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, OWNER_ID)), '')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID)), '')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, HUBOT), TICTACTOE_GITHUB), '')
-        self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, HUBOT)), '')
-        self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, OWNER_ID), CONNECTFOUR_GITHUB), '')
+        self.assertEqual(verdict('tictac', move('tictac', 'c3', 9, 5, OWNER_ID)), '')
+        self.assertEqual(verdict('tictac', move('tictac', 'c3', 9, 5, HUBOT), TICTAC_GITHUB), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'f6-ur-cw', 4, 6, HUBOT)), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'f6-ur-cw', 4, 6, OWNER_ID), PENTAGO_GITHUB), '')
+
+    def test_the_side_to_place_a_ghost_goes_on(self) -> None:
+        # The Arbiter drew the house to place Tic-Tac's first ghost and GitHub to set Pentago's.
+        self.assertEqual(verdict('tictac', move('tictac', 'e5', 2, 1, OWNER_ID), ghosting('house', 0)), '')
+        self.assertEqual(verdict('tictac', move('tictac', 'b8', 2, 2, HUBOT), ghosting('house', 1)), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'b5', 2, 1, HUBOT), ghosting('github', 0)), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'e2', 2, 2, OWNER_ID), ghosting('github', 1)), '')
 
     def test_the_first_move_of_the_first_game(self) -> None:
         # The house opens Chess, as White, and GitHub opens Checkers, as Black.
@@ -128,7 +188,10 @@ class SentOn(unittest.TestCase):
         self.assertEqual(verdict('chess', move('chess', 'e2e4', 4, 1, OWNER_ID)), '')
         self.assertEqual(verdict('checkers', move('checkers', '24-19', 6, 6, OWNER_ID)), '')
         self.assertEqual(verdict('checkers', move('checkers', '11-15', 7, 1, HUBOT)), '')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 5, OWNER_ID)), '')
+        self.assertEqual(verdict('tictac', move('tictac', 'c3', 9, 7, OWNER_ID)), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'f6-ur-cw', 4, 8, HUBOT)), '')
+        # GitHub's ghost, before the house's is down.
+        self.assertEqual(verdict('tictac', move('tictac', 'b8', 2, 2, HUBOT), ghosting('house', 0)), '')
 
     def test_a_state_that_couldn_t_be_read_refuses_only_the_wrong_side_where_the_opener_never_changes(self) -> None:
         # The house opens every game of Chess and GitHub every game of Checkers, so move 2 is GitHub's in Chess and
@@ -141,31 +204,48 @@ class SentOn(unittest.TestCase):
                 self.assertEqual(verdict(key, move(key, code, 3, 2, right), state=None, known=False), '')
                 self.assertIn(said, verdict(key, move(key, code, 3, 2, wrong), state=None, known=False))
 
-    def test_in_the_arbiter_s_games_a_side_it_can_t_know_is_left_to_the_game(self) -> None:
-        # Whose turn it is there depends on the side the Arbiter opened the game for, which only the state shows.
-        unopened = waiting(9, '2026-10-12T16:00:00Z', opens='house')
-        for key in ('tictactoe', 'connectfour'):
-            state = STATES[key]
+    def test_under_the_ghost_rule_a_side_it_can_t_know_is_left_to_the_game(self) -> None:
+        # Whose ghost is due depends on the side the Arbiter drew to place the first, and whose move it is on the side
+        # it drew to open, and only the state shows either, once the Arbiter has drawn it.
+        for key in GHOSTLY:
+            state, number = STATES[key], STATES[key]['game']
+            undrawn = {'game': number, 'started': state['started'], 'moves': []}  # its start has come, its draw not
+            one = {**undrawn, 'places': state['places'], 'ghosts': state['ghosts'][:1]}  # one ghost down
             for player_id in (OWNER_ID, HUBOT):
-                for number in (len(state['moves']) + 1, len(state['moves']) + 2):
-                    request = move(key, CODES[key], state['game'], number, player_id)
-                    with self.subTest(key=key, player_id=player_id, number=number):
+                for turn in (1, 2, 3, 4):
+                    code = GHOST_CODES[key] if turn <= 2 else CODES[key]
+                    request = move(key, code, number, turn, player_id)
+                    with self.subTest(key=key, player_id=player_id, turn=turn):
                         self.assertEqual(verdict(key, request, state=None, known=False), '', 'an unread state')
-                        unsaid = {name: value for name, value in state.items() if name != 'opens'}
-                        self.assertEqual(verdict(key, request, state=unsaid), '', 'no opener')
-                        for opens in (None, 'nobody', 'House', 1):
-                            self.assertEqual(verdict(key, request, state={**state, 'opens': opens}), '', opens)
-                        self.assertEqual(verdict(key, move(key, CODES[key], 9, number, player_id), unopened), '',
-                                         'a game not yet opened')
-                        later = move(key, CODES[key], state['game'] + 1, number, player_id)
+                        self.assertEqual(verdict(key, request, undrawn), '', 'no side drawn to place the first ghost')
+                        for places in (None, 'nobody', 'House', 1):
+                            self.assertEqual(verdict(key, request, {**undrawn, 'places': places, 'ghosts': []}), '',
+                                             places)
+                        later = move(key, code, number + 1, turn, player_id)
                         self.assertEqual(verdict(key, later), '', 'a game after the one on the board')
-            self.assertEqual(verdict(key, move(key, CODES[key], 1, 1, HUBOT), state=None), '', 'no game yet')
+                        first = move(key, code, 1, turn, player_id)
+                        self.assertEqual(verdict(key, first, state=None), '', 'no game yet')
+                for turn in (3, 4):
+                    request = move(key, CODES[key], number, turn, player_id)
+                    with self.subTest(key=key, player_id=player_id, turn=turn):
+                        self.assertEqual(verdict(key, request, one), '', 'no side drawn to open')
+                        self.assertEqual(verdict(key, request, {**one, 'opens': 'house'}), '',
+                                         'a side to open, but only one ghost down')
+                for turn in (len(state['ghosts'] + state['moves']) + 1, len(state['ghosts'] + state['moves']) + 2):
+                    request = move(key, CODES[key], number, turn, player_id)
+                    with self.subTest(key=key, player_id=player_id, turn=turn):
+                        unsaid = {name: value for name, value in state.items() if name != 'opens'}
+                        self.assertEqual(verdict(key, request, unsaid), '', 'no side drawn to open')
+                        for opens in (None, 'nobody', 'House', 1):
+                            self.assertEqual(verdict(key, request, {**state, 'opens': opens}), '', opens)
 
     def test_the_owner_is_never_limited(self) -> None:
         self.assertEqual(verdict('chess', move('chess', 'g1f3', 3, 3, OWNER_ID), recent=500), '')
         self.assertEqual(verdict('checkers', move('checkers', '25x18', 6, 4, OWNER_ID), recent=500), '')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID), recent=500), '')
-        self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, OWNER_ID), CONNECTFOUR_GITHUB,
+        self.assertEqual(verdict('tictac', move('tictac', 'c3', 9, 5, OWNER_ID), recent=500), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'f6-ur-cw', 4, 6, OWNER_ID), PENTAGO_GITHUB,
+                                 recent=500), '')
+        self.assertEqual(verdict('pentago', move('pentago', 'b5', 2, 1, OWNER_ID), ghosting('house', 0),
                                  recent=500), '')
 
     def test_a_move_on_record_that_can_t_be_named_is_left_to_the_game(self) -> None:
@@ -173,14 +253,17 @@ class SentOn(unittest.TestCase):
         self.assertEqual(verdict('checkers', move('checkers', '9-14', 6, 1, HUBOT), nameless), '')
         unsigned = {**CHECKERS, 'moves': [{**CHECKERS['moves'][0], 'player': 'a b'}, CHECKERS['moves'][1]]}
         self.assertEqual(verdict('checkers', move('checkers', '9-14', 6, 1, HUBOT), unsigned), '')
+        nameless = {**TICTAC, 'ghosts': [{**TICTAC['ghosts'][0], 'shown': ''}, TICTAC['ghosts'][1]]}
+        self.assertEqual(verdict('tictac', move('tictac', 'a3', 9, 1, HUBOT), nameless), '')
 
 
 class TurnedAway(unittest.TestCase):
     def test_more_than_an_hour_s_share_across_all_four_games(self) -> None:
         self.assertEqual(check.LIMIT, 30)
-        for key, state in STATES.items():
-            # GitHub's turn in each game here: move 4, or move 5 in Checkers, which GitHub opens.
-            request = move(key, CODES[key], state['game'], 5 if key == 'checkers' else 4, HUBOT)
+        # GitHub's next turn in each game here: move 4 in Chess, move 5 in Checkers, which GitHub opens, and move 6 in
+        # Tic-Tac and Pentago, whose ghosts are moves 1 and 2.
+        for key, number in (('tictac', 6), ('pentago', 6), ('checkers', 5), ('chess', 4)):
+            request = move(key, CODES[key], STATES[key]['game'], number, HUBOT)
             with self.subTest(key=key):
                 self.assertEqual(verdict(key, request, recent=30), '', 'the thirtieth issue of the hour')
                 said = verdict(key, request, recent=31)
@@ -208,18 +291,24 @@ class TurnedAway(unittest.TestCase):
             ('chess', move('chess', 'd7d6', 3, 2, OCTOCAT), CHESS, late(2, 'd7d6', '1... e5', 'you')),
             ('checkers', move('checkers', '15x22', 6, 3, HUBOT), CHECKERS, late(3, '15x22', '2. 15x22', octocat)),
             ('checkers', move('checkers', '24-20', 6, 2, OWNER_ID), CHECKERS, late(2, '24-20', '1... 22-18', 'you')),
-            ('tictactoe', move('tictactoe', 'a3', 9, 1, HUBOT), TICTACTOE, late(1, 'a3', '1. Xb2', 'the Arbiter')),
-            ('tictactoe', move('tictactoe', 'c1', 9, 2, HUBOT), TICTACTOE, late(2, 'c1', '1... Oa1', octocat)),
-            ('tictactoe', move('tictactoe', 'a3', 9, 1, HUBOT), TICTACTOE_GITHUB, late(1, 'a3', '1. Ob2',
-                                                                                       'the Arbiter')),
-            ('tictactoe', move('tictactoe', 'c1', 9, 2, OWNER_ID), TICTACTOE_GITHUB, late(2, 'c1', '1... Xa1', 'you')),
-            ('connectfour', move('connectfour', '1', 4, 1, OWNER_ID), CONNECTFOUR, late(1, '1', '1. ⚪4',
-                                                                                        'the Arbiter')),
-            ('connectfour', move('connectfour', '7', 4, 2, HUBOT), CONNECTFOUR, late(2, '7', '1... ⚫4', octocat)),
-            ('connectfour', move('connectfour', '1', 4, 1, HUBOT), CONNECTFOUR_GITHUB, late(1, '1', '1. ⚫4',
-                                                                                            'the Arbiter')),
-            ('connectfour', move('connectfour', '2', 4, 3, HUBOT), CONNECTFOUR_GITHUB, late(3, '2', '2. ⚫3',
-                                                                                            octocat)),
+            # Under the Ghost Rule a move's number counts the ghosts, which the score sheet writes on a row of their
+            # own, and numbers each move among the moves alone.
+            ('tictac', move('tictac', 'a3', 9, 1, HUBOT), TICTAC, late(1, 'a3', 'G. e5', TANNER)),
+            ('tictac', move('tictac', 'a3', 9, 2, HUBOT), TICTAC, late(2, 'a3', 'G... b8', octocat)),
+            ('tictac', move('tictac', 'a3', 9, 2, OCTOCAT), TICTAC, late(2, 'a3', 'G... b8', 'you')),
+            ('tictac', move('tictac', 'a3', 9, 3, HUBOT), TICTAC, late(3, 'a3', '1. Xd4', TANNER)),
+            ('tictac', move('tictac', 'c1', 9, 4, OCTOCAT), TICTAC, late(4, 'c1', '1... Oa1', 'you')),
+            ('tictac', move('tictac', 'a3', 9, 1, OWNER_ID), TICTAC_GITHUB, late(1, 'a3', 'G. e5', octocat)),
+            ('tictac', move('tictac', 'a3', 9, 3, HUBOT), TICTAC_GITHUB, late(3, 'a3', '1. Od4', octocat)),
+            ('tictac', move('tictac', 'c1', 9, 4, OWNER_ID), TICTAC_GITHUB, late(4, 'c1', '1... Xa1', 'you')),
+            ('pentago', move('pentago', 'a6', 4, 1, OWNER_ID), PENTAGO, late(1, 'a6', 'G. b5', octocat)),
+            ('pentago', move('pentago', 'a6', 4, 2, OWNER_ID), PENTAGO, late(2, 'a6', 'G... e2', 'you')),
+            ('pentago', move('pentago', 'f1-lr-cw', 4, 4, HUBOT), PENTAGO, late(4, 'f1-lr-cw', '1... d3-lr-acw',
+                                                                                   octocat)),
+            ('pentago', move('pentago', 'f1-lr-cw', 4, 5, HUBOT), PENTAGO, late(5, 'f1-lr-cw', '2. a1-ll-cw', TANNER)),
+            ('pentago', move('pentago', 'a6', 4, 2, HUBOT), PENTAGO_GITHUB, late(2, 'a6', 'G... e2', 'the Arbiter')),
+            ('pentago', move('pentago', 'f1-lr-cw', 4, 3, OWNER_ID), PENTAGO_GITHUB, late(3, 'f1-lr-cw',
+                                                                                          '1. c4-ul-cw', octocat)),
         ):
             with self.subTest(key=key, request=request):
                 self.assertEqual(verdict(key, request, state), said)
@@ -263,76 +352,101 @@ class TurnedAway(unittest.TestCase):
                          f"⏳ **It's {TANNER}'s turn as White**, so `22-18` wasn't played.\nGitHub plays Black: once"
                          f" White moves, pick Black's reply on {BOARD}.\n")
 
-    def test_the_wrong_side_in_tic_tac_toe_both_ways_round(self) -> None:
-        # The owner always plays X and GitHub O. Opened for the house, X moves first, so the owner has the odd moves.
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, HUBOT)),
+    def test_the_wrong_side_of_a_ghost_in_tic_tac(self) -> None:
+        # The Arbiter drew the house to place the first ghost, so move 1 is the owner's ghost and move 2 GitHub's.
+        self.assertEqual(verdict('tictac', move('tictac', 'e5', 2, 1, HUBOT), ghosting('house', 0)),
+                         f"⏳ **It's {TANNER}'s turn to place a ghost**, so `e5` wasn't played.\nOnce {TANNER}'s"
+                         f" ghost is down, pick a square for GitHub's on {BOARD}.\n")
+        self.assertEqual(verdict('tictac', move('tictac', 'b8', 2, 2, OWNER_ID), ghosting('house', 1)),
+                         "⏳ **It's GitHub's turn to place a ghost**, so `b8` wasn't played.\nGitHub's ghost is for"
+                         ' everyone but you. Your turn comes next.\n')
+        # Drawn the other way, move 1 is GitHub's ghost and move 2 the owner's.
+        self.assertEqual(verdict('tictac', move('tictac', 'e5', 2, 1, OWNER_ID), ghosting('github', 0)),
+                         "⏳ **It's GitHub's turn to place a ghost**, so `e5` wasn't played.\nGitHub's ghost is for"
+                         ' everyone but you. Your turn comes next.\n')
+        self.assertEqual(verdict('tictac', move('tictac', 'b8', 2, 2, HUBOT), ghosting('github', 1)),
+                         f"⏳ **It's {TANNER}'s turn to place a ghost**, so `b8` wasn't played.\nOnce {TANNER}'s"
+                         f" ghost is down, pick a square for GitHub's on {BOARD}.\n")
+
+    def test_the_wrong_side_of_a_ghost_in_pentago(self) -> None:
+        # In Pentago a side sets its ghost. The Arbiter drew GitHub to set the first, so move 2 is the owner's.
+        self.assertEqual(verdict('pentago', move('pentago', 'b5', 2, 1, OWNER_ID), ghosting('github', 0)),
+                         "⏳ **It's GitHub's turn to set a ghost**, so `b5` wasn't played.\nGitHub's ghost is for"
+                         ' everyone but you. Your turn comes next.\n')
+        self.assertEqual(verdict('pentago', move('pentago', 'e2', 2, 2, HUBOT), ghosting('github', 1)),
+                         f"⏳ **It's {TANNER}'s turn to set a ghost**, so `e2` wasn't played.\nOnce {TANNER}'s"
+                         f" ghost is down, pick a hole for GitHub's on {BOARD}.\n")
+        self.assertEqual(verdict('pentago', move('pentago', 'b5', 2, 1, HUBOT), ghosting('house', 0)),
+                         f"⏳ **It's {TANNER}'s turn to set a ghost**, so `b5` wasn't played.\nOnce {TANNER}'s"
+                         f" ghost is down, pick a hole for GitHub's on {BOARD}.\n")
+        self.assertEqual(verdict('pentago', move('pentago', 'e2', 2, 2, OWNER_ID), ghosting('house', 1)),
+                         "⏳ **It's GitHub's turn to set a ghost**, so `e2` wasn't played.\nGitHub's ghost is for"
+                         ' everyone but you. Your turn comes next.\n')
+
+    def test_the_wrong_side_in_tic_tac_both_ways_round(self) -> None:
+        # The owner always plays X and GitHub O. Drawn to open, the house makes the first mark, so after the two
+        # ghosts the owner has the odd moves among the moves: move 5, the third, is X's, and move 6 O's.
+        self.assertEqual(verdict('tictac', move('tictac', 'c3', 9, 5, HUBOT)),
                          f"⏳ **It's {TANNER}'s turn as X**, so `c3` wasn't played.\nGitHub plays O: once X moves,"
                          f" pick O's reply on {BOARD}.\n")
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c1', 9, 4, OWNER_ID)),
+        self.assertEqual(verdict('tictac', move('tictac', 'c1', 9, 6, OWNER_ID)),
                          "⏳ **It's GitHub's turn as O**, so `c1` wasn't played.\nO's moves are for everyone but you."
                          ' Your turn comes next.\n')
-        # Opened for GitHub, O moves first, so GitHub has the odd moves and the owner, still X, the even ones.
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID), TICTACTOE_GITHUB),
+        # Drawn the other way, GitHub makes the first mark, as O, so the owner, still X, has the even ones.
+        self.assertEqual(verdict('tictac', move('tictac', 'c3', 9, 5, OWNER_ID), TICTAC_GITHUB),
                          "⏳ **It's GitHub's turn as O**, so `c3` wasn't played.\nO's moves are for everyone but you."
                          ' Your turn comes next.\n')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c1', 9, 4, HUBOT), TICTACTOE_GITHUB),
+        self.assertEqual(verdict('tictac', move('tictac', 'c1', 9, 6, HUBOT), TICTAC_GITHUB),
                          f"⏳ **It's {TANNER}'s turn as X**, so `c1` wasn't played.\nGitHub plays O: once X moves,"
                          f" pick O's reply on {BOARD}.\n")
 
-    def test_tic_tac_toe_opened_for_github_moves_o_first(self) -> None:
-        # Game 1 as the profile has it: the Arbiter opened it for GitHub with O's 1. Oa1, so the owner replies as X.
-        opened = {'game': 1, 'started': '2026-10-12T06:15:46Z', 'opens': 'github', 'moves': [
-            {'move': 'a1', 'shown': 'Oa1', **ARBITER},
-        ]}
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'b2', 1, 2, OWNER_ID), opened), '')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'b2', 1, 2, HUBOT), opened),
-                         f"⏳ **It's {TANNER}'s turn as X**, so `b2` wasn't played.\nGitHub plays O: once X moves,"
-                         f" pick O's reply on {BOARD}.\n")
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 1, 3, HUBOT), opened), '')
-        self.assertEqual(verdict('tictactoe', move('tictactoe', 'c3', 1, 3, OWNER_ID), opened),
-                         "⏳ **It's GitHub's turn as O**, so `c3` wasn't played.\nO's moves are for everyone but you."
-                         ' Your turn comes next.\n')
-        self.assertIn('1. Oa1 got there first, played by the Arbiter.',
-                      verdict('tictactoe', move('tictactoe', 'b2', 1, 1, OWNER_ID), opened))
+    def test_the_wrong_side_in_pentago_both_ways_round(self) -> None:
+        # The owner always plays White and GitHub Black. Drawn to open, the house sets the first marble, so move 6,
+        # the fourth after the ghosts, is Black's, and move 7 White's.
+        self.assertEqual(verdict('pentago', move('pentago', 'f6-ur-cw', 4, 6, OWNER_ID)),
+                         "⏳ **It's GitHub's turn as Black**, so `f6-ur-cw` wasn't played.\nBlack's moves are for"
+                         ' everyone but you. Your turn comes next.\n')
+        self.assertEqual(verdict('pentago', move('pentago', 'f5-lr-acw', 4, 7, HUBOT)),
+                         f"⏳ **It's {TANNER}'s turn as White**, so `f5-lr-acw` wasn't played.\nGitHub plays Black:"
+                         f" once White moves, pick Black's reply on {BOARD}.\n")
+        # Drawn the other way, GitHub sets the first marble, as Black, so the owner, still White, has the even moves.
+        self.assertEqual(verdict('pentago', move('pentago', 'f6-ur-cw', 4, 6, HUBOT), PENTAGO_GITHUB),
+                         f"⏳ **It's {TANNER}'s turn as White**, so `f6-ur-cw` wasn't played.\nGitHub plays Black:"
+                         f" once White moves, pick Black's reply on {BOARD}.\n")
+        self.assertEqual(verdict('pentago', move('pentago', 'f5-lr-acw', 4, 7, OWNER_ID), PENTAGO_GITHUB),
+                         "⏳ **It's GitHub's turn as Black**, so `f5-lr-acw` wasn't played.\nBlack's moves are for"
+                         ' everyone but you. Your turn comes next.\n')
 
-    def test_the_wrong_side_in_connect_four_both_ways_round(self) -> None:
-        # The owner always drops the White discs and GitHub the Black. Opened for the house, White moves first, so
-        # GitHub has the even moves.
-        self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, OWNER_ID)),
-                         "⏳ **It's GitHub's turn as Black**, so `5` wasn't played.\nBlack's moves are for everyone"
-                         ' but you. Your turn comes next.\n')
-        self.assertEqual(verdict('connectfour', move('connectfour', '6', 4, 5, HUBOT)),
-                         f"⏳ **It's {TANNER}'s turn as White**, so `6` wasn't played.\nGitHub plays Black: once White"
-                         f" moves, pick Black's reply on {BOARD}.\n")
-        # Opened for GitHub, Black moves first, so the owner, still White, has the even moves.
-        self.assertEqual(verdict('connectfour', move('connectfour', '5', 4, 4, HUBOT), CONNECTFOUR_GITHUB),
-                         f"⏳ **It's {TANNER}'s turn as White**, so `5` wasn't played.\nGitHub plays Black: once White"
-                         f" moves, pick Black's reply on {BOARD}.\n")
-        self.assertEqual(verdict('connectfour', move('connectfour', '6', 4, 5, OWNER_ID), CONNECTFOUR_GITHUB),
-                         "⏳ **It's GitHub's turn as Black**, so `6` wasn't played.\nBlack's moves are for everyone but"
-                         ' you. Your turn comes next.\n')
-
-    def test_connect_four_opened_for_the_house_moves_white_first(self) -> None:
-        # Game 1 as the profile has it: the Arbiter opened it for the house with White's 1. ⚪6, so GitHub replies as
-        # Black.
-        opened = {'game': 1, 'started': '2026-10-12T06:15:46Z', 'opens': 'house', 'moves': [
-            {'move': '6', 'shown': '⚪6', **ARBITER},
-        ]}
-        self.assertEqual(verdict('connectfour', move('connectfour', '4', 1, 2, HUBOT), opened), '')
-        self.assertEqual(verdict('connectfour', move('connectfour', '4', 1, 2, OWNER_ID), opened),
-                         "⏳ **It's GitHub's turn as Black**, so `4` wasn't played.\nBlack's moves are for everyone"
-                         ' but you. Your turn comes next.\n')
-        self.assertEqual(verdict('connectfour', move('connectfour', '3', 1, 3, OWNER_ID), opened), '')
-        self.assertEqual(verdict('connectfour', move('connectfour', '3', 1, 3, HUBOT), opened),
-                         f"⏳ **It's {TANNER}'s turn as White**, so `3` wasn't played.\nGitHub plays Black: once White"
-                         f" moves, pick Black's reply on {BOARD}.\n")
-        self.assertIn('1. ⚪6 got there first, played by the Arbiter.',
-                      verdict('connectfour', move('connectfour', '4', 1, 1, HUBOT), opened))
+    def test_each_turn_is_the_side_the_arbiter_drew_for_it(self) -> None:
+        # Under the Ghost Rule move 1 is the ghost of the side drawn to place the first, move 2 the other side's
+        # ghost, and from move 3 the side drawn to open has the odd moves among the moves; the two draws are apart.
+        for key, verb, spot, (house, github) in (('tictac', 'place', 'square', ('X', 'O')),
+                                                  ('pentago', 'set', 'hole', ('White', 'Black'))):
+            for places in check.SIDES:
+                for opens in check.SIDES:
+                    states = (ghosting(places, 0), ghosting(places, 1), ghosting(places, 2, opens),
+                              ghosting(places, 2, opens, 1), ghosting(places, 2, opens, 2))
+                    other = {'house': 'github', 'github': 'house'}
+                    for turn, (state, side) in enumerate(zip(states, (places, other[places], opens, other[opens],
+                                                                      opens)), 1):
+                        code = GHOST_CODES[key] if turn <= 2 else CODES[key]
+                        right, wrong = (OWNER_ID, HUBOT) if side == 'house' else (HUBOT, OWNER_ID)
+                        if turn <= 2:
+                            said = house_ghost(verb, code, spot) if side == 'house' else github_ghost(verb, code)
+                        else:
+                            said = house_turn(house, github, code) if side == 'house' else github_turn(github, code)
+                        with self.subTest(key=key, places=places, opens=opens, turn=turn):
+                            self.assertEqual(verdict(key, move(key, code, 2, turn, right), state), '')
+                            self.assertEqual(verdict(key, move(key, code, 2, turn, wrong), state), said)
+                            if turn > 1:  # read from a state a turn behind, it is told the same
+                                self.assertEqual(verdict(key, move(key, code, 2, turn, wrong), states[turn - 2]),
+                                                 said if turn != 3 else '', 'no side drawn to open yet')
 
     def test_a_move_while_the_winning_board_is_up(self) -> None:
-        # Game 6 ended at 16:00 UTC on 12 Oct, so game 7 opens two days later: 11:00 EST on 14 Oct.
+        # Game 6 ended at 16:00 UTC on 12 Oct, so game 7 opens two days later: 11:00 EST on 14 Oct. The fresh board
+        # keeps the game that ended until then, and under the Ghost Rule its draws are still to come.
         for key in check.GAMES:
-            state = waiting(7, '2026-10-14T16:00:00Z', **({} if check.GAMES[key].opens else {'opens': 'house'}))
+            state = waiting(7, '2026-10-14T16:00:00Z', ended={**STATES[key], 'game': 6})
             for number, player_id in ((7, HUBOT), (7, OWNER_ID), (6, HUBOT), (2, OWNER_ID)):
                 with self.subTest(key=key, number=number, player_id=player_id):
                     self.assertEqual(verdict(key, move(key, CODES[key], number, 1, player_id), state),
@@ -357,6 +471,13 @@ class TurnedAway(unittest.TestCase):
                       verdict('checkers', move('checkers', '11-15', 7, 1, OWNER_ID), state, now=started))
         self.assertTrue(verdict('checkers', move('checkers', '11-15', 6, 9, HUBOT), state, now=started).startswith(
             '⌛ **Game 6 is over**'))
+        # In Tic-Tac and Pentago the first ghost is the side's the Arbiter draws once the start has passed, which this
+        # state doesn't show yet: either side's goes on, for the game to judge.
+        for key in GHOSTLY:
+            for player_id in (OWNER_ID, HUBOT):
+                with self.subTest(key=key, player_id=player_id):
+                    self.assertEqual(verdict(key, move(key, GHOST_CODES[key], 7, 1, player_id), state, now=started),
+                                     '')
 
     def test_a_start_still_to_come_holds_back_only_a_game_with_nothing_on_its_board(self) -> None:
         # A game already under way, or the very first game, is never held back by its start.
@@ -364,6 +485,9 @@ class TurnedAway(unittest.TestCase):
         self.assertEqual(verdict('chess', move('chess', 'g1f3', 3, 3, OWNER_ID), early), '')
         first = waiting(1, '2026-10-20T16:00:00Z')
         self.assertEqual(verdict('chess', move('chess', 'e2e4', 1, 1, OWNER_ID), first), '')
+        # A ghost is a turn on the board like any move.
+        ghosted = {**ghosting('house', 1), 'game': 7, 'started': '2026-10-20T16:00:00Z'}
+        self.assertEqual(verdict('tictac', move('tictac', 'b8', 7, 2, HUBOT), ghosted), '')
         for started in (None, 'soon', 20261014, ''):
             with self.subTest(started=started):
                 self.assertEqual(verdict('chess', move('chess', 'e2e4', 7, 1, OWNER_ID), waiting(7, started)), '',
@@ -384,8 +508,8 @@ class TurnedAway(unittest.TestCase):
             ('2027-01-01T04:59:59Z', '31 Dec'),
         ):
             with self.subTest(started=started):
-                said = verdict('tictactoe', move('tictactoe', 'b2', 10, 1, HUBOT), waiting(10, started), now=NOW)
-                self.assertTrue(said.startswith(f'⏳ **Game 10 opens {day}**, so `b2` wasn\'t played.\n'), said)
+                said = verdict('tictac', move('tictac', 'e5', 10, 1, HUBOT), waiting(10, started), now=NOW)
+                self.assertTrue(said.startswith(f'⏳ **Game 10 opens {day}**, so `e5` wasn\'t played.\n'), said)
 
 
 class MainTests(unittest.TestCase):
@@ -415,8 +539,8 @@ class MainTests(unittest.TestCase):
         for key, request in (
             ('chess', move('chess', 'g1f3', 3, 3, OWNER_ID)),
             ('checkers', move('checkers', '25x18', 6, 4, OWNER_ID)),
-            ('tictactoe', move('tictactoe', 'c3', 9, 3, OWNER_ID)),
-            ('connectfour', move('connectfour', '5', 4, 4, HUBOT)),
+            ('tictac', move('tictac', 'c3', 9, 5, OWNER_ID)),
+            ('pentago', move('pentago', 'f6-ur-cw', 4, 6, HUBOT)),
         ):
             with self.subTest(key=key):
                 output, reply, printed = self.run_check(key, request)
@@ -427,13 +551,16 @@ class MainTests(unittest.TestCase):
         output, reply, _ = self.run_check('chess', move('chess', 'd7d5', 3, 2, HUBOT))
         self.assertEqual(output, 'verdict=refuse\n')
         self.assertTrue(reply.startswith('⌛ **Too late: move 2 is already on the board**'))
-        output, reply, _ = self.run_check('connectfour', move('connectfour', '5', 4, 4, OWNER_ID))
+        output, reply, _ = self.run_check('pentago', move('pentago', 'f6-ur-cw', 4, 6, OWNER_ID))
         self.assertEqual(output, 'verdict=refuse\n')
         self.assertTrue(reply.startswith("⏳ **It's GitHub's turn as Black**"))
+        output, reply, _ = self.run_check('tictac', move('tictac', 'b8', 2, 2, OWNER_ID), ghosting('house', 1))
+        self.assertEqual(output, 'verdict=refuse\n')
+        self.assertTrue(reply.startswith("⏳ **It's GitHub's turn to place a ghost**"))
 
     def test_the_next_game_is_judged_by_the_time_now(self) -> None:
-        later = waiting(7, '2999-01-01T16:00:00Z', opens='github')
-        output, reply, _ = self.run_check('tictactoe', move('tictactoe', 'b2', 7, 2, HUBOT), later)
+        later = waiting(7, '2999-01-01T16:00:00Z')
+        output, reply, _ = self.run_check('tictac', move('tictac', 'e5', 7, 2, HUBOT), later)
         self.assertEqual(output, 'verdict=refuse\n')
         self.assertTrue(reply.startswith('⏳ **Game 7 opens 1 Jan**'))
         opened = waiting(7, '2026-01-01T16:00:00Z')
@@ -463,6 +590,13 @@ class MainTests(unittest.TestCase):
                 state = {**CHESS, 'game': number}
                 self.assertEqual(self.run_check('chess', move('chess', 'e2e4', 1, 1, OWNER_ID), state=state)[:2],
                                  ('verdict=dispatch\n', None))
+        # Under the Ghost Rule a game holds two ghosts at most, each a turn, and moves only once both are down.
+        for state in ({**TICTAC, 'ghosts': None}, {**TICTAC, 'ghosts': 'e5'}, {**TICTAC, 'ghosts': ['e5', 'b8']},
+                      {**TICTAC, 'ghosts': [*TICTAC['ghosts'], TICTAC['ghosts'][0]]},
+                      {**TICTAC, 'ghosts': TICTAC['ghosts'][:1]}):
+            with self.subTest(state=state):
+                output, reply, _ = self.run_check('tictac', move('tictac', 'c3', 8, 5, OWNER_ID), state=state)
+                self.assertEqual((output, reply), ('verdict=dispatch\n', None))
 
     def test_a_count_that_isn_t_a_number_limits_nobody(self) -> None:
         for recent in ('', 'lots', '٣٣', None):
@@ -482,7 +616,7 @@ class AgreementTests(unittest.TestCase):
     """The check, the router's table and the workflow name the same four games, the same inputs and the same state."""
 
     def test_the_check_knows_the_games_the_router_routes_in_tier_order(self) -> None:
-        self.assertEqual(list(check.GAMES), ['tictactoe', 'connectfour', 'checkers', 'chess'])
+        self.assertEqual(list(check.GAMES), ['tictac', 'pentago', 'checkers', 'chess'])
         self.assertEqual(list(route.load()), list(check.GAMES))
 
     def test_each_route_passes_the_move_under_the_input_the_check_reads(self) -> None:
@@ -493,14 +627,15 @@ class AgreementTests(unittest.TestCase):
         self.assertEqual(check.GAMES['chess'].code, 'uci')
         self.assertEqual(check.GAMES['chess'].shown, 'san')
 
-    def test_each_player_keeps_one_side_and_the_house_github_or_the_arbiter_opens(self) -> None:
-        # The house plays White, or X, and GitHub Black, or O, in every game. The house opens Chess, GitHub opens
-        # Checkers, and the Arbiter opens Connect Four and Tic-Tac-Toe for a side it draws.
-        self.assertEqual({key: (game.opens, game.sides) for key, game in check.GAMES.items()}, {
-            'tictactoe': (None, ('X', 'O')),
-            'connectfour': (None, ('White', 'Black')),
-            'checkers': ('github', ('White', 'Black')),
-            'chess': ('house', ('White', 'Black')),
+    def test_each_player_keeps_one_side_and_each_game_its_opening(self) -> None:
+        # The house plays X, or White, and GitHub O, or Black, in every game. The house opens Chess and GitHub opens
+        # Checkers; Tic-Tac and Pentago open under the Ghost Rule, where a side places its ghost, or in Pentago sets
+        # it, and the Arbiter draws who places first and who opens.
+        self.assertEqual({key: (game.opens, game.ghost, game.sides) for key, game in check.GAMES.items()}, {
+            'tictac': (None, 'place', ('X', 'O')),
+            'pentago': (None, 'set', ('White', 'Black')),
+            'checkers': ('github', None, ('White', 'Black')),
+            'chess': ('house', None, ('White', 'Black')),
         })
 
     def test_the_workflow_reads_each_game_s_state_where_the_check_expects_it(self) -> None:

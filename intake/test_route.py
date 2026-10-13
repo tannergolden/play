@@ -167,7 +167,7 @@ class ShippedTableTests(unittest.TestCase):
                            routes=self.routes)
 
     def test_the_four_games_in_tier_order(self) -> None:
-        self.assertEqual(list(self.routes), ['tictactoe', 'connectfour', 'checkers', 'chess'])
+        self.assertEqual(list(self.routes), ['tictac', 'pentago', 'checkers', 'chess'])
         for name, game in self.routes.items():
             with self.subTest(name=name):
                 self.assertEqual((game['owner'], game['repo'], game['ref'], game['workflow']),
@@ -175,12 +175,21 @@ class ShippedTableTests(unittest.TestCase):
 
     def test_each_game_s_move_goes_to_its_workflow_with_its_inputs(self) -> None:
         for title, game, inputs in (
-            ('tictactoe: b2 · game 9 · move 3', 'tictactoe', {'move': 'b2', 'game': '9', 'move_number': '3'}),
-            ('tictactoe: a1 · game 1 · move 2', 'tictactoe', {'move': 'a1', 'game': '1', 'move_number': '2'}),
-            ('tictactoe: c3 · game 12 · move 9', 'tictactoe', {'move': 'c3', 'game': '12', 'move_number': '9'}),
-            ('connectfour: 4 · game 4 · move 9', 'connectfour', {'move': '4', 'game': '4', 'move_number': '9'}),
-            ('connectfour: 1 · game 1 · move 2', 'connectfour', {'move': '1', 'game': '1', 'move_number': '2'}),
-            ('connectfour: 7 · game 30 · move 42', 'connectfour', {'move': '7', 'game': '30', 'move_number': '42'}),
+            # A Tic-Tac square, a ghost's on moves 1 and 2 and a mark's after them, and a Pentago ghost's hole, then
+            # a move's hole, quarter and way.
+            ('tictac: e5 · game 1 · move 1', 'tictac', {'move': 'e5', 'game': '1', 'move_number': '1'}),
+            ('tictac: b8 · game 1 · move 2', 'tictac', {'move': 'b8', 'game': '1', 'move_number': '2'}),
+            ('tictac: e5 · game 1 · move 3', 'tictac', {'move': 'e5', 'game': '1', 'move_number': '3'}),
+            ('tictac: a1 · game 9 · move 4', 'tictac', {'move': 'a1', 'game': '9', 'move_number': '4'}),
+            ('tictac: i9 · game 12 · move 81', 'tictac', {'move': 'i9', 'game': '12', 'move_number': '81'}),
+            ('pentago: b5 · game 1 · move 1', 'pentago', {'move': 'b5', 'game': '1', 'move_number': '1'}),
+            ('pentago: e4-ur-cw · game 1 · move 9', 'pentago', {'move': 'e4-ur-cw', 'game': '1', 'move_number': '9'}),
+            ('pentago: a1-ll-acw · game 4 · move 3', 'pentago',
+             {'move': 'a1-ll-acw', 'game': '4', 'move_number': '3'}),
+            ('pentago: f6-lr-cw · game 30 · move 36', 'pentago',
+             {'move': 'f6-lr-cw', 'game': '30', 'move_number': '36'}),
+            ('pentago: c3-ul-acw · game 2 · move 10', 'pentago',
+             {'move': 'c3-ul-acw', 'game': '2', 'move_number': '10'}),
             ('checkers: 11-15 · game 6 · move 10', 'checkers', {'move': '11-15', 'game': '6', 'move_number': '10'}),
             ('checkers: 22x15 · game 6 · move 11', 'checkers', {'move': '22x15', 'game': '6', 'move_number': '11'}),
             ('checkers: 22x15x8 · game 6 · move 11', 'checkers',
@@ -201,50 +210,87 @@ class ShippedTableTests(unittest.TestCase):
                 })
 
     def test_the_owner_plays_every_game_through_the_same_door(self) -> None:
-        for title in ('tictactoe: b2 · game 9 · move 4', 'connectfour: 4 · game 4 · move 9',
-                      'checkers: 11-15 · game 6 · move 1'):
+        for title in ('tictac: e5 · game 9 · move 1', 'tictac: c3 · game 9 · move 5', 'pentago: b5 · game 4 · move 2',
+                      'pentago: e4-ur-cw · game 4 · move 9', 'checkers: 11-15 · game 6 · move 1'):
             with self.subTest(title=title):
                 decision = self.decide(title, player='tannergolden', player_id='24684994')
                 self.assertEqual(decision['action'], 'dispatch')
                 self.assertEqual(decision['body']['inputs']['player'], 'tannergolden')
 
     def test_every_game_and_move_number_a_link_can_carry(self) -> None:
-        for name, code in (('tictactoe', 'b2'), ('connectfour', '4'), ('checkers', '11-15')):
+        for name, code in (('tictac', 'e5'), ('pentago', 'b5'), ('pentago', 'e4-ur-cw'), ('checkers', '11-15')):
             for game, number in ((1, 1), (999999999, 999999999)):
                 with self.subTest(name=name, game=game, number=number):
                     decision = self.decide(f'{name}: {code} · game {game} · move {number}')
                     self.assertEqual(decision['body']['inputs']['game'], str(game))
                     self.assertEqual(decision['body']['inputs']['move_number'], str(number))
 
+    def test_every_square_hole_and_turn_goes_through(self) -> None:
+        # Tic-Tac's 81 squares, a1 to i9, and Pentago's 36 holes, a1 to f6, each alone, as a ghost goes, and each
+        # with every one of its eight turns, as a move goes.
+        for file in 'abcdefghi':
+            for rank in '123456789':
+                with self.subTest(square=file + rank):
+                    decision = self.decide(f'tictac: {file}{rank} · game 1 · move 1')
+                    self.assertEqual(decision['body']['inputs']['move'], file + rank)
+        turns = [f'-{quarter}-{way}' for quarter in ('ul', 'ur', 'll', 'lr') for way in ('cw', 'acw')]
+        for file in 'abcdef':
+            for rank in '123456':
+                for turn in ('', *turns):
+                    code = f'{file}{rank}{turn}'
+                    with self.subTest(code=code):
+                        decision = self.decide(f'pentago: {code} · game 1 · move 3')
+                        self.assertEqual(decision['body']['inputs']['move'], code)
+
     def test_near_misses_are_turned_away(self) -> None:
         for title in (
-            'tictactoe: d4 · game 9 · move 3',
-            'tictactoe: a4 · game 9 · move 3',
-            'tictactoe: a0 · game 9 · move 3',
-            'tictactoe: B2 · game 9 · move 3',
-            'tictactoe: b · game 9 · move 3',
-            'tictactoe: b2b3 · game 9 · move 3',
-            'tictactoe: Xb2 · game 9 · move 3',
-            'tictactoe: b2 game 9 move 3',
-            'tictactoe: b2 · game 9 move 3',
-            'tictactoe: b2 . game 9 . move 3',
-            'tictactoe: b2 · game 9 · move 3 please',
-            'tictactoe: b2 · game 9 · move 3 · b3',
-            'tictactoe: b2 · game 0 · move 3',
-            'tictactoe: b2 · game 9 · move 03',
-            'tictactoe: b2 · game 1000000000 · move 3',
-            'tictactoe: b2',
-            'tic-tac-toe: b2 · game 9 · move 3',
-            'TicTacToe: b2 · game 9 · move 3',
-            'connectfour: 8 · game 4 · move 9',
-            'connectfour: 0 · game 4 · move 9',
-            'connectfour: 44 · game 4 · move 9',
-            'connectfour: 4+ · game 4 · move 9',
-            'connectfour: ⚫4 · game 4 · move 9',
-            'connectfour: d4 · game 4 · move 9',
-            'connectfour: 4 game 4 · move 9',
-            'connectfour: 4 · game 4 · move 9 now',
-            'connect-four: 4 · game 4 · move 9',
+            'tictac: j5 · game 9 · move 3',
+            'tictac: e0 · game 9 · move 3',
+            'tictac: e10 · game 9 · move 3',
+            'tictac: E5 · game 9 · move 3',
+            'tictac: e · game 9 · move 3',
+            'tictac: 5 · game 9 · move 3',
+            'tictac: e5e6 · game 9 · move 3',
+            'tictac: Xe5 · game 9 · move 3',
+            'tictac: e5# · game 9 · move 3',
+            'tictac: e5-ur-cw · game 9 · move 3',
+            'tictac: e5 game 9 move 3',
+            'tictac: e5 · game 9 move 3',
+            'tictac: e5 . game 9 . move 3',
+            'tictac: e5 · game 9 · move 3 please',
+            'tictac: e5 · game 9 · move 3 · e6',
+            'tictac: e5 · game 0 · move 3',
+            'tictac: e5 · game 9 · move 03',
+            'tictac: e5 · game 1000000000 · move 3',
+            'tictac: e5',
+            'tic-tac: e5 · game 9 · move 3',
+            'TicTac: e5 · game 9 · move 3',
+            'tictactoe: b2 · game 9 · move 3',
+            'pentago: g1 · game 4 · move 9',
+            'pentago: a7 · game 4 · move 9',
+            'pentago: a0 · game 4 · move 9',
+            'pentago: B5 · game 4 · move 9',
+            'pentago: e4-ur · game 4 · move 9',
+            'pentago: e4-cw · game 4 · move 9',
+            'pentago: e4-ur- · game 4 · move 9',
+            'pentago: e4-ur-ccw · game 4 · move 9',
+            'pentago: e4-um-cw · game 4 · move 9',
+            'pentago: e4-UR-cw · game 4 · move 9',
+            'pentago: e4-ur-CW · game 4 · move 9',
+            'pentago: e4-ur-cw-ll-cw · game 4 · move 9',
+            'pentago: e4urcw · game 4 · move 9',
+            'pentago: e4 ur cw · game 4 · move 9',
+            'pentago: e4_ur_cw · game 4 · move 9',
+            'pentago: e4--ur-cw · game 4 · move 9',
+            'pentago: -ur-cw · game 4 · move 9',
+            'pentago: e4# · game 4 · move 9',
+            'pentago: e4-ur-cw# · game 4 · move 9',
+            'pentago: ⚪e4-ur-cw · game 4 · move 9',
+            'pentago: e4-ur-cw game 4 · move 9',
+            'pentago: e4-ur-cw · game 4 · move 9 now',
+            'pentago: b5 · game 4',
+            'Pentago: b5 · game 4 · move 1',
+            'connectfour: 4 · game 4 · move 9',
             'checkers: 33-15 · game 6 · move 10',
             'checkers: 11-33 · game 6 · move 10',
             'checkers: 0-4 · game 6 · move 10',
@@ -262,12 +308,16 @@ class ShippedTableTests(unittest.TestCase):
             'checkers: 11-15 · game 6 · move 10 · move 11',
             'checkers: 11-15 · game 6 · move 10 and 11',
             'checkers: e2e4 · game 6 · move 10',
-            'chess: b2 · game 9 · move 3',
-            'chess: 4 · game 4 · move 9',
+            'checkers: e5 · game 9 · move 3',
+            'checkers: e4-ur-cw · game 4 · move 9',
+            'chess: e5 · game 9 · move 3',
+            'chess: e4-ur-cw · game 4 · move 9',
             'chess: 11-15 · game 6 · move 10',
-            'tictactoe: e2e4 · game 1 · move 12',
-            'tictactoe: 4 · game 4 · move 9',
-            'connectfour: b2 · game 9 · move 3',
+            'tictac: e2e4 · game 1 · move 12',
+            'tictac: 11-15 · game 6 · move 10',
+            'pentago: i9 · game 9 · move 3',
+            'pentago: e2e4 · game 1 · move 12',
+            'pentago: 11-15 · game 6 · move 10',
         ):
             with self.subTest(title=title):
                 self.assertEqual(self.decide(title), {'action': 'reject'})

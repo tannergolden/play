@@ -15,21 +15,21 @@ body:
 
         Every game on the profile writes its titles the same way:
 
-        | Game         | A title                              |
-        | :----------- | :----------------------------------- |
-        | Chess        | `chess: e2e4 · game 1 · move 12`     |
-        | Checkers     | `checkers: 11-15 · game 6 · move 10` |
-        | Connect Four | `connectfour: 4 · game 4 · move 9`   |
-        | Tic-Tac-Toe  | `tictactoe: b2 · game 9 · move 3`    |
+        | Game     | A title                               |
+        | :------- | :------------------------------------ |
+        | Chess    | `chess: e2e4 · game 1 · move 12`      |
+        | Checkers | `checkers: 11-15 · game 6 · move 10`  |
+        | Pentago  | `pentago: e4-ur-cw · game 1 · move 9` |
+        | Tic-Tac  | `tictac: e5 · game 1 · move 3`        |
 
-        - **The first word is the game**: `chess`, `checkers`, `connectfour` or `tictactoe`.
+        - **The first word is the game**: `chess`, `checkers`, `pentago` or `tictac`.
         - **Then comes the move**, written the game's way:
           - **Chess**: the square a piece leaves and the one it lands on, so `e2e4` moves the piece on e2 to e4. A fifth letter is what a pawn becomes when it reaches the far side, so `e7e8q` makes a queen. Castling is written as the king's move, such as `e1g1`.
           - **Checkers**: the square your piece leaves and each square it lands on, numbered 1 to 32. `11-15` moves from 11 to 15, `22x15` jumps from 22 to 15, and `22x15x8` jumps on to 8.
-          - **Connect Four**: the column your disc drops into, `1` to `7` from the left.
-          - **Tic-Tac-Toe**: the cell you mark, `a` to `c` from the left and `1` to `3` from the bottom, so `b2` is the centre.
+          - **Pentago**: the hole your marble goes in, `a` to `f` from the left and `1` to `6` from the bottom, then the quarter you turn, `ul`, `ur`, `ll` or `lr` for upper left, upper right, lower left or lower right, and which way, `cw` for clockwise or `acw` for anticlockwise. So `e4-ur-cw` sets a marble on e4 and turns the upper right quarter clockwise. A ghost is its hole alone, such as `b5`.
+          - **Tic-Tac**: the square you mark, `a` to `i` from the left and `1` to `9` from the bottom, across all nine boards, so `e5` is the centre of the centre board. A ghost is written the same way.
         - **`game 1`** is the game on the profile the move is for.
-        - **`move 12`** is the move the board was on when you picked yours.
+        - **`move 12`** is the move the board was on when you picked yours. In Pentago and Tic-Tac it counts the two ghosts, so move 3 is the first move after them.
 
         **Leave the title exactly as it is.** It is all the game reads, and a title that no longer reads as a move is closed without being played.
 
@@ -50,13 +50,13 @@ body:
       value: |
         ### ⏱️ Whose turn it is
 
-        - **Each player's side never changes.** @tannergolden always plays White in Chess, Checkers and Connect Four, and X in Tic-Tac-Toe. GitHub, which is everyone else, always plays Black, or O.
+        - **Each player's side never changes.** @tannergolden always plays White in Chess, Checkers and Pentago, and X in Tic-Tac. GitHub, which is everyone else, always plays Black, or O.
         - **Who opens depends on the game:**
           - **Chess**: @tannergolden, as White.
           - **Checkers**: GitHub, as Black, since Black moves first in American checkers.
-          - **Connect Four and Tic-Tac-Toe**: the Arbiter, for a side drawn at random, with a random first move. When it opens Tic-Tac-Toe for GitHub, O moves first. The reasons are in [ADR-0001](https://github.com/tannergolden/play/blob/HEAD/docs/adrs/ADR-0001-Four-Games-One-Arbiter.md).
-        - **On GitHub's turn, anyone but @tannergolden can play**, and the first move to reach the game is the one played.
-        - **On @tannergolden's turn, only @tannergolden can.** A move from anyone else is turned away with a reply.
+          - **Pentago and Tic-Tac**: the Ghost Rule. First each side places a ghost: a square nobody can take in Tic-Tac, or a marble that is nobody's in Pentago. The Arbiter draws the side that places the first, and the other side places the second. Then the Arbiter draws who moves first. The reasons are in [ADR-0001's amendment](https://github.com/tannergolden/play/blob/HEAD/docs/adrs/ADR-0001-Four-Games-One-Arbiter.md#-amendment-the-ghost-rule).
+        - **On GitHub's turn, anyone but @tannergolden can play**, its ghost included, and the first move to reach the game is the one played.
+        - **On @tannergolden's turn, only @tannergolden can.** A move or a ghost from anyone else is turned away with a reply.
         - **If the board moved on before your move arrived**, the reply here says what happened to it. Pick a move from the new board to play again.
 
   - type: markdown
