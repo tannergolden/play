@@ -16,8 +16,11 @@ WHAT IT DECIDES, one of three:
     ignore    an issue of the owner's that is not a move: leave it open
 
 It writes the decision, and for a move the game it is for, to
-$GITHUB_OUTPUT, the dispatch's request body to $RUNNER_TEMP/dispatch.json
-and the reply to $RUNNER_TEMP/reply.md. The workflow posts them as they are.
+$GITHUB_OUTPUT, the dispatch's request body to $RUNNER_TEMP/dispatch.json,
+the reply to $RUNNER_TEMP/reply.md, and the labels the issue should carry to
+$RUNNER_TEMP/labels.json: `move` and the move's game, or `invalid` for
+anything else. The workflow posts them as they are, making a label the first
+time it is needed.
 Nothing here talks to GitHub, and nothing here prints the title, since a
 line in a run's log can be read as a workflow command.
 
@@ -59,6 +62,20 @@ VALUE = re.compile(r'[A-Za-z0-9_.+#=-]{0,64}')
 # The inputs every game's workflow receives beside its own, filled here from
 # the issue itself rather than from its title. No pattern may name one.
 RESERVED = ('issue', 'player', 'player_id')
+
+# The labels an issue answered here carries. The move form gives `move` as the
+# issue opens; the intake gives it again, for a move opened without the form,
+# such as through the API, and adds what no form can know: the move's game. An
+# issue that is not a move gets `invalid`, the shared taxonomy's own. Every
+# name comes from here or from the table, never from the title.
+MOVE = {'name': 'move', 'color': '1d76db', 'description': '🎲 A move for one of the games on the profile.'}
+INVALID = {'name': 'invalid', 'color': 'e4e669', 'description': "This doesn't seem right"}
+GAMES = {  # each game's sign and name as the profile shows them, and its label's colour
+    'chess': ('♟️', 'Chess', '5319e7'),
+    'checkers': ('🏁', 'Checkers', 'd93f0b'),
+    'pentago': ('🌀', 'Pentago', '0e8a16'),
+    'tictac': ('❌', 'Tic-Tac', 'fbca04'),
+}
 
 
 class TableError(ValueError):
@@ -136,6 +153,17 @@ def route(title: str, *, player: str, player_id: str, issue: str, owner: str,
     return {'action': 'reject'}
 
 
+def labels(decision: dict) -> list[dict]:
+    """The labels the issue should carry, each with the colour and description it is made with when missing."""
+    if decision['action'] == 'dispatch':
+        game = decision['game']
+        sign, title, colour = GAMES.get(game, ('🎲', game, 'ededed'))
+        return [MOVE, {'name': f'game: {game}', 'color': colour, 'description': f'{sign} A move for {title}.'}]
+    if decision['action'] == 'reject':
+        return [INVALID]
+    return []
+
+
 def reply(decision: dict, owner: str) -> str:
     """The comment the issue is closed with. Fixed text, so a title can never write any of it."""
     profile = f"[@{owner}'s profile](https://github.com/{owner})"
@@ -183,6 +211,7 @@ def main() -> int:
         (temp / 'dispatch.json').write_text(json.dumps(decision['body']), encoding='utf-8')
     if decision['action'] != 'ignore':
         (temp / 'reply.md').write_text(reply(decision, owner), encoding='utf-8')
+        (temp / 'labels.json').write_text(json.dumps(labels(decision), ensure_ascii=False), encoding='utf-8')
     with open(env['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
         handle.writelines(f'{key}={value}\n' for key, value in outputs.items())
 

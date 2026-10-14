@@ -54,6 +54,27 @@ the title against one table, and nothing else acts on it.
 A move's own issue is locked by its game once it has replied, so nobody but the
 owner and the Arbiter writes on an answered issue again.
 
+### 🏷️ Labels
+
+Every issue answered here is labelled, so moves can be filtered by game and
+told apart from everything else:
+
+| The issue                              | Labels                                             |
+| :------------------------------------- | :------------------------------------------------- |
+| A move, sent on or turned away         | `move`, and its game: `game: chess`, `game: checkers`, `game: pentago` or `game: tictac` |
+| Anything else, from anyone else        | `invalid`                                          |
+| Anything else, from the owner          | None: it's left as it is                           |
+
+The move form gives `move` as the issue opens. `route.py` names the rest, in
+`$RUNNER_TEMP/labels.json`, and 🎲 Move Intake applies them: `move` again, for
+a move opened without the form, such as through the API, and the game, which
+no form can know. Every name comes from `route.py` (`MOVE`, `INVALID` and
+`GAMES`) and the table, never from the title. A label missing from the
+repository is made the first time it is needed, with the colour and
+description `route.py` gives it, and a label that can't be set is a warning,
+never a stop. A new game's label is `game: <name>`; add its sign, name and
+colour to `GAMES` in `route.py`, or it is made plain.
+
 ---
 
 ## 🗺️ The Four Games
@@ -171,11 +192,12 @@ along.
    move worth passing on as a group, such as `(?P<uci>...)`.
 3. **Install the GitHub App on the game's repository**, with Actions write, so
    the intake can start its workflow there.
-4. **Teach `check.py` the game**, in `GAMES`: the input its move comes in, the
+4. **Give it a label**: its sign, name and colour in `GAMES` in `route.py`.
+5. **Teach `check.py` the game**, in `GAMES`: the input its move comes in, the
    key its state keeps a move's notation under, who opens it, or its ghost's
    verb where the Ghost Rule opens it, and the words for the house's side and
    for GitHub's.
-5. **Add the new game's titles to `test_route.py`**, both the ones that go
+6. **Add the new game's titles to `test_route.py`**, both the ones that go
    through and the ones that must not, and its refusals to `test_check.py`,
    word for word.
 

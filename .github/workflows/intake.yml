@@ -24,6 +24,13 @@
 # player's issues run one at a time. Every issue answered here is locked once
 # closed, so nobody can use it to notify the owner later.
 #
+# Every issue answered here is labelled: a move `move` and its game, such as
+# `game: chess`, and anything else `invalid`. The move form gives `move` as
+# the issue opens; this gives it again to a move opened any other way, and
+# adds the game, which no form can know. The names come from intake/route.py
+# and the table, never from the title, and a label is made the first time it
+# is needed. A label that can't be set never stops a move.
+#
 # ⚠️ THE TITLE IS WRITTEN BY WHOEVER OPENS THE ISSUE, and anyone can. It
 # reaches the router through an environment variable and nowhere else, so
 # there is no `${{ }}` inside any `run:` here, and nothing goes on but what
@@ -92,6 +99,27 @@ jobs:
           PLAYER: ${{ github.event.issue.user.login }}
           PLAYER_ID: ${{ github.event.issue.user.id }}
         run: python3 intake/route.py
+
+      # The labels the router named, each made the first time it is needed:
+      # `move` and the move's game, or `invalid`. Never the title's words, and
+      # never in the way of the move: a label that can't be set is a warning.
+      - name: '🏷️ Label The Issue'
+        if: ${{ steps.route.outputs.action == 'dispatch' || steps.route.outputs.action == 'reject' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          add=()
+          while IFS=$'\t' read -r name colour description; do
+            # Made once; every later run finds it there and goes on.
+            gh label create "$name" --repo "$GITHUB_REPOSITORY" --color "$colour" \
+              --description "$description" > /dev/null 2>&1 || true
+            add+=(--add-label "$name")
+          done < <(jq -r '.[] | [.name, .color, .description] | @tsv' "$RUNNER_TEMP/labels.json")
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" "${add[@]}" > /dev/null
 
       # The state of the move's game, from the folder named for it in the
       # game's repository, and how many issues the player opened here this

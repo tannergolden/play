@@ -323,6 +323,33 @@ class ShippedTableTests(unittest.TestCase):
                 self.assertEqual(self.decide(title), {'action': 'reject'})
 
 
+class LabelTests(unittest.TestCase):
+    """The labels each decision gives, every name the intake's own, never the title's."""
+
+    def test_every_shipped_game_has_its_own_label(self) -> None:
+        for game, (sign, title, _) in route.GAMES.items():
+            with self.subTest(game=game):
+                found = route.labels({'action': 'dispatch', 'game': game})
+                self.assertEqual([label['name'] for label in found], ['move', f'game: {game}'])
+                self.assertEqual(found[1]['description'], f'{sign} A move for {title}.')
+        self.assertEqual(sorted(route.GAMES), sorted(route.load()))
+
+    def test_a_game_added_to_the_table_alone_still_gets_a_label(self) -> None:
+        found = route.labels({'action': 'dispatch', 'game': 'go'})
+        self.assertEqual(found[1], {'name': 'game: go', 'color': 'ededed', 'description': '🎲 A move for go.'})
+
+    def test_every_label_fits_what_github_takes(self) -> None:
+        decisions = [{'action': 'dispatch', 'game': game} for game in route.GAMES] + [{'action': 'reject'}]
+        for decision in decisions:
+            for label in route.labels(decision):
+                self.assertLessEqual(len(label['name']), 50)
+                self.assertLessEqual(len(label['description']), 100)
+                self.assertRegex(label['color'], r'^[0-9a-f]{6}$')
+
+    def test_an_owners_own_issue_gets_none(self) -> None:
+        self.assertEqual(route.labels({'action': 'ignore'}), [])
+
+
 class TableTests(unittest.TestCase):
     def setUp(self) -> None:
         self.folder = Folder()
@@ -445,6 +472,11 @@ class MainTests(unittest.TestCase):
                                 " profile](https://github.com/tannergolden).\nThe Arbiter rules on it here within a"
                                 " few minutes, and says why if it can't be played.\n")
         self.assertEqual(printed, 'Issue #7 by @octocat: dispatch to tannergolden/tannergolden, chess.yml.\n')
+        labels = json.loads(self.written('labels.json').read_text(encoding='utf-8'))
+        self.assertEqual(labels, [
+            {'name': 'move', 'color': '1d76db', 'description': '🎲 A move for one of the games on the profile.'},
+            {'name': 'game: chess', 'color': '5319e7', 'description': '♟️ A move for Chess.'},
+        ])
 
     def test_a_rejected_title_is_never_echoed(self) -> None:
         title = 'chess: `rm -rf /` · game 1 · move 1'
@@ -456,12 +488,16 @@ class MainTests(unittest.TestCase):
         self.assertTrue(reply.startswith("👋 **This isn't a move, so it's closed.**\nThis repository only takes moves"))
         self.assertIn('without changing the title', reply)
         self.assertNotIn('rm -rf', reply + printed)
+        labels = json.loads(self.written('labels.json').read_text(encoding='utf-8'))
+        self.assertEqual([label['name'] for label in labels], ['invalid'])
+        self.assertNotIn('rm -rf', json.dumps(labels))
 
     def test_the_owners_own_issue_writes_nothing_to_post(self) -> None:
         code, _ = self.run_main('A note to myself', PLAYER='tannergolden', PLAYER_ID='24684994')
         self.assertEqual(code, 0)
         self.assertEqual(self.outputs(), {'action': 'ignore'})
         self.assertFalse(self.written('reply.md').exists())
+        self.assertFalse(self.written('labels.json').exists())
 
     def test_a_malformed_issue_stops_the_run(self) -> None:
         for env in ({'ISSUE': ''}, {'ISSUE': '7; echo'}, {'PLAYER': 'bot[bot]'}, {'PLAYER_ID': '0'},

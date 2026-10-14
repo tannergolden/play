@@ -1,5 +1,8 @@
 name: '🎲 Play a move'
 description: 'A move picked on the tannergolden profile, ready to send. Open one from a move link there, then submit it as it opens.'
+# Given as the issue opens, once the label exists; 🎲 Move Intake makes it the
+# first time it is needed, and adds the move's game, such as `game: chess`.
+labels: ['move']
 body:
   - type: markdown
     attributes:
