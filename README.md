@@ -303,12 +303,12 @@ in [`.github/template-sync`](.github/template-sync), the list the sync reads:
 
 | File                                                                         | Changed here                             | Kept by                                                           |
 | :--------------------------------------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------- |
-| `README.md`, `LICENSE`                                                       | This page, and the MIT licence           | Yours from the start: the sync never touches them                 |
+| `README.md`, `LICENSE`                                                       | This page, and the proprietary licence   | Yours from the start: the sync never touches them                 |
 | `.github/workflows/governance.yml`                                           | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
 | `.github/workflows/checks.yml`                                               | Runs the intake's and the replays' tests | `# keep mine`                                                     |
 | `.github/workflows/ci-failure-alert.yml`                                     | Watches 🎲 Move Intake and 🎬 Replays    | `# keep mine`                                                     |
 | `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `replays/`, `replay.yml` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
-| The seeded documents in `docs/`                                              | The MIT footer                           | The per-file merge: the template's other changes arrive around it |
+| The seeded documents in `docs/`                                              | The licence footer                       | The per-file merge: the template's other changes arrive around it |
 
 A file you and the template changed in the same place is left exactly as you
 have it, so none of this is ever overwritten. Two things still need your eye
@@ -317,10 +317,11 @@ in a sync's pull request:
 - **A footer the template rewrites waits on you**, as a conflict. Do not make
   it match the template's, as the pull request suggests. Add
   `# keep mine: /path/to/the/document.md` under **Your rules** instead, and
-  the MIT footer stands from then on.
+  this repository's footer stands from then on.
 - **A seeded document the template adds arrives with the template's footer**,
-  "Proprietary and confidential; all rights reserved." Change that line to
-  the MIT one in the same pull request.
+  "Proprietary and confidential; all rights reserved." This repository is
+  public, so change that line to "Proprietary; all rights reserved." in the
+  same pull request.
 
 Where `# keep mine` keeps your lines, the template's change to them is shown
 in the pull request rather than applied: a new workflow for 🚨 CI Failure
@@ -346,7 +347,7 @@ Alerts to watch, say. Copy across anything worth having.
 | [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                        |
 | [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                            |
 | [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                                      |
-| [`LICENSE`](LICENSE)                        | MIT License                                                                                                                                            |
+| [`LICENSE`](LICENSE)                        | PROPRIETARY LICENCE                                                                                                                                    |
 | [`README.md`](README.md)                    | This file.                                                                                                                                             |
 
 <!-- AUTO-INDEX:END -->
@@ -386,10 +387,17 @@ the same template.
 
 ## 🔒 Licence
 
-**MIT.** See [`LICENSE`](LICENSE). The template this repository came from is
-proprietary; everything here is MIT, the seeded documents' footers included.
-The shared workflows and actions it calls are published separately, under
-their own licence.
+**Proprietary. All rights reserved.** Everything here is Tanner Golden's
+alone, under [`LICENSE`](LICENSE): nothing in it may be used, copied, adapted,
+sold or resold by anyone, no permission will ever be granted, and no AI system
+may train on it or reproduce it. Anyone may still play the games from
+[the profile](https://github.com/tannergolden), and submitting a move lets the
+games record and show it with your username. GitHub's own Terms let any user
+view and fork this repository on GitHub, and nothing more. Versions published
+under the MIT License before 14 October 2026 stay under it, as to those
+versions only. The shared workflows and actions it calls are published
+separately, under their own licence
+([ADR-0002](docs/adrs/ADR-0002-The-Games-Are-Proprietary.md)).
 
 ---
 
@@ -401,6 +409,6 @@ their own licence.
 
 <br />
 
-Built with ❤️ by [@tannergolden](https://github.com/tannergolden). Distributed under the MIT License.
+Built with ❤️ by [@tannergolden](https://github.com/tannergolden). Proprietary; all rights reserved.
 
 </div>

@@ -169,6 +169,6 @@ _Amended on 2026-10-13. The decision above stands, but for what follows._
 
 <br />
 
-Built with ❤️ by the Engineering Team. Distributed under the MIT License.
+Built with ❤️ by the Engineering Team. Proprietary; all rights reserved under [LICENSE](../../LICENSE).
 
 </div>

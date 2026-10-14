@@ -116,6 +116,6 @@ seeded folder does, and update it in the same change that adds a file.
 
 <br />
 
-Built with ❤️ by the Engineering Team. Distributed under the MIT License.
+Built with ❤️ by the Engineering Team. Proprietary; all rights reserved under [LICENSE](../LICENSE).
 
 </div>

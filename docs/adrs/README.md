@@ -50,10 +50,11 @@ trade-offs that shaped it before changing it.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log fields=status,date,evidence -->
 
-| Entry                                                                      | Status   | Date       | Evidence | Purpose                                                                                                                                                                               |
-| :------------------------------------------------------------------------- | :------- | :--------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`ADR-0001-Four-Games-One-Arbiter.md`](ADR-0001-Four-Games-One-Arbiter.md) | Accepted | 2026-10-12 | N/A      | Chess, Checkers, Connect Four and Tic-Tac-Toe, and no other game, share one intake, one Arbiter, one Hall of Fame and one leaderboard, and each keeps its own voice, board and rules. |
-| [`README.md`](README.md)                                                   | -        | -          | -        | This file.                                                                                                                                                                            |
+| Entry                                                                            | Status   | Date       | Evidence | Purpose                                                                                                                                                                                      |
+| :------------------------------------------------------------------------------- | :------- | :--------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`ADR-0001-Four-Games-One-Arbiter.md`](ADR-0001-Four-Games-One-Arbiter.md)       | Accepted | 2026-10-12 | N/A      | Chess, Checkers, Connect Four and Tic-Tac-Toe, and no other game, share one intake, one Arbiter, one Hall of Fame and one leaderboard, and each keeps its own voice, board and rules.        |
+| [`ADR-0002-The-Games-Are-Proprietary.md`](ADR-0002-The-Games-Are-Proprietary.md) | Accepted | 2026-10-14 | N/A      | Everything in this repository is proprietary to the owner: no use, reuse or resale by anyone, no permission ever granted, and no AI training on it or reproducing it; anyone may still play. |
+| [`README.md`](README.md)                                                         | -        | -          | -        | This file.                                                                                                                                                                                   |
 
 <!-- AUTO-INDEX:END -->
 
@@ -93,6 +94,6 @@ old record **Superseded** and link the new one.
 
 <br />
 
-Built with ❤️ by the Engineering Team. Distributed under the MIT License.
+Built with ❤️ by the Engineering Team. Proprietary; all rights reserved under [LICENSE](../../LICENSE).
 
 </div>
