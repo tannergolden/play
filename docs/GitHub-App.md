@@ -251,12 +251,15 @@ holds up, and closes itself when a move goes through again. The failed run in
 the Actions tab names the step that failed.
 
 Once it is fixed, close the notice, unless a move has already closed it: the
-next sweep, within half an hour, sends every stranded and overdue move through
-🎲 Move Intake again, and each player gets the game's ruling on their own
-issue, so nobody has to play their move twice. While the notice is open, each
-sweep tries the oldest stranded move alone, so a fix nobody announces is found
-by itself. To send one at once, run 🎲 Move Intake from the Actions tab with
-the issue's number.
+next sweep sends every stranded and overdue move through 🎲 Move Intake
+again, and each player gets the game's ruling on their own issue, so nobody
+has to play their move twice. While the notice is open, each sweep tries the
+oldest stranded move alone, so a fix nobody announces is found by itself.
+
+The sweep is set for twice an hour, but GitHub starts a schedule late when it
+is busy, sometimes by hours. To sweep at once, run ⏳ Move Sweep from the
+Actions tab; to send one move, run 🎲 Move Intake there with the issue's
+number.
 
 The 👀 comes from the same pair: without it, 🔑 Mint The Arbiter Token warns
 and every issue goes without its 👀, and nothing else changes.

@@ -138,6 +138,10 @@ opened here, and answers each one left waiting:
   off as it sends the move.
 - **At most 10 issues go again in a sweep**, oldest first; the next sweep
   takes the rest.
+- **A schedule can run late.** GitHub starts a scheduled run late when it is
+  busy, sometimes by hours, so a move can wait longer than 15 minutes before
+  a sweep finds it. The owner can run ⏳ Move Sweep from the Actions tab at any
+  time.
 
 The owner can send any issue through the intake again by hand, from the
 Actions tab: run 🎲 Move Intake with the issue's number.
