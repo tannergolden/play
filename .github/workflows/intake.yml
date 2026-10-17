@@ -9,11 +9,12 @@
 # the move in its title, for one of the four games there: Chess, Checkers,
 # Pentago and Tic-Tac. This runs once for each issue opened:
 # intake/route.py reads the title against intake/routes.json and decides, and
-# the steps below carry that out. A move starts its game's workflow through
-# the GitHub App, gets a 🚀 and a reply, and is closed as completed. Anything
-# else from anyone but the owner gets a reply saying how to play, and is
-# closed as not planned. The game itself decides whether a move stands, and
-# says so on the issue.
+# the steps below carry that out. Every issue answered here gets a 👀 as soon
+# as its title is read, so whoever opened it sees at once that it was picked
+# up. A move then starts its game's workflow through the GitHub App, gets a
+# 🚀 and a reply, and is closed as completed. Anything else from anyone but
+# the owner gets a reply saying how to play, and is closed as not planned.
+# The game itself decides whether a move stands, and says so on the issue.
 #
 # A move its game could only turn away goes no further: intake/check.py reads
 # the game's state, .github/<game>/game.json in the game's repository, and
@@ -99,6 +100,18 @@ jobs:
           PLAYER: ${{ github.event.issue.user.login }}
           PLAYER_ID: ${{ github.event.issue.user.id }}
         run: python3 intake/route.py
+
+      # A 👀 the moment the title is read, before anything else is done with
+      # the issue, so whoever opened it sees it was picked up: on every issue
+      # answered here, and never on the owner's own, which are left alone. A
+      # reaction that can't be set is a warning, never in the way of the move.
+      - name: '👀 Mark It Seen'
+        if: ${{ steps.route.outputs.action == 'dispatch' || steps.route.outputs.action == 'reject' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$ISSUE/reactions" -f content=eyes --silent
 
       # The labels the router named, each made the first time it is needed:
       # `move` and the move's game, or `invalid`. Never the title's words, and

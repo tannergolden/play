@@ -51,6 +51,10 @@ the title against one table, and nothing else acts on it.
 | Anything else, from the owner        | `ignore`   | Leaves it open: the owner files their own issues here too                  |
 | Anything opened by an app or a bot   | -          | Never runs: the game's own notices, its logbook and outages are left alone |
 
+Every issue 🎲 Move Intake answers gets a 👀 as soon as its title is read,
+before anything else is done with it, so whoever opened it sees at once that it
+was picked up. The owner's own issues, which it leaves alone, get none.
+
 A move's own issue is locked by its game once it has replied, so nobody but the
 owner and the Arbiter writes on an answered issue again.
 

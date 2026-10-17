@@ -52,9 +52,10 @@ move by move, in [`replays/`](replays/README.md) and the
 1. **A player clicks a move** on the profile. Its link opens the **🎲 Play a
    move** form here, with the title filled in: `chess: e2e4 · game 1 · move 1`.
 2. **They submit it** as it opens. A GitHub account is all a player needs.
-3. **🎲 Move Intake reads the title** against the table. Only a title that
-   matches one game's pattern from end to end is a move, labelled `move` and
-   its game, such as `game: chess`; anything else is labelled `invalid`.
+3. **🎲 Move Intake reads the title** against the table, and reacts with 👀 so
+   the player sees it was picked up. Only a title that matches one game's
+   pattern from end to end is a move, labelled `move` and its game, such as
+   `game: chess`; anything else is labelled `invalid`.
 4. **It checks the move against the board**, and answers here a move the game
    could only refuse: one for a game that is over, one already played, one on
    the other side's turn, one for the next game while the last one's winning

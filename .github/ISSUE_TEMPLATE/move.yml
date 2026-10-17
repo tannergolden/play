@@ -41,7 +41,7 @@ body:
       value: |
         ### 🚀 What happens next
 
-        1. **A bot checks the title against the board** and passes the move to its game, usually within a minute.
+        1. **A bot reacts with 👀 as it picks this issue up**, checks the title against the board, and passes the move to its game, usually within a minute.
         2. **It reacts with 🚀, replies, and closes this issue.** Closed here means received.
         3. **The game plays the move** and redraws the board on the profile, usually within a few minutes.
         4. **The game replies here** once the move is on the board, or says why it could not be played.

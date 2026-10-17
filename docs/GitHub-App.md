@@ -168,7 +168,7 @@ posted.
 
 | Where                                                   | Shown as                                           |
 | :------------------------------------------------------ | :------------------------------------------------- |
-| The intake's 🚀, reply and closing                      | `github-actions[bot]`, this repository's own token |
+| The intake's 👀 and 🚀, reply and closing               | `github-actions[bot]`, this repository's own token |
 | Every reply and notice a game posts                     | `official-arbiter[bot]`, with the App's logo       |
 | The logbook of the moves the Arbiter plays after a week | `official-arbiter[bot]`, an issue of its own       |
 | The replay of a game a player won                       | `official-arbiter[bot]`, on the winning move       |
