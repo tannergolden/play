@@ -9,21 +9,35 @@
 # the move in its title, for one of the four games there: Chess, Checkers,
 # Pentago and Tic-Tac. This runs once for each issue opened:
 # intake/route.py reads the title against intake/routes.json and decides, and
-# the steps below carry that out. Every issue answered here gets a 👀 as soon
-# as its title is read, so whoever opened it sees at once that it was picked
-# up. A move then starts its game's workflow through the GitHub App, gets a
-# 🚀 and a reply, and is closed as completed. Anything else from anyone but
-# the owner gets a reply saying how to play, and is closed as not planned.
-# The game itself decides whether a move stands, and says so on the issue.
+# the steps below carry that out. Every issue answered here gets a 👀 from the
+# Official Arbiter as soon as its title is read, so whoever opened it sees at
+# once that it was picked up. A move then starts its game's workflow through
+# the GitHub App and gets a 🚀, and its issue stays open for the game's
+# ruling, the one reply a move gets: the Arbiter replies there, labels it
+# `played` or `turned away`, files it under its game, such as
+# `Chess · game 1`, and closes it. Anything else from anyone but the owner
+# gets a reply saying how to play, and is closed as not planned.
 #
 # A move its game could only turn away goes no further: intake/check.py reads
 # the game's state, .github/<game>/game.json in the game's repository, and
 # answers here, in the game's own words, a move for a game that is over, a
 # move already played, a move on the other side's turn, a move for the next
 # game while the last one's winning board is still up, or one from a player
-# who has opened more than 30 issues this hour, all four games together. Each
-# player's issues run one at a time. Every issue answered here is locked once
-# closed, so nobody can use it to notify the owner later.
+# who has opened more than 30 issues this hour, all four games together. That
+# move is labelled `turned away`, as its game labels the moves it turns away
+# itself, and closed as not planned. Each player's issues run one at a time.
+# Every issue answered here is locked once answered, and a move sent on is
+# locked by its game once it has replied, so nobody can use an issue to notify
+# the owner later.
+#
+# A move that never reaches its game is labelled `stranded`, locked, and left
+# open: its player is told once, and the owner once, in a notice every move
+# stopped until it closes links to, which closes itself when a move goes
+# through. ⏳ Move Sweep (sweep.yml) starts this again for each stranded move
+# once that notice is closed, by the issue's number, and the owner can too,
+# from the Actions tab. A move sent again is read from its issue as it is now,
+# goes straight to its game, which knows a move already played from that
+# issue, and loses the marks of its wait, `stranded` and `overdue`.
 #
 # Every issue answered here is labelled: a move `move` and its game, such as
 # `game: chess`, and anything else `invalid`. The move form gives `move` as
@@ -33,23 +47,28 @@
 # is needed. A label that can't be set never stops a move.
 #
 # ⚠️ THE TITLE IS WRITTEN BY WHOEVER OPENS THE ISSUE, and anyone can. It
-# reaches the router through an environment variable and nowhere else, so
-# there is no `${{ }}` inside any `run:` here, and nothing goes on but what
-# the router's table allows. The repository, workflow and inputs a dispatch
-# names come from that table, or from the issue's own number and author.
+# reaches the router through an environment variable, or for a move sent
+# again through the issue as the API gives it, and nowhere else, so there is
+# no `${{ }}` inside any `run:` here, and nothing goes on but what the
+# router's table allows. The repository, workflow and inputs a dispatch names
+# come from that table, or from the issue's own number and author.
 #
 # ⚠️ THE APP'S TOKEN IS THE ONLY WAY OUT OF THIS REPOSITORY. It is minted for
 # one run, for the one repository the move's row names, with Actions write
-# and nothing more, and revoked when the job ends. The replies and the
-# closing use this repository's own token, which reaches nothing else. An
+# and nothing more, and revoked when the job ends. The Official Arbiter's 👀
+# comes from a token of its own, minted the same way for this repository's
+# issues alone and held by that one step. The replies, labels, closing and
+# locking use this repository's own token, which reaches nothing else. An
 # issue opened by an app or a bot - each game's own notices - never starts it.
 #
 # Needs the DISPATCH_APP_CLIENT_ID variable and DISPATCH_APP_PRIVATE_KEY
 # secret of the App that starts the games, or, until that App is split off,
 # PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY: see docs/GitHub-App.md. Until
-# one pair exists, every move fails, with a reply on its issue. A failure
-# tells the owner once, in a notice every failed move links to, which closes
-# itself when a move goes through again.
+# one pair exists, every move fails, with a reply on its issue. The 👀 needs
+# the Official Arbiter's own pair, PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY,
+# and is left out without it. A failure tells the owner once, in a notice
+# every failed move links to, which closes itself when a move goes through
+# again.
 #
 # ---
 
@@ -58,12 +77,21 @@ name: '🎲 Move Intake'
 on:
   issues:
     types: [opened]
+  # A move sent again, by its issue's number: ⏳ Move Sweep's, once the
+  # outage that stranded it is over, or the owner's, from the Actions tab.
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'The number of the issue to send again, such as a move labelled stranded.'
+        required: true
+        type: string
 
 concurrency:
   # One run at a time for each player, so nobody can start a crowd of them at
   # once: a player's next issue waits for the last, and GitHub keeps only the
-  # newest of those waiting. Players never wait on each other.
-  group: ${{ github.workflow }}-${{ github.event.issue.user.id }}
+  # newest of those waiting, leaving any it drops to ⏳ Move Sweep. Players
+  # never wait on each other, and a move sent again runs by its own number.
+  group: ${{ github.workflow }}-${{ github.event.issue.user.id || format('issue-{0}', inputs.issue) }}
   cancel-in-progress: false
 
 permissions: {}
@@ -72,13 +100,14 @@ jobs:
   route:
     name: '🎲 Route The Move'
     # Inert in a template; live here. Never for an issue an app or a bot
-    # opened, which is how each game posts its own notices.
-    if: ${{ !github.event.repository.is_template && github.event.issue.user.type != 'Bot' }}
+    # opened, which is how each game posts its own notices: the router checks
+    # a move sent again for the same, once its issue is read.
+    if: ${{ !github.event.repository.is_template && (github.event_name == 'workflow_dispatch' || github.event.issue.user.type != 'Bot') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: read # check out the router and its table
-      issues: write # react to, reply on, and close the move's issue
+      issues: write # react to, label, reply on, close and lock the move's issue
     steps:
       - name: '🛡️ Harden Runner'
         uses: tannergolden/standards/actions/harden@v1
@@ -92,25 +121,59 @@ jobs:
           persist-credentials: false
           sparse-checkout: intake
 
+      # A move sent again: the issue as it is now, read with this run's own
+      # token, for the router to read in place of the event. The number is
+      # checked before it reaches the API.
+      - name: '📥 Read The Issue'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ inputs.issue }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! [[ "$ISSUE" =~ ^[1-9][0-9]{0,15}$ ]]; then
+            echo '::error::An issue is sent again by its number alone.'
+            exit 1
+          fi
+          gh api "repos/$GITHUB_REPOSITORY/issues/$ISSUE" > "$RUNNER_TEMP/issue.json"
+
       - name: '🧭 Read The Title'
         id: route
         env:
           TITLE: ${{ github.event.issue.title }}
-          ISSUE: ${{ github.event.issue.number }}
+          ISSUE: ${{ github.event.issue.number || inputs.issue }}
           PLAYER: ${{ github.event.issue.user.login }}
           PLAYER_ID: ${{ github.event.issue.user.id }}
+          SENT_AGAIN: ${{ github.event_name == 'workflow_dispatch' }}
         run: python3 intake/route.py
 
-      # A 👀 the moment the title is read, before anything else is done with
-      # the issue, so whoever opened it sees it was picked up: on every issue
-      # answered here, and never on the owner's own, which are left alone. A
-      # reaction that can't be set is a warning, never in the way of the move.
-      - name: '👀 Mark It Seen'
+      # The Official Arbiter's own token, for its 👀 alone: this repository's
+      # issues and nothing more, held by the one step below, and revoked when
+      # the job ends. Without it the 👀 is left out, and nothing else is.
+      - name: '🔑 Mint The Arbiter Token'
+        id: arbiter
         if: ${{ steps.route.outputs.action == 'dispatch' || steps.route.outputs.action == 'reject' }}
         continue-on-error: true
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.PLAY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.PLAY_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-issues: write
+
+      # The Arbiter's 👀 the moment the title is read, before anything else is
+      # done with the issue, so whoever opened it sees it was picked up: on
+      # every issue answered here, and never on the owner's own, which are left
+      # alone. A reaction that can't be set is a warning, never in the way of
+      # the move.
+      - name: '👀 Mark It Seen'
+        if: ${{ steps.arbiter.outcome == 'success' }}
+        continue-on-error: true
         env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ steps.arbiter.outputs.token }}
+          ISSUE: ${{ steps.route.outputs.issue }}
         run: gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$ISSUE/reactions" -f content=eyes --silent
 
       # The labels the router named, each made the first time it is needed:
@@ -121,7 +184,7 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
+          ISSUE: ${{ steps.route.outputs.issue }}
         shell: bash
         run: |
           set -euo pipefail
@@ -140,15 +203,17 @@ jobs:
       # run's own token, which reads the game's public repository and writes
       # nothing there. The game's name is always one the table names, since
       # only a move for a game in the table gets this far. A board that can't
-      # be read leaves the move to the game.
+      # be read leaves the move to the game. A move sent again skips this and
+      # the check: its game alone can tell a move already played from its own
+      # issue.
       - name: '👀 Read The Board'
-        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.route.outputs.again != 'true' }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GAME: ${{ steps.route.outputs.game }}
           GAME_REPO: ${{ steps.route.outputs.owner }}/${{ steps.route.outputs.repo }}
-          PLAYER: ${{ github.event.issue.user.login }}
+          PLAYER: ${{ steps.route.outputs.player }}
         shell: bash
         run: |
           set -uo pipefail
@@ -168,7 +233,7 @@ jobs:
 
       - name: '⚖️ Check The Move'
         id: check
-        if: ${{ steps.route.outputs.action == 'dispatch' }}
+        if: ${{ steps.route.outputs.action == 'dispatch' && steps.route.outputs.again != 'true' }}
         env:
           GAME: ${{ steps.route.outputs.game }}
           OWNER_ID: ${{ github.repository_owner_id }}
@@ -185,6 +250,16 @@ jobs:
           repositories: ${{ steps.route.outputs.repo }}
           permission-actions: write
 
+      # A move sent again was locked when it was stranded or marked overdue:
+      # it is unlocked for its game's reply, which locks it again as it rules.
+      - name: '🔓 Unlock It For The Ruling'
+        if: ${{ steps.route.outputs.locked == 'true' && steps.app.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ steps.route.outputs.issue }}
+        run: gh api --method DELETE "repos/$GITHUB_REPOSITORY/issues/$ISSUE/lock" --silent
+
       - name: '🎯 Start The Game'
         id: dispatch
         if: ${{ steps.route.outputs.action == 'dispatch' && steps.check.outputs.verdict != 'refuse' }}
@@ -195,24 +270,40 @@ jobs:
           WORKFLOW: ${{ steps.route.outputs.workflow }}
         run: gh api --method POST "repos/$OWNER/$REPO/actions/workflows/$WORKFLOW/dispatches" --input "$RUNNER_TEMP/dispatch.json"
 
-      - name: '🚀 Reply And Close'
-        if: ${{ steps.route.outputs.action == 'dispatch' && steps.check.outputs.verdict != 'refuse' }}
+      # Sent on: a 🚀, and no reply of its own, since the game's ruling is the
+      # one reply a move gets. The issue stays open for it. A move sent again
+      # loses the marks of its wait.
+      - name: '🚀 Mark It Sent'
+        if: ${{ steps.dispatch.outcome == 'success' }}
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
+          ISSUE: ${{ steps.route.outputs.issue }}
+        shell: bash
         run: |
-          gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$ISSUE/reactions" -f content=rocket --silent
-          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
-          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
+          set -uo pipefail
+          gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$ISSUE/reactions" -f content=rocket --silent \
+            || echo "::warning::#$ISSUE was left without its 🚀."
+          for mark in stranded overdue; do
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/issues/$ISSUE/labels/$mark" --silent > /dev/null 2>&1 || true
+          done
 
-      # A move the game could only turn away, answered in the game's words.
+      # A move the game could only turn away, answered in the game's words, and
+      # labelled `turned away`, as the game labels the moves it turns away.
       - name: '⛔ Turn The Move Away'
         if: ${{ steps.check.outputs.verdict == 'refuse' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
+          ISSUE: ${{ steps.route.outputs.issue }}
+        shell: bash
         run: |
+          set -euo pipefail
           gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
+          # Made the first time it is needed, as the game makes it, and never in the way of the move.
+          gh label create 'turned away' --repo "$GITHUB_REPOSITORY" --color b60205 \
+            --description "⛔ The Arbiter turned this move away: it wasn't played." > /dev/null 2>&1 || true
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --add-label 'turned away' > /dev/null \
+            || echo "::warning::#$ISSUE was left without its turned away label."
           gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
           gh issue lock "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$ISSUE was left unlocked."
 
@@ -220,23 +311,27 @@ jobs:
         if: ${{ steps.route.outputs.action == 'reject' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
+          ISSUE: ${{ steps.route.outputs.issue }}
         run: |
           gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/reply.md"
           gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
           gh issue lock "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$ISSUE was left unlocked."
 
       - name: '🧯 Say It Did Not Go Through'
-        # A move that never reached its game. The player is told, and the
-        # owner is @mentioned once, in a notice that every move stopped until
-        # it closes links to, so the notice reaches them even with this
+        # A move that never reached its game: labelled `stranded`, locked, and
+        # left open, for ⏳ Move Sweep to send again once the notice below is
+        # closed. The player is told once, however often it is sent again, and
+        # the owner is @mentioned once, in a notice that every move stopped
+        # until it closes links to, so the notice reaches them even with this
         # repository watched for mentions only, and a failure that stops many
         # moves pings them once. The game closes the notice when a move goes
-        # through again.
-        if: ${{ failure() && steps.route.outputs.action != 'reject' && steps.check.outputs.verdict != 'refuse' && steps.dispatch.outcome != 'success' }}
+        # through again. A move sent again whose issue couldn't be read has
+        # nothing to say it on.
+        if: ${{ failure() && (github.event_name == 'issues' || steps.route.outputs.issue != '') && steps.route.outputs.action != 'reject' && steps.route.outputs.action != 'ignore' && steps.check.outputs.verdict != 'refuse' && steps.dispatch.outcome != 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
+          ISSUE: ${{ steps.route.outputs.issue || github.event.issue.number }}
+          TOLD: ${{ steps.route.outputs.stranded }}
           OWNER: ${{ github.repository_owner }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         shell: bash
@@ -248,16 +343,27 @@ jobs:
             gh label create arbiter-outage --repo "$GITHUB_REPOSITORY" --color 6e7781 \
               --description "The Arbiter's own notices" --force > /dev/null
             down="$(gh issue create --repo "$GITHUB_REPOSITORY" --title '🧯 The Arbiter is down' --label arbiter-outage \
-              --body "$(printf '%s\n%s %s\n' \
+              --body "$(printf '%s\n%s %s %s\n' \
                 "🧯 **The Arbiter is down**, so moves aren't reaching the board." \
                 "@$OWNER, [this run]($RUN_URL) failed before it could send one on. Every move it stops links here," \
-                "and nobody is pinged again; this closes itself when a move goes through.")")"
+                "and nobody is pinged again. This closes itself when a move goes through, and once it's closed," \
+                "the next sweep sends every stranded move again.")")"
             down="${down##*/}"
             gh issue lock "$down" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$down was left unlocked."
           fi
-          printf '%s\n%s %s\n' "⚠️ **Your move didn't reach the board**, so nothing was played." \
-            "It's being looked into in [#$down](https://github.com/$GITHUB_REPOSITORY/issues/$down): try the same move" \
-            "again from [the board](https://github.com/$OWNER) once that's closed." \
-            > "$RUNNER_TEMP/failed.md"
-          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/failed.md"
-          gh issue lock "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason resolved || echo "::warning::#$ISSUE was left unlocked."
+          # Made the first time it is needed, and never in the way of the reply.
+          gh label create stranded --repo "$GITHUB_REPOSITORY" --color fbca04 \
+            --description "🧯 This move didn't reach its game; it's tried again once the Arbiter is back." \
+            > /dev/null 2>&1 || true
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --add-label stranded > /dev/null \
+            || echo "::warning::#$ISSUE was left without its stranded label."
+          if [ "$TOLD" != true ]; then
+            printf '%s\n%s %s\n' "⚠️ **Your move didn't reach the board yet**, so nothing's been played." \
+              "It's being looked into in [#$down](https://github.com/$GITHUB_REPOSITORY/issues/$down), and your move" \
+              "is sent again by itself once that's closed: there's nothing you need to do." \
+              > "$RUNNER_TEMP/failed.md"
+            gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/failed.md"
+          fi
+          # The API's own lock, which leaves an issue already locked as it is.
+          gh api --method PUT "repos/$GITHUB_REPOSITORY/issues/$ISSUE/lock" -f lock_reason=resolved --silent \
+            || echo "::warning::#$ISSUE was left unlocked."

@@ -1,0 +1,83 @@
+# --- This Repository's Own Workflow ---
+#
+# ⏳ Move Sweep
+#
+# Purpose: answers every issue left waiting here - marks each move whose
+# ruling is overdue, and sends again each move that never reached its game.
+#
+# 🎲 Move Intake sends a move on and leaves its issue open for the game's
+# ruling: the Official Arbiter replies there, labels it `played` or
+# `turned away`, and closes it. Twice an hour, intake/sweep.py reads every
+# open issue a player opened here and answers the ones left waiting:
+#
+#   sent on, no ruling for 15 minutes  marked `overdue`, its player told once,
+#                                      locked, and the owner told once, in
+#                                      the outage notice
+#   stranded or overdue                sent through 🎲 Move Intake again, by
+#                                      its number, once no outage notice is
+#                                      open; while one is, only the oldest
+#                                      stranded move, once a sweep, to find
+#                                      out whether the outage is over
+#   never answered for 15 minutes      sent through 🎲 Move Intake again
+#
+# The outage notice is the one the intake and the games open, labelled
+# `arbiter-outage`: it @mentions the owner once, however many moves it holds
+# up, and the next move to go through closes it, so a sweep after that sends
+# every waiting move again. A move sent again goes straight to its game,
+# which knows a move already played from its issue, so nothing is played
+# twice. At most 10 are sent again in a sweep, oldest first. The owner's own
+# issues that aren't moves, and anything an app or a bot opened, are left
+# alone.
+#
+# Everything here uses this repository's own token, which writes nothing
+# anywhere else: a move is sent again by starting 🎲 Move Intake here, which
+# a token's dispatch is allowed to do. Nothing a player wrote reaches a
+# `run:`, and nothing here prints a title.
+#
+# ---
+
+name: '⏳ Move Sweep'
+
+on:
+  schedule:
+    - cron: '11,41 * * * *' # twice an hour, off the hour and the half hour
+  workflow_dispatch:
+
+concurrency:
+  # One sweep at a time, and none cancelled: two at once could each send the
+  # same move again.
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  sweep:
+    name: '⏳ Answer Every Issue Left Waiting'
+    # Inert in a template. Only ever on the default branch, whose intake is
+    # the one a move is sent again through: a schedule always runs there, and
+    # its event carries no repository to ask, so only a dispatch is checked.
+    if: ${{ !github.event.repository.is_template && (github.event_name == 'schedule' || github.ref_name == github.event.repository.default_branch) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # check out the sweep and the router's table
+      issues: write # mark, tell and lock a move left waiting, and open the outage notice
+      actions: write # send a move again through 🎲 Move Intake
+    steps:
+      - name: '🛡️ Harden Runner'
+        uses: tannergolden/standards/actions/harden@v1
+        with:
+          egress-policy: audit
+          notice: '⏳ Move Sweep: answers every issue left waiting here.'
+
+      - name: '📂 Checkout The Sweep'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: intake
+
+      - name: '⏳ Sweep The Open Issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 intake/sweep.py

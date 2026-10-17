@@ -25,9 +25,9 @@ The four games on [@tannergolden's profile](https://github.com/tannergolden),
 Chess, Checkers, Pentago and Tic-Tac, are played with links. Every
 move on a board is a link that opens a ready-made issue in this repository,
 with the move already in its title. Submit it, and
-**🎲 Move Intake** checks it, passes it to that game's repository, replies, and
-closes the issue, all within a minute. The game then decides whether the move
-stands, redraws the board, and says so on the same issue.
+**🎲 Move Intake** checks it and passes it to that game's repository within a
+minute. The game then decides whether the move stands, redraws the board, says
+so on the same issue, and closes it, labelled `played` or `turned away`.
 
 This repository holds no game. It is the door every move comes through:
 
@@ -39,7 +39,10 @@ This repository holds no game. It is the door every move comes through:
 - **one check**, [`intake/check.py`](intake/check.py), that turns away, in the
   game's own words, a move its game could only refuse;
 - **one workflow**, [`intake.yml`](.github/workflows/intake.yml), that does
-  what the two scripts decide.
+  what the two scripts decide;
+- **one sweep**, [`intake/sweep.py`](intake/sweep.py), run twice an hour by
+  [`sweep.yml`](.github/workflows/sweep.yml), that answers every move left
+  waiting.
 
 It also keeps the replays: every game a player's own move won, played again
 move by move, in [`replays/`](replays/README.md) and the
@@ -52,29 +55,46 @@ move by move, in [`replays/`](replays/README.md) and the
 1. **A player clicks a move** on the profile. Its link opens the **🎲 Play a
    move** form here, with the title filled in: `chess: e2e4 · game 1 · move 1`.
 2. **They submit it** as it opens. A GitHub account is all a player needs.
-3. **🎲 Move Intake reads the title** against the table, and reacts with 👀 so
-   the player sees it was picked up. Only a title that matches one game's
-   pattern from end to end is a move, labelled `move` and its game, such as
-   `game: chess`; anything else is labelled `invalid`.
+3. **🎲 Move Intake reads the title** against the table, and the Official
+   Arbiter reacts with 👀 so the player sees it was picked up. Only a title that
+   matches one game's pattern from end to end is a move, labelled `move` and its
+   game, such as `game: chess`; anything else is labelled `invalid`.
 4. **It checks the move against the board**, and answers here a move the game
    could only refuse: one for a game that is over, one already played, one on
    the other side's turn, one for the next game while the last one's winning
-   board is still up, or one from a player past the hourly limit.
+   board is still up, or one from a player past the hourly limit. That move is
+   labelled `turned away` and closed.
 5. **The move goes to its game.** A short-lived token from the GitHub App
    starts the game's workflow, with the move, the issue's number and the
-   player.
-6. **The issue is answered:** a 🚀, a reply, and closed as completed. The game
-   replies on the same issue once it has played the move, or says why it could
-   not.
+   player, and the issue gets a 🚀. It stays open for the game's ruling.
+6. **The game rules on it.** The Arbiter replies on the same issue once it has
+   played the move, or says why it could not, labels it `played` or
+   `turned away`, files it in its game's milestone, such as `Chess · game 1`,
+   and closes it: as completed if it was played, as not planned if not. That
+   reply is the one a move gets.
 
-| The issue                          | What happens                                              |
-| :--------------------------------- | :-------------------------------------------------------- |
-| A move for a game in the table     | Passed to its game, answered, and closed as completed     |
-| A move its game could only refuse  | A reply in the game's words, closed as not planned        |
-| Anything else, from anyone else    | A reply saying how to play, and closed as not planned     |
-| Anything else, from the owner      | Left open: the owner files their own issues here too      |
-| Anything opened by an app or a bot | Never touched, so each game can post its own notices here |
-| A move that cannot reach its game  | Left open, with a reply that @mentions the owner          |
+| The issue                          | What happens                                                          |
+| :--------------------------------- | :-------------------------------------------------------------------- |
+| A move for a game in the table     | A 🚀, passed to its game, and left open for the game's ruling         |
+| A move its game could only refuse  | A reply in the game's words, `turned away`, closed as not planned     |
+| Anything else, from anyone else    | A reply saying how to play, and closed as not planned                 |
+| Anything else, from the owner      | Left open: the owner files their own issues here too                  |
+| Anything opened by an app or a bot | Never touched, so each game can post its own notices here             |
+| A move that cannot reach its game  | `stranded`, with a reply, the owner told once, and sent again later   |
+| A move sent on but never ruled on  | `overdue` after 15 minutes, the owner told once, and sent again later |
+
+**No move is left waiting.** Twice an hour, ⏳ Move Sweep reads every open
+issue here. A move sent on that its game hasn't ruled on in 15 minutes is
+marked `overdue`, its player is told once, and the owner is told once, in the
+same outage notice a move that can't reach its game opens. Once that notice
+is closed, which the next move to go through does by itself, the sweep sends
+every `stranded` and `overdue` move through 🎲 Move Intake again; while it is
+open, it tries the oldest stranded move alone, once a sweep, to find out
+whether the outage is over. An issue the intake never answered, such as one
+whose run never started, is sent again after 15 minutes either way. A move
+sent again goes straight to its game, which knows a move already played from
+that issue, so nothing is ever played twice, and one gone stale is turned away
+with the reason.
 
 A move link is the issue form plus the title, URL-encoded:
 
@@ -160,8 +180,10 @@ Every move crosses into another repository, so the intake needs one GitHub
 App, the **Official Arbiter**, owned by this account and installed here and on
 every game's repository. Each run asks it for a token that lives an hour at
 most, reaches only the one repository the move's row names, can do nothing
-there but start a workflow, and is revoked when the job ends. There is no
-long-lived token to leak, and none to expire and quietly stop the game.
+there but start a workflow, and is revoked when the job ends. Its 👀 on every
+issue the intake answers comes from a second token of the same kind, with
+Issues write here and nothing more. There is no long-lived token to leak, and
+none to expire and quietly stop the game.
 
 > [!NOTE]
 > **Only the owner sets this up, and only once.** Players need nothing but a
@@ -170,11 +192,11 @@ long-lived token to leak, and none to expire and quietly stop the game.
 > the rest with this account's App. One App serves every game, so a new game
 > is only its repository added to the same installation.
 
-| Permission                | Where                                | Used by                   | For                                                      |
-| :------------------------ | :----------------------------------- | :------------------------ | :------------------------------------------------------- |
-| **Actions:** Read & write | Each game's repository, and this one | 🎲 Move Intake, each game | Starting the game's workflow, and 🎬 Replays after a win |
-| **Issues:** Read & write  | This repository                      | Each game, and 🎬 Replays | Its replies on a move's issue, its notices and replays   |
-| **Metadata:** Read-only   | Both                                 | -                         | Granted to every App                                     |
+| Permission                | Where                                | Used by                                   | For                                                                |
+| :------------------------ | :----------------------------------- | :---------------------------------------- | :----------------------------------------------------------------- |
+| **Actions:** Read & write | Each game's repository, and this one | 🎲 Move Intake, each game                 | Starting the game's workflow, and 🎬 Replays after a win           |
+| **Issues:** Read & write  | This repository                      | Each game, 🎬 Replays, and 🎲 Move Intake | Its rulings on a move's issue, its notices and replays, and its 👀 |
+| **Metadata:** Read-only   | Both                                 | -                                         | Granted to every App                                               |
 
 Setting it up, once:
 
@@ -182,8 +204,8 @@ Setting it up, once:
    GitHub Apps**. It needs no webhook, so clear **Active** under Webhook. Give
    it the permissions above, and let it be installed on this account only.
    Name it **Official Arbiter**: players see it as `official-arbiter[bot]` on
-   every reply a game posts. The intake's own replies come from
-   `github-actions[bot]`.
+   every 👀 and on every reply a game posts. The intake's own 🚀 and replies,
+   and the sweep's, come from `github-actions[bot]`.
 2. **Generate a private key**, and note the App's **Client ID**.
 3. **Install it** on `tannergolden/play` and `tannergolden/tannergolden`, as
    selected repositories.
@@ -191,9 +213,10 @@ Setting it up, once:
    the Client ID as the variable `PLAY_APP_CLIENT_ID`, and the whole private
    key file as the secret `PLAY_APP_PRIVATE_KEY`.
 
-Until both exist, every move fails with a reply that @mentions the owner,
-and every replay waits to be posted. Each game's repository keeps its own copy
-of the same two, for its replies.
+Until both exist, every move fails with a reply, the owner is @mentioned
+once in the outage notice, no issue gets its 👀, and every replay waits to be
+posted. Each game's repository keeps its own copy of the same two, for its
+rulings.
 
 The full guide, with what players see, how to rotate the key and what to do
 when a move fails, is [`docs/GitHub-App.md`](docs/GitHub-App.md).
@@ -214,11 +237,13 @@ workflow that reads it can start a workflow in another repository. So:
 - **Only what a pattern captures goes on**, and every captured value is one
   short token of letters, digits and `_.+#=-`, however loose the pattern.
 - **The token is narrow and brief:** one repository, Actions write, revoked
-  when the job ends. Replies and closing use this repository's own token,
-  which reaches nothing else.
+  when the job ends. The Arbiter's 👀 is minted the same way, with Issues write
+  here alone, and held by that one step. Replies, labels, closing and locking
+  use this repository's own token, which reaches nothing else.
 - **Nothing here runs a stranger's code.** The workflow checks out only the
   intake folder, from the default branch, without credentials, and runs only
-  the router and the check.
+  the router and the check. A move sent again is read from its issue by the
+  router, the same way, and only the owner or ⏳ Move Sweep can send one.
 - **The game is the judge.** The intake checks that a title is shaped like a
   move, and turns away at the door only what the game could only refuse, from
   the game's state as it last read it. Whether a move is legal is always the
@@ -241,13 +266,17 @@ Every move is an issue here, so a repository watched the usual way sends a
 notification for every move anyone plays. Set this one to **Watch →
 Participating and @mentions**, and what reaches you is what needs you:
 
-- **a move that could not reach its game**, whose reply @mentions you;
+- **a move that could not reach its game, or one its game never ruled on**,
+  in the outage notice, which @mentions you once however many moves it holds
+  up;
 - **anything a game @mentions you in**, such as its notice that it is your
   turn.
 
-🚨 CI Failure Alerts also opens an issue when 🎲 Move Intake or 🎬 Replays
+🚨 CI Failure Alerts also opens an issue when 🎬 Replays or ⏳ Move Sweep
 fails, but it mentions no one, so under this setting it shows on the Issues
-tab rather than in your notifications.
+tab rather than in your notifications. It doesn't watch 🎲 Move Intake: a move
+that can't reach its game already opens the outage notice, and one alarm is
+enough for one fault.
 
 ---
 
@@ -256,10 +285,11 @@ tab rather than in your notifications.
 | Workflow                   | Gives you                                                                                  |
 | :------------------------- | :----------------------------------------------------------------------------------------- |
 | `intake.yml`               | 🎲 Move Intake: every move issue, routed to its game. This repository's own                |
+| `sweep.yml`                | ⏳ Move Sweep: every move left waiting, marked or sent again. This repository's own        |
 | `replay.yml`               | 🎬 Replays: every won game drawn again, kept and posted. This repository's own             |
 | `checks.yml`               | Lint and tests, the intake's and the replays' included; secret scan, CodeQL, workflow lint |
 | `governance.yml`           | PR title and DCO checks, triage, stale sweep, slash commands                               |
-| `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎲 Move Intake and 🎬 Replays included       |
+| `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎬 Replays and ⏳ Move Sweep included        |
 | `release.yml`              | Draft notes, publish assets, prune superseded releases                                     |
 | `maintenance.yml`          | Prunes stale deployments and draft releases                                                |
 | `lifecycle.yml`            | Claimed this repository once; flags a new major of the standards                           |
@@ -273,8 +303,8 @@ tab rather than in your notifications.
 | `template-sync.yml`        | Proposes the template's later fixes as one pull request, when run                          |
 
 `cut-release.yml` belongs to the template, and its guard keeps it from ever
-running here. Of the rest, all but `intake.yml`, `replay.yml` and
-`verify-stubs.yml`, which run scripts kept here, are stubs that call
+running here. Of the rest, all but `intake.yml`, `sweep.yml`, `replay.yml`
+and `verify-stubs.yml`, which run scripts kept here, are stubs that call
 [`tannergolden/standards`](https://github.com/tannergolden/standards), so a fix
 there reaches this repository without a commit here.
 
@@ -288,6 +318,7 @@ off** with `git commit -s`; the DCO check is required once the rulesets are on.
 > game never pauses; the weekly sweeps can be switched back on from the
 > Actions tab. So can 🎬 Replays, should it pause after 60 days without a
 > commit here: its first run once it is back on draws every replay it missed.
+> And so can ⏳ Move Sweep, whose first sweep answers every move left waiting.
 
 ---
 
@@ -302,14 +333,14 @@ template is private; see [`.github/template-sync.md`](.github/template-sync.md).
 Every change this repository made to a file the template ships is protected
 in [`.github/template-sync`](.github/template-sync), the list the sync reads:
 
-| File                                                                         | Changed here                             | Kept by                                                           |
-| :--------------------------------------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------- |
-| `README.md`, `LICENSE`                                                       | This page, and the proprietary licence   | Yours from the start: the sync never touches them                 |
-| `.github/workflows/governance.yml`                                           | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
-| `.github/workflows/checks.yml`                                               | Runs the intake's and the replays' tests | `# keep mine`                                                     |
-| `.github/workflows/ci-failure-alert.yml`                                     | Watches 🎲 Move Intake and 🎬 Replays    | `# keep mine`                                                     |
-| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `replays/`, `replay.yml` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
-| The seeded documents in `docs/`                                              | The licence footer                       | The per-file merge: the template's other changes arrive around it |
+| File                                                                                      | Changed here                             | Kept by                                                           |
+| :---------------------------------------------------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------- |
+| `README.md`, `LICENSE`                                                                    | This page, and the proprietary licence   | Yours from the start: the sync never touches them                 |
+| `.github/workflows/governance.yml`                                                        | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
+| `.github/workflows/checks.yml`                                                            | Runs the intake's and the replays' tests | `# keep mine`                                                     |
+| `.github/workflows/ci-failure-alert.yml`                                                  | Watches 🎬 Replays and ⏳ Move Sweep     | `# keep mine`                                                     |
+| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `sweep.yml`, `replays/`, `replay.yml` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
+| The seeded documents in `docs/`                                                           | The licence footer                       | The per-file merge: the template's other changes arrive around it |
 
 A file you and the template changed in the same place is left exactly as you
 have it, so none of this is ever overwritten. Two things still need your eye
@@ -334,22 +365,22 @@ Alerts to watch, say. Copy across anything worth having.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                                       | Purpose                                                                                                                                                |
-| :------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                                 |
-| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the issue form, scripts and workflows - logged below                                                     |
-| [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.                   |
-| [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows.                 |
-| [`docs/`](docs/README.md)                   | Where this project keeps its own documents, and where the engineering standards it follows actually live.                                              |
-| [`intake/`](intake/README.md)               | The router every move passes through, and the check that reads each move against its board: the table of the four games, both scripts and their tests. |
-| [`replays/`](replays/README.md)             | Every game a player's own move won, played again: each game's newest 25 replays, the index of every one ever made, and the script that keeps them.     |
-| [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                                         |
-| [`.env.example`](.env.example)              | Environment variable template for this project.                                                                                                        |
-| [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                        |
-| [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                            |
-| [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                                      |
-| [`LICENSE`](LICENSE)                        | PROPRIETARY LICENCE                                                                                                                                    |
-| [`README.md`](README.md)                    | This file.                                                                                                                                             |
+| Entry                                       | Purpose                                                                                                                                                                                                     |
+| :------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`.devcontainer/`](.devcontainer/README.md) | The language-neutral development container this repository ships, and how to give it the toolchain your project needs.                                                                                      |
+| [`.github/`](.github/)                      | CODEOWNERS, Dependabot, release notes config, the issue form, scripts and workflows - logged below                                                                                                          |
+| [`.vscode/`](.vscode/README.md)             | The VS Code settings and extension recommendations this repository shares, and why every other file in this folder stays out of git.                                                                        |
+| [`assets/`](assets/README.md)               | Where this project keeps what presents it: four folders to start, a name ready for every other kind, and the rules every file follows.                                                                      |
+| [`docs/`](docs/README.md)                   | Where this project keeps its own documents, and where the engineering standards it follows actually live.                                                                                                   |
+| [`intake/`](intake/README.md)               | The router every move passes through, the check that reads each move against its board, and the sweep that answers every move left waiting: the table of the four games, the three scripts and their tests. |
+| [`replays/`](replays/README.md)             | Every game a player's own move won, played again: each game's newest 25 replays, the index of every one ever made, and the script that keeps them.                                                          |
+| [`.editorconfig`](.editorconfig)            | Editor defaults every editor honours: UTF-8, LF, a final newline, and indentation per language                                                                                                              |
+| [`.env.example`](.env.example)              | Environment variable template for this project.                                                                                                                                                             |
+| [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                                                                             |
+| [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                                                                                 |
+| [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                                                                                           |
+| [`LICENSE`](LICENSE)                        | PROPRIETARY LICENCE                                                                                                                                                                                         |
+| [`README.md`](README.md)                    | This file.                                                                                                                                                                                                  |
 
 <!-- AUTO-INDEX:END -->
 

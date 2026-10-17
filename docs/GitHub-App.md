@@ -47,6 +47,7 @@ fresh token that:
 ```mermaid
 graph LR
     A[Player submits a move issue] --> B[Move Intake in play]
+    B -->|Arbiter token, Issues write on play| G[The Arbiter's eyes on the issue]
     B -->|Arbiter token, Actions write on the game repository| C[Game workflow]
     C -->|Arbiter token, Issues write on play| D[Reply on the move issue]
     C -->|Arbiter token, Actions write on play, after a win| E[Replays in play]
@@ -57,19 +58,20 @@ graph LR
 
 ## 🛡️ What It May Do
 
-| Permission   | Access         | Needed on                            | Used by                   | For                                                             |
-| :----------- | :------------- | :----------------------------------- | :------------------------ | :-------------------------------------------------------------- |
-| **Actions**  | Read and write | Each game's repository, and this one | 🎲 Move Intake, each game | Starting the game's workflow, and 🎬 Replays after a win        |
-| **Issues**   | Read and write | This repository                      | Each game, and 🎬 Replays | Its replies on a move's issue, its turn notices and each replay |
-| **Metadata** | Read-only      | Both                                 | -                         | Granted to every App                                            |
+| Permission   | Access         | Needed on                            | Used by                                   | For                                                                               |
+| :----------- | :------------- | :----------------------------------- | :---------------------------------------- | :-------------------------------------------------------------------------------- |
+| **Actions**  | Read and write | Each game's repository, and this one | 🎲 Move Intake, each game                 | Starting the game's workflow, and 🎬 Replays after a win                          |
+| **Issues**   | Read and write | This repository                      | Each game, 🎬 Replays, and 🎲 Move Intake | Its rulings on a move's issue, its turn notices, each replay, and the intake's 👀 |
+| **Metadata** | Read-only      | Both                                 | -                                         | Granted to every App                                                              |
 
 **Nothing else.** No contents, no pull requests, no organization or account
 permissions, no webhook, and no events. A permission an App holds applies on
 every repository it is installed on, so each run narrows its own token
-further: the intake asks for Actions write on the one game's repository; a
-game asks for Issues write on this one, and for Actions write on this one to
-start 🎬 Replays after a win; and 🎬 Replays asks for Issues write here, to
-post each replay.
+further: the intake asks for Actions write on the one game's repository, and
+for Issues write here, for its 👀 alone; a game asks for Issues write on this
+one, to reply, label, file and close a move's issue, and for Actions write on
+this one to start 🎬 Replays after a win; and 🎬 Replays asks for Issues write
+here, to post each replay.
 
 ---
 
@@ -166,13 +168,15 @@ posted.
 
 ## 🤖 What Players See
 
-| Where                                                   | Shown as                                           |
-| :------------------------------------------------------ | :------------------------------------------------- |
-| The intake's 👀 and 🚀, reply and closing               | `github-actions[bot]`, this repository's own token |
-| Every reply and notice a game posts                     | `official-arbiter[bot]`, with the App's logo       |
-| The logbook of the moves the Arbiter plays after a week | `official-arbiter[bot]`, an issue of its own       |
-| The replay of a game a player won                       | `official-arbiter[bot]`, on the winning move       |
-| An install or authorize prompt                          | Never                                              |
+| Where                                                     | Shown as                                           |
+| :-------------------------------------------------------- | :------------------------------------------------- |
+| The intake's 👀 on every issue it answers                 | `official-arbiter[bot]`, with the App's logo       |
+| The intake's 🚀, its replies, labels and closing          | `github-actions[bot]`, this repository's own token |
+| ⏳ Move Sweep's `overdue`, its word and the outage notice | `github-actions[bot]`, this repository's own token |
+| Every ruling and notice a game posts, and its close       | `official-arbiter[bot]`, with the App's logo       |
+| The logbook of the moves the Arbiter plays after a week   | `official-arbiter[bot]`, an issue of its own       |
+| The replay of a game a player won                         | `official-arbiter[bot]`, on the winning move       |
+| An install or authorize prompt                            | Never                                              |
 
 Every answered issue is locked, so only the owner and the Arbiter can write
 on it afterwards: nobody can use an old move's issue to notify the owner. The
@@ -238,10 +242,24 @@ in exactly two kinds of place: this repository's secrets and each game's.
 
 ## 🩺 When A Move Fails
 
-A failed move gets a reply on its issue linking the open `🧯 The Arbiter is
-down` notice. The notice @mentions the owner once, however many moves fail
-while it is open, and closes itself when a move goes through again. The
-failed run in the Actions tab names the step that failed.
+A move that fails to reach its game is labelled `stranded`, and gets a reply
+on its issue linking the open `🧯 The Arbiter is down` notice. A move sent on
+that its game never rules on, because the game's run failed before it could
+reply, is labelled `overdue` by ⏳ Move Sweep after 15 minutes, and linked to
+the same notice. The notice @mentions the owner once, however many moves it
+holds up, and closes itself when a move goes through again. The failed run in
+the Actions tab names the step that failed.
+
+Once it is fixed, close the notice, unless a move has already closed it: the
+next sweep, within half an hour, sends every stranded and overdue move through
+🎲 Move Intake again, and each player gets the game's ruling on their own
+issue, so nobody has to play their move twice. While the notice is open, each
+sweep tries the oldest stranded move alone, so a fix nobody announces is found
+by itself. To send one at once, run 🎲 Move Intake from the Actions tab with
+the issue's number.
+
+The 👀 comes from the same pair: without it, 🔑 Mint The Arbiter Token warns
+and every issue goes without its 👀, and nothing else changes.
 
 | Step that failed       | What it says                             | Fix                                                                                                       |
 | :--------------------- | :--------------------------------------- | :-------------------------------------------------------------------------------------------------------- |

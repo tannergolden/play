@@ -1,6 +1,6 @@
 <!--
 title: '🎲 MOVE INTAKE'
-description: 'The router every move passes through, and the check that reads each move against its board: the table of the four games, both scripts and their tests.'
+description: 'The router every move passes through, the check that reads each move against its board, and the sweep that answers every move left waiting: the table of the four games, the three scripts and their tests.'
 tags: [intake, routing, issueops, python]
 category: docs
 -->
@@ -13,7 +13,7 @@ category: docs
 
 **Every move comes in through here, and only a move goes out.**
 
-_One table. One router. One check. Every title read against all three._
+_One table. One router. One check. One sweep. No move left waiting._
 
 </div>
 
@@ -42,32 +42,49 @@ the title against one table, and nothing else acts on it.
   the next game while the last one's winning board is still up, or one from a
   player past the hour's share. A state read here can only be behind the game,
   so a move that looks ahead of the board always goes on to the game.
+- **`sweep.py` answers every move left waiting.** ⏳ Move Sweep runs it twice
+  an hour: it marks a move whose ruling is overdue, and sends a move that
+  never reached its game through 🎲 Move Intake again, as
+  [below](#-no-move-left-waiting).
 
-| The issue                            | Decision   | What 🎲 Move Intake does                                                   |
-| :----------------------------------- | :--------- | :------------------------------------------------------------------------- |
-| A move for a game in the table       | `dispatch` | Starts the game's workflow, reacts 🚀, replies, closes it as completed     |
-| A move its game could only turn away | `refuse`   | Replies in the game's words, closes it as not planned, locks it            |
-| Anything else, from anyone else      | `reject`   | Replies with how to play, closes it as not planned, locks it               |
-| Anything else, from the owner        | `ignore`   | Leaves it open: the owner files their own issues here too                  |
-| Anything opened by an app or a bot   | -          | Never runs: the game's own notices, its logbook and outages are left alone |
+| The issue                            | Decision   | What 🎲 Move Intake does                                                                 |
+| :----------------------------------- | :--------- | :--------------------------------------------------------------------------------------- |
+| A move for a game in the table       | `dispatch` | Starts the game's workflow, reacts 🚀, and leaves it open for the game's ruling          |
+| A move its game could only turn away | `refuse`   | Replies in the game's words, labels it `turned away`, closes it as not planned, locks it |
+| Anything else, from anyone else      | `reject`   | Replies with how to play, closes it as not planned, locks it                             |
+| Anything else, from the owner        | `ignore`   | Leaves it open: the owner files their own issues here too                                |
+| Anything opened by an app or a bot   | -          | Never runs: the game's own notices, its logbook and outages are left alone               |
+| A move that can't reach its game     | -          | Labels it `stranded`, tells its player once, locks it, and opens the outage notice       |
 
-Every issue 🎲 Move Intake answers gets a 👀 as soon as its title is read,
-before anything else is done with it, so whoever opened it sees at once that it
-was picked up. The owner's own issues, which it leaves alone, get none.
+Every issue 🎲 Move Intake answers gets the Official Arbiter's 👀 as soon as
+its title is read, before anything else is done with it, so whoever opened it
+sees at once that it was picked up. The 👀 comes from a token of the
+Arbiter's own, with Issues write here alone, and without it the 👀 is left
+out and nothing else is. The owner's own issues, which the intake leaves
+alone, get none.
 
-A move's own issue is locked by its game once it has replied, so nobody but the
-owner and the Arbiter writes on an answered issue again.
+**A move gets one reply: its game's ruling.** The intake says nothing on a
+move it sends on but its 🚀, and leaves the issue open. The game's Arbiter
+replies there once it has played the move or turned it away, labels it
+`played` or `turned away`, files it in its game's milestone, such as
+`Chess · game 1`, and closes it: as completed if it was played, as not
+planned if not. It locks the issue as it replies, so nobody but the owner and
+the Arbiter writes on an answered issue again.
 
 ### 🏷️ Labels
 
 Every issue answered here is labelled, so moves can be filtered by game and
 told apart from everything else:
 
-| The issue                              | Labels                                             |
-| :------------------------------------- | :------------------------------------------------- |
-| A move, sent on or turned away         | `move`, and its game: `game: chess`, `game: checkers`, `game: pentago` or `game: tictac` |
-| Anything else, from anyone else        | `invalid`                                          |
-| Anything else, from the owner          | None: it's left as it is                           |
+| The issue                                      | Labels                                                                                   |
+| :--------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| A move, sent on or turned away                 | `move`, and its game: `game: chess`, `game: checkers`, `game: pentago` or `game: tictac` |
+| A move its game played                         | `played`, from the game                                                                  |
+| A move turned away, here or by its game        | `turned away`                                                                            |
+| A move that couldn't reach its game            | `stranded`, until it is sent again                                                       |
+| A move sent on with no ruling after 15 minutes | `overdue`, from ⏳ Move Sweep, until it is sent again                                    |
+| Anything else, from anyone else                | `invalid`                                                                                |
+| Anything else, from the owner                  | None: it's left as it is                                                                 |
 
 The move form gives `move` as the issue opens. `route.py` names the rest, in
 `$RUNNER_TEMP/labels.json`, and 🎲 Move Intake applies them: `move` again, for
@@ -78,6 +95,52 @@ repository is made the first time it is needed, with the colour and
 description `route.py` gives it, and a label that can't be set is a warning,
 never a stop. A new game's label is `game: <name>`; add its sign, name and
 colour to `GAMES` in `route.py`, or it is made plain.
+
+The marks a move's issue gets after it is sent on are made the same way, the
+first time each is needed, and each is made with the same colour and
+description wherever it is made: `turned away` here and by the game, `played`
+by the game alone, `stranded` by 🎲 Move Intake, and `overdue` by ⏳ Move
+Sweep (`OVERDUE` in `sweep.py`).
+
+---
+
+## ⏳ No Move Left Waiting
+
+A move's issue stays open from its 🚀 until its game rules on it, so an issue
+left open too long is one something went wrong with. Twice an hour, at 11 and
+41 minutes past, ⏳ Move Sweep runs `sweep.py` over every open issue a player
+opened here, and answers each one left waiting:
+
+| What it finds                                                              | What it does                                                                                 |
+| :------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| A move sent on, with no ruling for 15 minutes                              | Labels it `overdue`, tells its player once, locks it, and opens the outage notice if none is |
+| A move labelled `stranded` or `overdue`                                    | Sends it through 🎲 Move Intake again, once no outage notice is open                         |
+| An issue never answered, for 15 minutes                                    | Sends it through 🎲 Move Intake again, whatever the notice                                   |
+| The owner's own issues, an app's or a bot's, and anything already answered | Leaves them alone                                                                            |
+
+- **The owner is told once.** The outage notice is the one open issue labelled
+  `arbiter-outage`, which 🎲 Move Intake and each game open too, and which
+  @mentions the owner once, however many moves it holds up. The next move to
+  go through closes it, and the next sweep then sends every waiting move
+  again. Closing it by hand, once the fault is fixed, does the same.
+- **An outage is probed, not hammered.** While the notice is open, a sweep
+  sends only the oldest stranded move again: if it goes through, its game
+  closes the notice.
+- **A player is told once.** `overdue` comes with a comment only on an issue
+  nothing has been said on since its 🚀, and never twice; a move stranded
+  again isn't told again.
+- **Nothing is played twice.** 🎲 Move Intake reads a move sent again from its
+  issue as it is now, through `$RUNNER_TEMP/issue.json` in place of the event,
+  and sends it straight to its game, without `check.py`: only the game can
+  tell a move already played from that very issue, which it answers as
+  played. A move gone stale since is turned away with the reason. The intake
+  unlocks the issue for the game's reply, and takes `stranded` and `overdue`
+  off as it sends the move.
+- **At most 10 issues go again in a sweep**, oldest first; the next sweep
+  takes the rest.
+
+The owner can send any issue through the intake again by hand, from the
+Actions tab: run 🎲 Move Intake with the issue's number.
 
 ---
 
@@ -146,14 +209,16 @@ these:
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                            | Purpose                                                                                  |
-| :------------------------------- | :--------------------------------------------------------------------------------------- |
-| [`check.py`](check.py)           | Turn a move away here, before it starts its game, when the game could only turn it away. |
-| [`README.md`](README.md)         | This file.                                                                               |
-| [`route.py`](route.py)           | Route one move issue to the game it names, or turn it away.                              |
-| [`routes.json`](routes.json)     | Every game the intake serves: where its moves go, and what a move for it looks like.     |
-| [`test_check.py`](test_check.py) | Tests for the pre-check of all four games.                                               |
-| [`test_route.py`](test_route.py) | Tests for the move router.                                                               |
+| Entry                            | Purpose                                                                                                                |
+| :------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| [`check.py`](check.py)           | Turn a move away here, before it starts its game, when the game could only turn it away.                               |
+| [`README.md`](README.md)         | This file.                                                                                                             |
+| [`route.py`](route.py)           | Route one move issue to the game it names, or turn it away.                                                            |
+| [`routes.json`](routes.json)     | Every game the intake serves: where its moves go, and what a move for it looks like.                                   |
+| [`sweep.py`](sweep.py)           | Answer every issue left waiting: mark the moves whose ruling is overdue, and send again the ones that never got there. |
+| [`test_check.py`](test_check.py) | Tests for the pre-check of all four games.                                                                             |
+| [`test_route.py`](test_route.py) | Tests for the move router.                                                                                             |
+| [`test_sweep.py`](test_sweep.py) | Tests for the sweep.                                                                                                   |
 
 <!-- AUTO-INDEX:END -->
 
@@ -182,8 +247,8 @@ along.
 
 > [!IMPORTANT]
 > **The game's workflow declares every input it is sent**, or GitHub refuses
-> the dispatch, and the move fails with a reply on its issue. It also treats
-> each one as untrusted: they are checked here, and checked again there.
+> the dispatch, and the move is `stranded`, with a reply on its issue. It also
+> treats each one as untrusted: they are checked here, and checked again there.
 
 ---
 

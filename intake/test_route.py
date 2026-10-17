@@ -425,7 +425,7 @@ class TableTests(unittest.TestCase):
         self.refused({'chess game': ROW}, 'lower case')
 
 
-class MainTests(unittest.TestCase):
+class MainTestCase(unittest.TestCase):
     """The script as the workflow runs it: environment in, three files out."""
 
     def setUp(self) -> None:
@@ -457,20 +457,22 @@ class MainTests(unittest.TestCase):
     def written(self, name: str) -> pathlib.Path:
         return self.folder.root / name
 
-    def test_a_move_writes_its_dispatch_and_reply(self) -> None:
+
+class MainTests(MainTestCase):
+    """An issue just opened, as its event gives it."""
+
+    def test_a_move_writes_its_dispatch_and_no_reply(self) -> None:
         code, printed = self.run_main('chess: e2e4 · game 1 · move 1')
         self.assertEqual(code, 0)
         self.assertEqual(self.outputs(), {
-            'action': 'dispatch', 'game': 'chess', 'owner': 'tannergolden', 'repo': 'tannergolden',
-            'workflow': 'chess.yml',
+            'action': 'dispatch', 'issue': '7', 'player': 'octocat', 'player_id': '583231', 'game': 'chess',
+            'owner': 'tannergolden', 'repo': 'tannergolden', 'workflow': 'chess.yml',
         })
         body = json.loads(self.written('dispatch.json').read_text(encoding='utf-8'))
         self.assertEqual(body['ref'], 'Development')
         self.assertEqual(body['inputs']['uci'], 'e2e4')
-        reply = self.written('reply.md').read_text(encoding='utf-8')
-        self.assertEqual(reply, "🚀 **Move received.** It's on its way to the chess board on [@tannergolden's"
-                                " profile](https://github.com/tannergolden).\nThe Arbiter rules on it here within a"
-                                " few minutes, and says why if it can't be played.\n")
+        # Its 🚀 says it was sent on, and the game's ruling is the one reply it gets.
+        self.assertFalse(self.written('reply.md').exists())
         self.assertEqual(printed, 'Issue #7 by @octocat: dispatch to tannergolden/tannergolden, chess.yml.\n')
         labels = json.loads(self.written('labels.json').read_text(encoding='utf-8'))
         self.assertEqual(labels, [
@@ -482,7 +484,7 @@ class MainTests(unittest.TestCase):
         title = 'chess: `rm -rf /` · game 1 · move 1'
         code, printed = self.run_main(title)
         self.assertEqual(code, 0)
-        self.assertEqual(self.outputs(), {'action': 'reject'})
+        self.assertEqual(self.outputs(), {'action': 'reject', 'issue': '7', 'player': 'octocat', 'player_id': '583231'})
         self.assertFalse(self.written('dispatch.json').exists())
         reply = self.written('reply.md').read_text(encoding='utf-8')
         self.assertTrue(reply.startswith("👋 **This isn't a move, so it's closed.**\nThis repository only takes moves"))
@@ -495,7 +497,8 @@ class MainTests(unittest.TestCase):
     def test_the_owners_own_issue_writes_nothing_to_post(self) -> None:
         code, _ = self.run_main('A note to myself', PLAYER='tannergolden', PLAYER_ID='24684994')
         self.assertEqual(code, 0)
-        self.assertEqual(self.outputs(), {'action': 'ignore'})
+        self.assertEqual(self.outputs(), {'action': 'ignore', 'issue': '7', 'player': 'tannergolden',
+                                          'player_id': '24684994'})
         self.assertFalse(self.written('reply.md').exists())
         self.assertFalse(self.written('labels.json').exists())
 
@@ -515,6 +518,78 @@ class MainTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('::error file=intake/routes.json::', printed)
         self.assertEqual(self.output.read_text(encoding='utf-8'), '')
+
+
+
+class SentAgainTests(MainTestCase):
+    """A move sent again by its issue's number: read from the issue as it is now, never from the event."""
+
+    def run_again(self, issue: object, asked: str = '7') -> tuple[int, str]:
+        self.written('issue.json').write_text(json.dumps(issue), encoding='utf-8')
+        # Nothing of the event reaches a move sent again: its title and author are the issue's own.
+        return self.run_main('chess: a2a3 · game 9 · move 9', SENT_AGAIN='true', ISSUE=asked, PLAYER='',
+                             PLAYER_ID='')
+
+    def issue(self, **change: object) -> dict:
+        return {'number': 7, 'title': 'chess: e2e4 · game 1 · move 1', 'state': 'open', 'locked': True,
+                'user': {'login': 'octocat', 'id': 583231, 'type': 'User'},
+                'labels': [{'name': 'move'}, {'name': 'stranded'}], **change}
+
+    def test_a_stranded_move_goes_to_its_game_as_its_issue_has_it(self) -> None:
+        code, printed = self.run_again(self.issue())
+        self.assertEqual(code, 0)
+        self.assertEqual(self.outputs(), {
+            'action': 'dispatch', 'issue': '7', 'player': 'octocat', 'player_id': '583231', 'again': 'true',
+            'stranded': 'true', 'locked': 'true', 'game': 'chess', 'owner': 'tannergolden', 'repo': 'tannergolden',
+            'workflow': 'chess.yml',
+        })
+        body = json.loads(self.written('dispatch.json').read_text(encoding='utf-8'))
+        self.assertEqual(body['inputs'], {'uci': 'e2e4', 'game': '1', 'move_number': '1', 'issue': '7',
+                                          'player': 'octocat', 'player_id': '583231'})
+        self.assertEqual(printed, 'Issue #7 by @octocat, sent again: dispatch to tannergolden/tannergolden,'
+                                  ' chess.yml.\n')
+
+    def test_an_issue_never_answered_is_answered_as_if_just_opened(self) -> None:
+        code, _ = self.run_again(self.issue(title='hello', locked=False, labels=[]))
+        self.assertEqual(code, 0)
+        self.assertEqual(self.outputs(), {'action': 'reject', 'issue': '7', 'player': 'octocat',
+                                          'player_id': '583231', 'again': 'true', 'stranded': 'false',
+                                          'locked': 'false'})
+        self.assertTrue(self.written('reply.md').read_text(encoding='utf-8').startswith("👋 **This isn't a move"))
+
+    def test_an_issue_that_cannot_go_again_is_left_alone(self) -> None:
+        for why, issue, said in (
+            ('closed', self.issue(state='closed'), 'is closed'),
+            ('a pull request', self.issue(pull_request={'url': 'x'}), 'is a pull request'),
+            ("a bot's", self.issue(user={'login': 'official-arbiter[bot]', 'id': 1, 'type': 'Bot'}),
+             'was opened by an app or a bot'),
+            ('another issue', self.issue(number=8), "isn't the issue asked for"),
+            ('not an issue', ['x'], "isn't the issue asked for"),
+        ):
+            with self.subTest(why=why):
+                self.output.write_text('', encoding='utf-8')
+                code, printed = self.run_again(issue)
+                self.assertEqual(code, 0)
+                self.assertEqual(self.outputs(), {'action': 'ignore'})
+                self.assertEqual(printed, f'Issue #7 {said}, so it was left alone.\n')
+                self.assertFalse(self.written('dispatch.json').exists())
+
+    def test_an_issue_that_cannot_be_read_is_left_alone(self) -> None:
+        self.written('issue.json').write_text('{', encoding='utf-8')
+        code, printed = self.run_main('', SENT_AGAIN='true', PLAYER='', PLAYER_ID='')
+        self.assertEqual((code, self.outputs()), (0, {'action': 'ignore'}))
+        self.assertEqual(printed, "Issue #7 couldn't be read, so it was left alone.\n")
+
+    def test_a_malformed_author_or_number_stops_the_run(self) -> None:
+        for issue, asked in ((self.issue(user={'login': 'octocat', 'id': '583231', 'type': 'User'}), '7'),
+                             (self.issue(user={'login': 'a b', 'id': 1, 'type': 'User'}), '7'),
+                             (self.issue(), '7; echo')):
+            with self.subTest(issue=issue['user'], asked=asked):
+                self.output.write_text('', encoding='utf-8')
+                code, printed = self.run_again(issue, asked)
+                self.assertEqual(code, 1)
+                self.assertIn('::error::', printed)
+                self.assertEqual(self.output.read_text(encoding='utf-8'), '')
 
 
 if __name__ == '__main__':

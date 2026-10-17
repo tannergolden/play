@@ -11,16 +11,28 @@ repository the table does not name.
 
 WHAT IT DECIDES, one of three:
 
-    dispatch  a move for a game in the table: start that game's workflow
+    dispatch  a move for a game in the table: start that game's workflow,
+              and leave the issue open for the game to rule on
     reject    anything else: reply, and close the issue as not planned
     ignore    an issue of the owner's that is not a move: leave it open
 
-It writes the decision, and for a move the game it is for, to
-$GITHUB_OUTPUT, the dispatch's request body to $RUNNER_TEMP/dispatch.json,
-the reply to $RUNNER_TEMP/reply.md, and the labels the issue should carry to
+A MOVE SENT AGAIN. ⏳ Move Sweep, or the owner, starts 🎲 Move Intake again
+by an issue's number for a move that never reached its game, or an issue
+that was never answered. The workflow then reads the issue as it is now into
+$RUNNER_TEMP/issue.json, and this reads the title and who opened it from
+there, in place of the event, and decides the same way. An issue that is
+closed, a pull request, one an app or a bot opened, or one that isn't the
+issue asked for is left alone, as `ignore`.
+
+It writes the decision, the issue and who opened it, and for a move the game
+it is for, to $GITHUB_OUTPUT, and for a move sent again whether it was
+`stranded` and whether it is locked. It writes the dispatch's request body to
+$RUNNER_TEMP/dispatch.json, the reply to anything that is not a move to
+$RUNNER_TEMP/reply.md, and the labels the issue should carry to
 $RUNNER_TEMP/labels.json: `move` and the move's game, or `invalid` for
 anything else. The workflow posts them as they are, making a label the first
-time it is needed.
+time it is needed. A move gets no reply here: its 🚀 says it was sent on, and
+its game's ruling is the one reply it gets.
 Nothing here talks to GitHub, and nothing here prints the title, since a
 line in a run's log can be read as a workflow command.
 
@@ -164,14 +176,9 @@ def labels(decision: dict) -> list[dict]:
     return []
 
 
-def reply(decision: dict, owner: str) -> str:
-    """The comment the issue is closed with. Fixed text, so a title can never write any of it."""
+def reply(owner: str) -> str:
+    """The comment anything that is not a move is closed with. Fixed text, so a title can never write any of it."""
     profile = f"[@{owner}'s profile](https://github.com/{owner})"
-    if decision['action'] == 'dispatch':
-        return (
-            f"🚀 **Move received.** It's on its way to the {decision['game']} board on {profile}.\n"
-            "The Arbiter rules on it here within a few minutes, and says why if it can't be played.\n"
-        )
     return (
         "👋 **This isn't a move, so it's closed.**\n"
         f'This repository only takes moves for the games on {profile}. To play, pick a move under'
@@ -180,12 +187,48 @@ def reply(decision: dict, owner: str) -> str:
     )
 
 
+def again(issue: object, asked: str) -> dict | str:
+    """A move sent again: its title, who opened it, and the marks it carries, from the issue as GitHub gives it now;
+    or, for an issue that is left alone, why."""
+    if not isinstance(issue, dict) or str(issue.get('number')) != asked:
+        return "isn't the issue asked for"
+    if 'pull_request' in issue:
+        return 'is a pull request'
+    if issue.get('state') != 'open':
+        return 'is closed'
+    user = issue.get('user')
+    if not isinstance(user, dict) or user.get('type') != 'User':
+        return 'was opened by an app or a bot'
+    login, uid = user.get('login'), user.get('id')
+    marks = {label.get('name') for label in issue.get('labels') or [] if isinstance(label, dict)}
+    return {
+        'title': issue.get('title') if isinstance(issue.get('title'), str) else '',
+        'player': login if isinstance(login, str) else '',
+        'player_id': str(uid) if type(uid) is int else '',
+        'stranded': 'stranded' in marks,
+        'locked': issue.get('locked') is True,
+    }
+
+
 def main() -> int:
     env = os.environ
     owner = env.get('GITHUB_REPOSITORY_OWNER', '')
-    player = env.get('PLAYER', '')
-    player_id = env.get('PLAYER_ID', '')
+    temp = pathlib.Path(env['RUNNER_TEMP'])
     issue = env.get('ISSUE', '')
+    title, player, player_id = env.get('TITLE', ''), env.get('PLAYER', ''), env.get('PLAYER_ID', '')
+    sent_again = env.get('SENT_AGAIN') == 'true'
+    found: dict | str = {}
+    if sent_again and NUMBER.fullmatch(issue):
+        try:
+            found = again(json.loads((temp / 'issue.json').read_text(encoding='utf-8')), issue)
+        except (OSError, ValueError):
+            found = "couldn't be read"
+        if isinstance(found, str):
+            with open(env['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+                handle.write('action=ignore\n')
+            print(f'Issue #{issue} {found}, so it was left alone.')
+            return 0
+        title, player, player_id = found['title'], found['player'], found['player_id']
     for name, value, shape in (
         ('GITHUB_REPOSITORY_OWNER', owner, LOGIN),
         ('PLAYER', player, LOGIN),
@@ -201,16 +244,17 @@ def main() -> int:
         print(f'::error file=intake/routes.json::{exc}')
         return 1
 
-    decision = route(env.get('TITLE', ''), player=player, player_id=player_id, issue=issue,
-                     owner=owner, routes=routes)
-    temp = pathlib.Path(env['RUNNER_TEMP'])
-    outputs = {'action': decision['action']}
+    decision = route(title, player=player, player_id=player_id, issue=issue, owner=owner, routes=routes)
+    outputs = {'action': decision['action'], 'issue': issue, 'player': player, 'player_id': player_id}
+    if sent_again:
+        outputs.update(again='true', stranded=str(found['stranded']).lower(), locked=str(found['locked']).lower())
     if decision['action'] == 'dispatch':
         outputs.update(game=decision['game'], owner=decision['owner'], repo=decision['repo'],
                        workflow=decision['workflow'])
         (temp / 'dispatch.json').write_text(json.dumps(decision['body']), encoding='utf-8')
+    if decision['action'] == 'reject':
+        (temp / 'reply.md').write_text(reply(owner), encoding='utf-8')
     if decision['action'] != 'ignore':
-        (temp / 'reply.md').write_text(reply(decision, owner), encoding='utf-8')
         (temp / 'labels.json').write_text(json.dumps(labels(decision), ensure_ascii=False), encoding='utf-8')
     with open(env['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
         handle.writelines(f'{key}={value}\n' for key, value in outputs.items())
@@ -218,7 +262,7 @@ def main() -> int:
     target = ''
     if decision['action'] == 'dispatch':
         target = f" to {decision['owner']}/{decision['repo']}, {decision['workflow']}"
-    print(f"Issue #{issue} by @{player}: {decision['action']}{target}.")
+    print(f"Issue #{issue} by @{player}{', sent again' if sent_again else ''}: {decision['action']}{target}.")
     return 0
 
 
