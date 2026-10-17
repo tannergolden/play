@@ -333,14 +333,14 @@ template is private; see [`.github/template-sync.md`](.github/template-sync.md).
 Every change this repository made to a file the template ships is protected
 in [`.github/template-sync`](.github/template-sync), the list the sync reads:
 
-| File                                                                                      | Changed here                             | Kept by                                                           |
-| :---------------------------------------------------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------- |
-| `README.md`, `LICENSE`                                                                    | This page, and the proprietary licence   | Yours from the start: the sync never touches them                 |
-| `.github/workflows/governance.yml`                                                        | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
-| `.github/workflows/checks.yml`                                                            | Runs the intake's and the replays' tests | `# keep mine`                                                     |
-| `.github/workflows/ci-failure-alert.yml`                                                  | Watches 🎬 Replays and ⏳ Move Sweep     | `# keep mine`                                                     |
-| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `sweep.yml`, `replays/`, `replay.yml` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
-| The seeded documents in `docs/`                                                           | The licence footer                       | The per-file merge: the template's other changes arrive around it |
+| File                                                                                                   | Changed here                             | Kept by                                                           |
+| :----------------------------------------------------------------------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------- |
+| `README.md`, `LICENSE`                                                                                 | This page, and the proprietary licence   | Yours from the start: the sync never touches them                 |
+| `.github/workflows/governance.yml`                                                                     | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
+| `.github/workflows/checks.yml`                                                                         | Runs the intake's and the replays' tests | `# keep mine`                                                     |
+| `.github/workflows/ci-failure-alert.yml`                                                               | Watches 🎬 Replays and ⏳ Move Sweep     | `# keep mine`                                                     |
+| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `sweep.yml`, `replays/`, `replay.yml`, `CLAUDE.md` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
+| The seeded documents in `docs/`                                                                        | The licence footer                       | The per-file merge: the template's other changes arrive around it |
 
 A file you and the template changed in the same place is left exactly as you
 have it, so none of this is ever overwritten. Two things still need your eye
@@ -379,6 +379,7 @@ Alerts to watch, say. Copy across anything worth having.
 | [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                                                                             |
 | [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                                                                                 |
 | [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                                                                                           |
+| [`CLAUDE.md`](CLAUDE.md)                    | The owner's standing rules for every Claude session that works on this repository.                                                                                                                          |
 | [`LICENSE`](LICENSE)                        | PROPRIETARY LICENCE                                                                                                                                                                                         |
 | [`README.md`](README.md)                    | This file.                                                                                                                                                                                                  |
 

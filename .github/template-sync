@@ -117,9 +117,9 @@
 # keep mine: /.github/workflows/checks.yml
 # keep mine: /.github/workflows/ci-failure-alert.yml
 # keep mine: /.github/workflows/governance.yml
-# The move intake and its sweep, the replays and the App guide are this
-# repository's alone. The template ships none of them, and these keep it that
-# way should it ever ship a file by the same name.
+# The move intake and its sweep, the replays, the App guide and the notes for
+# Claude are this repository's alone. The template ships none of them, and
+# these keep it that way should it ever ship a file by the same name.
 !/.github/ISSUE_TEMPLATE/**
 !/docs/GitHub-App.md
 !/.github/workflows/intake.yml
@@ -127,3 +127,4 @@
 !/intake/**
 !/.github/workflows/replay.yml
 !/replays/**
+!/CLAUDE.md

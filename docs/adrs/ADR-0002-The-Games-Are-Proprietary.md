@@ -39,9 +39,9 @@ _All rights reserved. No permission given. No AI reproduction._
 
 This repository was published under the MIT License, which lets anyone
 copy, change and sell it. The owner asked that everything about the games,
-here and in tannergolden/cheat and tannergolden/markdown, be for the owner
-alone: never reusable or resellable, with no permission ever given to anyone,
-and never reproduced by an AI, in a licence that reads as one. The games must
+here and in tannergolden/markdown, be for the owner alone: never reusable or
+resellable, with no permission ever given to anyone, and never reproduced by
+an AI, in a licence that reads as one. The games must
 still be playable by anyone, and the repository stays public, so GitHub's own
 Terms still apply to it.
 
@@ -105,7 +105,7 @@ Terms still apply to it.
 ## 🔗 Traceability & Links
 
 - The licence itself, at the root of this repository
-- The same licence in tannergolden/cheat, tannergolden/play and
+- The same licence in tannergolden/play and
   tannergolden/markdown, each over its own games' materials
 
 ### 🔗 See also
