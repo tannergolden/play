@@ -110,7 +110,7 @@ jobs:
       issues: write # react to, label, reply on, close and lock the move's issue
     steps:
       - name: '🛡️ Harden Runner'
-        uses: tannergolden/standards/actions/harden@v1
+        uses: tannergolden/standards/.github/actions/harden@v1
         with:
           egress-policy: audit
           notice: '🎲 Move Intake: routes one move issue to its game.'

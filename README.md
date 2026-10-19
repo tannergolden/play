@@ -393,17 +393,18 @@ after every push:
 
 <!-- AUTO-INDEX:BEGIN dir=./.github style=log -->
 
-| Entry                                              | Purpose                                                                                                                             |
-| :------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/)       | The move form, and a chooser that offers nothing else                                                                               |
-| [`scripts/`](.github/scripts/README.md)            | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
-| [`workflows/`](.github/workflows/README.md)        | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |
-| [`CODEOWNERS`](.github/CODEOWNERS)                 | CODEOWNERS - review ownership                                                                                                       |
-| [`dependabot.yml`](.github/dependabot.yml)         | Dependabot - automated dependency updates                                                                                           |
-| [`release.yml`](.github/release.yml)               | GitHub auto-generated release notes configuration.                                                                                  |
-| [`template-sync`](.github/template-sync)           | Every path tannergolden/repo ships, and whether &#x1F504; Template Sync, when you run it, keeps it current in this repository.      |
-| [`template-sync.lock`](.github/template-sync.lock) | Where each file here was last synced from.                                                                                          |
-| [`template-sync.md`](.github/template-sync.md)     | How this repository takes its template's later fixes when you run &#x1F504; Template Sync, what you control, and what waits on you. |
+| Entry                                                 | Purpose                                                                                                                             |
+| :---------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| [`actions/`](.github/actions/README.md)               | The composite actions this repository keeps for its own workflows, and for any other repository that calls them.                    |
+| [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/README.md) | The move form every move link on the profile opens, and the chooser that offers it and nothing else.                                |
+| [`scripts/`](.github/scripts/README.md)               | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
+| [`workflows/`](.github/workflows/README.md)           | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |
+| [`CODEOWNERS`](.github/CODEOWNERS)                    | Review ownership                                                                                                                    |
+| [`dependabot.yml`](.github/dependabot.yml)            | Dependabot - automated dependency updates                                                                                           |
+| [`release.yml`](.github/release.yml)                  | GitHub auto-generated release notes configuration.                                                                                  |
+| [`template-sync`](.github/template-sync)              | Every path tannergolden/repo ships, and whether &#x1F504; Template Sync, when you run it, keeps it current in this repository.      |
+| [`template-sync.lock`](.github/template-sync.lock)    | Where each file here was last synced from.                                                                                          |
+| [`template-sync.md`](.github/template-sync.md)        | How this repository takes its template's later fixes when you run &#x1F504; Template Sync, what you control, and what waits on you. |
 
 <!-- AUTO-INDEX:END -->
 

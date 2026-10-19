@@ -41,7 +41,7 @@ request's title or description, an issue, a comment, a release note or a workflo
 - Before a push: those tests, `python3 .github/scripts/validate-repository.py`, and actionlint (with shellcheck) and
   zizmor on the workflows.
 - Redraw the `AUTO-INDEX` tables in the same commit:
-  `python3 <standards>/scripts/update-doc-indexes.py --tree --write`, from tannergolden/standards at `v1`.
+  `python3 <standards>/.github/scripts/update-doc-indexes.py --tree --write`, from tannergolden/standards at `v1`.
 - A change to how a move is answered updates everything that tells it, in the same commits: the README, the
   intake's README, the move form, `docs/GitHub-App.md`, and the header comments of the workflows and the scripts.
 

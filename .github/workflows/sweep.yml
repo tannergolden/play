@@ -66,7 +66,7 @@ jobs:
       actions: write # send a move again through 🎲 Move Intake
     steps:
       - name: '🛡️ Harden Runner'
-        uses: tannergolden/standards/actions/harden@v1
+        uses: tannergolden/standards/.github/actions/harden@v1
         with:
           egress-policy: audit
           notice: '⏳ Move Sweep: answers every issue left waiting here.'
