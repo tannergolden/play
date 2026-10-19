@@ -1,8 +1,8 @@
 <!--
 title: '📄 ADR-0001: FOUR GAMES, ONE ARBITER'
 description: 'Chess, Checkers, Connect Four and Tic-Tac-Toe, and no other game, share one intake, one Arbiter, one Hall of Fame and one leaderboard, and each keeps its own voice, board and rules.'
-tags: [adr, architecture, decisions, games, intake, hall-of-fame, leaderboard]
-category: docs
+type: record
+keywords: [architecture, decisions, intake, hall-of-fame, leaderboard]
 status: 'Accepted'
 date: '2026-10-12'
 evidence: 'N/A'

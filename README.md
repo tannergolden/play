@@ -1,8 +1,8 @@
 <!--
 title: '🎲 PLAY'
 description: 'Public move intake for the interactive games on the tannergolden profile README: every move arrives as a pre-filled issue, is checked, and is passed to its game through a GitHub App.'
-tags: [issueops, github-actions, profile-readme, chess, checkers, pentago, tic-tac]
-category: docs
+type: index
+keywords: [issueops, github-actions, profile-readme, chess, checkers, pentago, tic-tac]
 -->
 
 <div align="center">

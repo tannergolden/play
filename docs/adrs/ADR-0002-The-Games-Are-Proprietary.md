@@ -1,8 +1,8 @@
 <!--
 title: '📄 ADR-0002: THE GAMES ARE PROPRIETARY'
 description: 'Everything in this repository is proprietary to the owner: no use, reuse or resale by anyone, no permission ever granted, and no AI training on it or reproducing it; anyone may still play.'
-tags: [adr, licence, legal, proprietary, ai]
-category: docs
+type: record
+keywords: [licence, legal, ai]
 status: 'Accepted'
 date: '2026-10-14'
 evidence: 'N/A'
