@@ -93,6 +93,6 @@ Maintaining a traceable record of security-critical actions.
 
 <br />
 
-Built with ❤️ by the Engineering Team. Distributed under the MIT License.
+Built with ❤️ by the Engineering Team. Proprietary and confidential; all rights reserved.
 
 </div>

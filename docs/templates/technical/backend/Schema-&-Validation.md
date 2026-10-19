@@ -94,6 +94,6 @@ Handling diversity in data representation and messaging.
 
 <br />
 
-Built with ❤️ by the Engineering Team. Distributed under the MIT License.
+Built with ❤️ by the Engineering Team. Proprietary and confidential; all rights reserved.
 
 </div>
