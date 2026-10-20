@@ -63,12 +63,12 @@
 #
 # Needs the DISPATCH_APP_CLIENT_ID variable and DISPATCH_APP_PRIVATE_KEY
 # secret of the App that starts the games, or, until that App is split off,
-# PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY: see docs/GitHub-App.md. Until
-# one pair exists, every move fails, with a reply on its issue. The 👀 needs
-# the Official Arbiter's own pair, PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY,
-# and is left out without it. A failure tells the owner once, in a notice
-# every failed move links to, which closes itself when a move goes through
-# again.
+# PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY: see
+# docs/operations/GitHub-App.md. Until one pair exists, every move fails, with
+# a reply on its issue. The 👀 needs the Official Arbiter's own pair,
+# PLAY_APP_CLIENT_ID and PLAY_APP_PRIVATE_KEY, and is left out without it. A
+# failure tells the owner once, in a notice every failed move links to, which
+# closes itself when a move goes through again.
 #
 # ---
 

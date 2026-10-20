@@ -151,7 +151,7 @@ _Amended on 2026-10-13. The decision above stands, but for what follows._
 ## 🔗 Traceability & Links
 
 - [The intake](../../intake/README.md): the router, its table and the pre-check of all four games.
-- [The GitHub App](../GitHub-App.md): the Official Arbiter, and splitting its App in two.
+- [The GitHub App](../operations/GitHub-App.md): the Official Arbiter, and splitting its App in two.
 - [tannergolden/markdown](https://github.com/tannergolden/markdown): the kit that draws every board, the Hall of Fame and the leaderboard.
 
 ### 🔗 See also

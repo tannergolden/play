@@ -43,9 +43,9 @@
 # after the push, only when a comment is due, with Issues write here and
 # nothing more, and no step that draws a replay or fetches an avatar ever
 # holds it. Needs the PLAY_APP_CLIENT_ID variable and PLAY_APP_PRIVATE_KEY
-# secret of the Official Arbiter: see docs/GitHub-App.md. Until both exist, a
-# replay is still drawn and saved, the run fails, and its comment waits for
-# the next run that can post it.
+# secret of the Official Arbiter: see docs/operations/GitHub-App.md. Until
+# both exist, a replay is still drawn and saved, the run fails, and its
+# comment waits for the next run that can post it.
 #
 # ---
 

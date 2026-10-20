@@ -194,7 +194,7 @@ at a board.
 
 - [ ] Open **Settings → Applications → Installed GitHub Apps**, click <kbd>Configure</kbd> beside **Official Arbiter**, add the game's repository under **Repository access**, and click <kbd>Save</kbd>.
 - [ ] Store `PLAY_APP_CLIENT_ID` and `PLAY_APP_PRIVATE_KEY` in the game's repository, as in step 4.
-- [ ] Add the game's row to `intake/routes.json`, as [`intake/README.md`](../intake/README.md) describes.
+- [ ] Add the game's row to `intake/routes.json`, as [`intake/README.md`](../../intake/README.md) describes.
 
 There is no second App, and nothing new to store here.
 
@@ -284,6 +284,6 @@ and every issue goes without its 👀, and nothing else changes.
 
 <br />
 
-Built with ❤️ by the Engineering Team. Proprietary; all rights reserved under [LICENSE](../LICENSE).
+Built with ❤️ by the Engineering Team. Proprietary; all rights reserved under [LICENSE](../../LICENSE).
 
 </div>

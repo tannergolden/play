@@ -219,7 +219,7 @@ posted. Each game's repository keeps its own copy of the same two, for its
 rulings.
 
 The full guide, with what players see, how to rotate the key and what to do
-when a move fails, is [`docs/GitHub-App.md`](docs/GitHub-App.md).
+when a move fails, is [`docs/operations/GitHub-App.md`](docs/operations/GitHub-App.md).
 
 ---
 

@@ -117,11 +117,20 @@
 # keep mine: /.github/workflows/checks.yml
 # keep mine: /.github/workflows/ci-failure-alert.yml
 # keep mine: /.github/workflows/governance.yml
+# The template's documents carry a footer of its own: these six folder
+# READMEs keep this repository's, which names its LICENSE, while every
+# other change the template makes to them still arrives.
+# keep mine: /docs/distribution/README.md
+# keep mine: /docs/introduction/README.md
+# keep mine: /docs/library/README.md
+# keep mine: /docs/operations/README.md
+# keep mine: /docs/references/README.md
+# keep mine: /docs/technical/README.md
 # The move intake and its sweep, the replays, the App guide and the notes for
 # Claude are this repository's alone. The template ships none of them, and
 # these keep it that way should it ever ship a file by the same name.
 !/.github/ISSUE_TEMPLATE/**
-!/docs/GitHub-App.md
+!/docs/operations/GitHub-App.md
 !/.github/workflows/intake.yml
 !/.github/workflows/sweep.yml
 !/intake/**
