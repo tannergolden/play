@@ -174,6 +174,13 @@ and is skipped when it isn't.
 
 ---
 
+## 🔗 See also
+
+- [Cross-Repository Contracts](../docs/references/Cross-Repository-Contracts.md#-the-replay-facts-and-the-theme) - the facts and the theme a replay is drawn from, and how the kit is run
+- [Troubleshooting A Move](../docs/operations/Troubleshooting-Moves.md#-when-a-replay-is-missing) - a replay missing, waiting on its comment, or drawn by initials
+
+---
+
 <div align="center">
 
 **Won once. Played again, every time the page opens.**

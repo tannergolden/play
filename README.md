@@ -102,6 +102,12 @@ A move link is the issue form plus the title, URL-encoded:
 https://github.com/tannergolden/play/issues/new?template=move.yml&title=chess%3A%20e2e4%20%C2%B7%20game%201%20%C2%B7%20move%201
 ```
 
+Every step of 🎲 Move Intake and ⏳ Move Sweep is in
+[Move Intake & Move Sweep](docs/technical/Move-Intake-&-Move-Sweep.md), every
+label and reply in [Labels & Replies](docs/references/Labels-&-Replies.md),
+and what to do about a move that went wrong in
+[Troubleshooting A Move](docs/operations/Troubleshooting-Moves.md).
+
 ---
 
 ## 🗺️ The Routes
@@ -149,6 +155,8 @@ workflow in the game's repository that accepts the move, and the GitHub App
 installed there.
 [`intake/README.md`](intake/README.md) has the steps, and what every game's
 workflow receives.
+[Cross-Repository Contracts](docs/references/Cross-Repository-Contracts.md)
+lists everything else a game and this repository must keep agreeing on.
 
 ---
 

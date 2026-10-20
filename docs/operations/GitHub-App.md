@@ -274,6 +274,10 @@ and every issue goes without its 👀, and nothing else changes.
 | 🎯 Start The Game      | `No ref found for`                       | The `ref` in `intake/routes.json` names no branch or tag of the game's repository                         |
 | 🎯 Start The Game      | `Unexpected inputs provided`             | The game's workflow has to declare every input it is sent                                                 |
 
+For a move that went wrong anywhere else, or a replay that is missing,
+[Troubleshooting A Move](Troubleshooting-Moves.md) starts from what its issue
+shows.
+
 ---
 
 <div align="center">

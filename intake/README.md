@@ -293,6 +293,15 @@ after the template's own script tests.
 
 ---
 
+## 🔗 See also
+
+- [Move Intake & Move Sweep](../docs/technical/Move-Intake-&-Move-Sweep.md) - every step of both workflows, what they hand each other, and what strands a move
+- [Labels & Replies](../docs/references/Labels-&-Replies.md) - each label's colour and maker, and each reply with the code that writes it
+- [Cross-Repository Contracts](../docs/references/Cross-Repository-Contracts.md) - the dispatch, the game state the check reads, and what a game does here
+- [Troubleshooting A Move](../docs/operations/Troubleshooting-Moves.md) - a move stranded, overdue or never answered, from what its issue shows
+
+---
+
 <div align="center">
 
 **Anyone can knock. Only a move gets through.**

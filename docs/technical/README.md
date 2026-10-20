@@ -48,9 +48,10 @@ the folder holds.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                    | Purpose    |
-| :----------------------- | :--------- |
-| [`README.md`](README.md) | This file. |
+| Entry                                                        | Purpose                                                                                                                                                                                                                                                                        |
+| :----------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`Move-Intake-&-Move-Sweep.md`](Move-Intake-&-Move-Sweep.md) | How the two workflows at the door run, step by step: when each starts, what every step does and with which token, what the scripts and the steps hand each other, and which failures strand a move. Read it before changing intake.yml, sweep.yml or a script either one runs. |
+| [`README.md`](README.md)                                     | This file.                                                                                                                                                                                                                                                                     |
 
 <!-- AUTO-INDEX:END -->
 

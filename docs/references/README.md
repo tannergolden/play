@@ -41,9 +41,11 @@ the folder holds.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                    | Purpose    |
-| :----------------------- | :--------- |
-| [`README.md`](README.md) | This file. |
+| Entry                                                            | Purpose                                                                                                                                                                                                                                                                                                      |
+| :--------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`Cross-Repository-Contracts.md`](Cross-Repository-Contracts.md) | Everything this repository and the ones it works with must keep agreeing on: the dispatch a game receives, the game state the check reads, the replay facts and the theme a replay is drawn from, what a game does here, and the command the kit is run with. Consult it before changing either side of one. |
+| [`Labels-&-Replies.md`](Labels-&-Replies.md)                     | Every label the issues here carry, with its colour, its description and who makes it, and every reaction, reply and notice the automation posts, with when, from whom and the code that writes it. Consult it when filtering the issues, and before changing a label or a reply.                             |
+| [`README.md`](README.md)                                         | This file.                                                                                                                                                                                                                                                                                                   |
 
 <!-- AUTO-INDEX:END -->
 
