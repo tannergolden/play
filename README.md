@@ -412,7 +412,7 @@ after every push:
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/README.md) | The move form every move link on the profile opens, and the chooser that offers it and nothing else.                                |
 | [`scripts/`](.github/scripts/README.md)               | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
 | [`workflows/`](.github/workflows/README.md)           | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |
-| [`CODEOWNERS`](.github/CODEOWNERS)                    | CODEOWNERS - review ownership                                                                                                       |
+| [`CODEOWNERS`](.github/CODEOWNERS)                    | Review ownership                                                                                                                    |
 | [`dependabot.yml`](.github/dependabot.yml)            | Dependabot - automated dependency updates                                                                                           |
 | [`release.yml`](.github/release.yml)                  | GitHub auto-generated release notes configuration.                                                                                  |
 | [`template-sync`](.github/template-sync)              | Every path tannergolden/repo ships, and whether &#x1F504; Template Sync, when you run it, keeps it current in this repository.      |
