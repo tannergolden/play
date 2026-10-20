@@ -126,8 +126,8 @@
 # keep mine: /docs/operations/README.md
 # keep mine: /docs/references/README.md
 # keep mine: /docs/technical/README.md
-# The move intake and its sweep, the replays, the App guide and the notes for
-# Claude are this repository's alone. The template ships none of them, and
+# The move intake and its sweep, the replays, the App guide and the agent
+# instructions are this repository's alone. The template ships none of them, and
 # these keep it that way should it ever ship a file by the same name.
 !/.github/ISSUE_TEMPLATE/**
 !/docs/operations/GitHub-App.md
@@ -136,4 +136,4 @@
 !/intake/**
 !/.github/workflows/replay.yml
 !/replays/**
-!/CLAUDE.md
+!/AGENTS.md

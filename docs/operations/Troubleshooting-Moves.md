@@ -21,9 +21,9 @@ _Read the issue first, then the run._
 
 ## 💡 Before You Start
 
-- **Every action on this page is the owner's.** A Claude session working on
-  this repository never opens, comments on, labels, locks or closes an issue
-  here, and never starts a workflow: [CLAUDE.md](../../CLAUDE.md) forbids it.
+- **Every action on this page is the owner's.** An AI agent working on this
+  repository never opens, comments on, labels, locks or closes an issue
+  here, and never starts a workflow: [AGENTS.md](../../AGENTS.md) forbids it.
 - **Most faults mend themselves.** ⏳ Move Sweep sends again whatever never got
   through, the next move to go through closes the outage notice, and nobody has
   to play a move twice.

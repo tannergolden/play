@@ -290,31 +290,36 @@ enough for one fault.
 
 ## 🌿 The Workflows
 
-| Workflow                   | Gives you                                                                                  |
-| :------------------------- | :----------------------------------------------------------------------------------------- |
-| `intake.yml`               | 🎲 Move Intake: every move issue, routed to its game. This repository's own                |
-| `sweep.yml`                | ⏳ Move Sweep: every move left waiting, marked or sent again. This repository's own        |
-| `replay.yml`               | 🎬 Replays: every won game drawn again, kept and posted. This repository's own             |
-| `checks.yml`               | Lint and tests, the intake's and the replays' included; secret scan, CodeQL, workflow lint |
-| `governance.yml`           | PR title and DCO checks, triage, stale sweep, slash commands                               |
-| `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎬 Replays and ⏳ Move Sweep included        |
-| `release.yml`              | Draft notes, publish assets, prune superseded releases                                     |
-| `maintenance.yml`          | Prunes stale deployments and draft releases                                                |
-| `lifecycle.yml`            | Claimed this repository once; flags a new major of the standards                           |
-| `dependabot-automerge.yml` | Approves and queues patch and minor updates                                                |
-| `apply-standards.yml`      | Dispatch-only. The label taxonomy, the settings and branch protection                      |
-| `auto-format.yml`          | Formats what a push touched, once a formatter is configured                                |
-| `auto-index.yml`           | Redraws every folder log and index after a push                                            |
-| `preview-deploy.yml`       | Deploys pushes to a preview target, once configured                                        |
-| `prune-runs.yml`           | Deletes old workflow runs, with their logs and artifacts                                   |
-| `verify-stubs.yml`         | Proves every stub's permission ceiling matches its called workflow                         |
-| `template-sync.yml`        | Proposes the template's later fixes as one pull request, when run                          |
+| Workflow                   | Gives you                                                                                         |
+| :------------------------- | :------------------------------------------------------------------------------------------------ |
+| `intake.yml`               | 🎲 Move Intake: every move issue, routed to its game. This repository's own                       |
+| `sweep.yml`                | ⏳ Move Sweep: every move left waiting, marked or sent again. This repository's own               |
+| `replay.yml`               | 🎬 Replays: every won game drawn again, kept and posted. This repository's own                    |
+| `checks.yml`               | Lint and tests, the intake's and the replays' included; secret scan, CodeQL, workflow lint        |
+| `governance.yml`           | PR title and DCO checks, triage, stale sweep, slash commands                                      |
+| `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎬 Replays and ⏳ Move Sweep included               |
+| `release.yml`              | Draft notes, publish assets, prune superseded releases                                            |
+| `maintenance.yml`          | Prunes stale deployments and draft releases                                                       |
+| `lifecycle.yml`            | Claimed this repository once; flags a new major of the standards                                  |
+| `dependabot-automerge.yml` | Approves and queues patch and minor updates                                                       |
+| `apply-standards.yml`      | Dispatch-only. The label taxonomy, the settings and branch protection                             |
+| `auto-format.yml`          | Formats what a push touched, once a formatter is configured                                       |
+| `auto-index.yml`           | Redraws every folder log and index after a push                                                   |
+| `preview-deploy.yml`       | Deploys pushes to a preview target, once configured                                               |
+| `prune-runs.yml`           | Deletes old workflow runs, with their logs and artifacts                                          |
+| `verify-stubs.yml`         | Proves every stub's permission ceiling matches its called workflow                                |
+| `template-sync.yml`        | Proposes the template's later fixes as one pull request, when run                                 |
+| `intelligence-sync.yml`    | 🔁 Intelligence Sync: the universal rules in `AGENTS.md`, proposed as a pull request each release |
 
 `cut-release.yml` belongs to the template, and its guard keeps it from ever
 running here. Of the rest, all but `intake.yml`, `sweep.yml`, `replay.yml`
 and `verify-stubs.yml`, which run scripts kept here, are stubs that call
 [`tannergolden/standards`](https://github.com/tannergolden/standards), so a fix
-there reaches this repository without a commit here.
+there reaches this repository without a commit here. `intelligence-sync.yml`
+calls [`tannergolden/intelligence`](https://github.com/tannergolden/intelligence)
+instead: every Monday it proposes that hub's latest release of the universal
+rules for AI agents as one pull request on `chore/intelligence`, which waits
+for you to merge it.
 
 **Do not rename the job ids** `ci` and `secrets` (in `checks.yml`) or `pr` (in
 `governance.yml`): branch protection depends on them. **Sign your commits
@@ -347,7 +352,7 @@ in [`.github/template-sync`](.github/template-sync), the list the sync reads:
 | `.github/workflows/governance.yml`                                                                     | No welcome on a new issue                | `# keep mine`: where you both changed a line, yours stands        |
 | `.github/workflows/checks.yml`                                                                         | Runs the intake's and the replays' tests | `# keep mine`                                                     |
 | `.github/workflows/ci-failure-alert.yml`                                                               | Watches 🎬 Replays and ⏳ Move Sweep     | `# keep mine`                                                     |
-| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `sweep.yml`, `replays/`, `replay.yml`, `CLAUDE.md` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
+| `.github/ISSUE_TEMPLATE/`, `intake/`, `intake.yml`, `sweep.yml`, `replays/`, `replay.yml`, `AGENTS.md` | This repository's own                    | A `!` rule: stopped, should the template ship the same name       |
 | The seeded documents in `docs/`                                                                        | The licence footer                       | The per-file merge: the template's other changes arrive around it |
 
 A file you and the template changed in the same place is left exactly as you
@@ -387,7 +392,7 @@ Alerts to watch, say. Copy across anything worth having.
 | [`.gitattributes`](.gitattributes)          | Git attributes - line endings, diffs, and what counts as binary                                                                                                                                             |
 | [`.gitignore`](.gitignore)                  | &#x1F5C4;&#xFE0F; Universal Ignore Patterns                                                                                                                                                                 |
 | [`.markdownlint.json`](.markdownlint.json)  | Repository-wide markdownlint rules. Discovered by mechanism, which is why this lives at the root.                                                                                                           |
-| [`CLAUDE.md`](CLAUDE.md)                    | The owner's standing rules for every Claude session that works on this repository.                                                                                                                          |
+| [`AGENTS.md`](AGENTS.md)                    | How AI agents work in tannergolden/play: the universal rules first, then the rules for the moves, the games and this public repository. Read it before any change here.                                     |
 | [`LICENSE`](LICENSE)                        | PROPRIETARY LICENCE                                                                                                                                                                                         |
 | [`README.md`](README.md)                    | This file.                                                                                                                                                                                                  |
 
@@ -407,7 +412,7 @@ after every push:
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/README.md) | The move form every move link on the profile opens, and the chooser that offers it and nothing else.                                |
 | [`scripts/`](.github/scripts/README.md)               | The checks this repository runs on its own configuration, and the tests that guard them.                                            |
 | [`workflows/`](.github/workflows/README.md)           | Every workflow in this repository: the name it shows in the Actions tab, what triggers it, and what it does.                        |
-| [`CODEOWNERS`](.github/CODEOWNERS)                    | Review ownership                                                                                                                    |
+| [`CODEOWNERS`](.github/CODEOWNERS)                    | CODEOWNERS - review ownership                                                                                                       |
 | [`dependabot.yml`](.github/dependabot.yml)            | Dependabot - automated dependency updates                                                                                           |
 | [`release.yml`](.github/release.yml)                  | GitHub auto-generated release notes configuration.                                                                                  |
 | [`template-sync`](.github/template-sync)              | Every path tannergolden/repo ships, and whether &#x1F504; Template Sync, when you run it, keeps it current in this repository.      |
