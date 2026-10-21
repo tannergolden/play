@@ -2,7 +2,6 @@
 title: '🩺 TROUBLESHOOTING A MOVE'
 description: 'What to do when a move is stranded, overdue or never answered, when a reply looks wrong, and when a replay is missing: how to read the issue and its run, what mends itself, and what the owner does about the rest. Read it when a move or a replay has gone wrong.'
 type: guide
-keywords: [runbook, stranded, overdue, outage notice, arbiter-outage, send again, replays, failed run]
 -->
 
 <div align="center">

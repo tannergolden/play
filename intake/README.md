@@ -2,7 +2,6 @@
 title: '🎲 MOVE INTAKE'
 description: 'The router every move passes through, the check that reads each move against its board, and the sweep that answers every move left waiting: the table of the four games, the three scripts and their tests.'
 type: index
-keywords: [routing, issueops, python]
 -->
 
 <div align="center">

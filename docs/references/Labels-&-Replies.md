@@ -2,7 +2,6 @@
 title: '🏷️ LABELS & REPLIES'
 description: 'Every label the issues here carry, with its colour, its description and who makes it, and every reaction, reply and notice the automation posts, with when, from whom and the code that writes it. Consult it when filtering the issues, and before changing a label or a reply.'
 type: reference
-keywords: [issue labels, comments, reactions, outage notice, milestones, label colours, wording]
 -->
 
 <div align="center">

@@ -2,7 +2,6 @@
 title: '🎲 MOVE INTAKE & MOVE SWEEP'
 description: 'How the two workflows at the door run, step by step: when each starts, what every step does and with which token, what the scripts and the steps hand each other, and which failures strand a move. Read it before changing intake.yml, sweep.yml or a script either one runs.'
 type: guide
-keywords: [intake.yml, sweep.yml, route.py, check.py, sweep.py, workflow steps, step outputs, runner temp]
 -->
 
 <div align="center">

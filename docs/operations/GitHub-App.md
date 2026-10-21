@@ -2,7 +2,6 @@
 title: '🤖 GITHUB APP'
 description: 'How the Official Arbiter, the GitHub App behind the games, is set up, what it is allowed to do, and how its private key is stored and rotated.'
 type: guide
-keywords: [permissions, secrets, setup]
 -->
 
 <!-- markdownlint-disable MD041 -->

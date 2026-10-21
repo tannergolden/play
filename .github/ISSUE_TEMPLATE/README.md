@@ -2,7 +2,6 @@
 title: '📥 ISSUE FORMS'
 description: 'The move form every move link on the profile opens, and the chooser that offers it and nothing else.'
 type: index
-keywords: [issues, moves, forms]
 -->
 
 <div align="center">

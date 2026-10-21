@@ -2,7 +2,6 @@
 title: '🤝 CROSS-REPOSITORY CONTRACTS'
 description: 'Everything this repository and the ones it works with must keep agreeing on: the dispatch a game receives, the game state the check reads, the replay facts and the theme a replay is drawn from, what a game does here, and the command the kit is run with. Consult it before changing either side of one.'
 type: reference
-keywords: [tannergolden/tannergolden, tannergolden/markdown, game.json, replay facts, workflow_dispatch, inputs, interfaces]
 -->
 
 <div align="center">

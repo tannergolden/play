@@ -2,7 +2,6 @@
 title: '🎬 REPLAYS'
 description: 'Every game a player''s own move won, played again: each game''s newest 25 replays, the index of every one ever made, and the script that keeps them.'
 type: index
-keywords: [games, svg, issueops, python]
 -->
 
 <div align="center">

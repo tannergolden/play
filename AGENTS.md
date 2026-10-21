@@ -2,7 +2,6 @@
 title: '🤖 Agent Instructions'
 description: 'How AI agents work in tannergolden/play: the universal rules first, then the rules for the moves, the games and this public repository. Read it before any change here.'
 type: standard
-keywords: [agents-md, ai-agents, moves, intake, sweep, replays, proprietary]
 -->
 
 <!-- markdownlint-disable MD041 -->
