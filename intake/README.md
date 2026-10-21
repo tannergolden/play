@@ -106,8 +106,8 @@ Sweep (`OVERDUE` in `sweep.py`).
 ## ⏳ No Move Left Waiting
 
 A move's issue stays open from its 🚀 until its game rules on it, so an issue
-left open too long is one something went wrong with. Twice an hour, at 11 and
-41 minutes past, ⏳ Move Sweep runs `sweep.py` over every open issue a player
+left open too long is one something went wrong with. Once an hour, at 11
+minutes past, ⏳ Move Sweep runs `sweep.py` over every open issue a player
 opened here, and answers each one left waiting:
 
 | What it finds                                                              | What it does                                                                                 |

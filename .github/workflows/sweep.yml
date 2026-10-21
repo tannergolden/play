@@ -7,7 +7,7 @@
 #
 # 🎲 Move Intake sends a move on and leaves its issue open for the game's
 # ruling: the Official Arbiter replies there, labels it `played` or
-# `turned away`, and closes it. Twice an hour, intake/sweep.py reads every
+# `turned away`, and closes it. Once an hour, intake/sweep.py reads every
 # open issue a player opened here and answers the ones left waiting:
 #
 #   sent on, no ruling for 15 minutes  marked `overdue`, its player told once,
@@ -40,7 +40,7 @@ name: '⏳ Move Sweep'
 
 on:
   schedule:
-    - cron: '11,41 * * * *' # twice an hour, off the hour and the half hour
+    - cron: '11 * * * *' # once an hour, off the hour
   workflow_dispatch:
 
 concurrency:

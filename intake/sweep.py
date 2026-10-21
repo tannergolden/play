@@ -9,7 +9,7 @@ issue open with nobody to tell. A move that never reached its game is marked
 waits on the owner's fix. A move sent on can lose its ruling, when its game's
 run fails before it can reply. And an issue can go unanswered altogether, when
 its run never starts, or when GitHub drops it while it waits behind the same
-player's last. ⏳ Move Sweep runs this twice an hour, and it answers all three.
+player's last. ⏳ Move Sweep runs this once an hour, and it answers all three.
 
 WHAT IT DOES with each open issue a player opened here, leaving out the
 owner's own that aren't moves, anything an app or a bot opened, and anything

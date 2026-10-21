@@ -188,7 +188,7 @@ What a game receives in `inputs`, and the state the check reads, are in
 
 ## ⏳ When The Sweep Runs
 
-- **Triggers.** A schedule at 11 and 41 minutes past every hour, UTC, and
+- **Triggers.** A schedule at 11 minutes past every hour, UTC, and
   `workflow_dispatch`. GitHub starts a scheduled run late when it is busy,
   sometimes by hours.
 - **Skipped** always in a template, and for a dispatch on any branch but the

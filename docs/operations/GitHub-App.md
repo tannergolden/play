@@ -255,7 +255,7 @@ again, and each player gets the game's ruling on their own issue, so nobody
 has to play their move twice. While the notice is open, each sweep tries the
 oldest stranded move alone, so a fix nobody announces is found by itself.
 
-The sweep is set for twice an hour, but GitHub starts a schedule late when it
+The sweep is set for once an hour, but GitHub starts a schedule late when it
 is busy, sometimes by hours. To sweep at once, run ⏳ Move Sweep from the
 Actions tab; to send one move, run 🎲 Move Intake there with the issue's
 number.

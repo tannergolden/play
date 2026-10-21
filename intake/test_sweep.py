@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests for the sweep.
 
-WHY THIS EXISTS. `sweep.py` acts on its own, twice an hour, on issues that
+WHY THIS EXISTS. `sweep.py` acts on its own, once an hour, on issues that
 players opened: it marks them, comments on them, locks them, opens the
 outage notice and sends moves again. Every one of those has to happen to the
 right issue, once, and never to the owner's own, an app's, or one already

@@ -39,7 +39,7 @@ This repository holds no game. It is the door every move comes through:
   game's own words, a move its game could only refuse;
 - **one workflow**, [`intake.yml`](.github/workflows/intake.yml), that does
   what the two scripts decide;
-- **one sweep**, [`intake/sweep.py`](intake/sweep.py), run twice an hour by
+- **one sweep**, [`intake/sweep.py`](intake/sweep.py), run once an hour by
   [`sweep.yml`](.github/workflows/sweep.yml), that answers every move left
   waiting.
 
@@ -82,7 +82,7 @@ move by move, in [`replays/`](replays/README.md) and the
 | A move that cannot reach its game  | `stranded`, with a reply, the owner told once, and sent again later   |
 | A move sent on but never ruled on  | `overdue` after 15 minutes, the owner told once, and sent again later |
 
-**No move is left waiting.** Twice an hour, ⏳ Move Sweep reads every open
+**No move is left waiting.** Once an hour, ⏳ Move Sweep reads every open
 issue here. A move sent on that its game hasn't ruled on in 15 minutes is
 marked `overdue`, its player is told once, and the owner is told once, in the
 same outage notice a move that can't reach its game opens. Once that notice
