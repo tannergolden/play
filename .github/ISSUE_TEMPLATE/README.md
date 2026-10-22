@@ -22,7 +22,8 @@ _A move link opens it, ready to submit._
 
 Every move on the profile is a link that opens an issue here on the move form,
 its title already written. The form explains how to read that title, asks for
-nothing more, and labels the issue `move`.
+one ticked box, agreeing to the games' rules and to how they show a player,
+and labels the issue `move`.
 
 The chooser offers that form, a way back to the profile and the private
 security channel, and nothing else: blank issues are switched off, and because
@@ -38,7 +39,7 @@ here.
 | Entry                      | Name                  | Purpose                                                                                                                                         |
 | :------------------------- | :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`config.yml`](config.yml) | -                     | This repository takes moves and nothing else, so its chooser offers the move form, a way back to the profile, and the private security channel. |
-| [`move.yml`](move.yml)     | &#x1F3B2; Play a move | A move picked on the tannergolden profile, ready to send. Open one from a move link there, then submit it as it opens.                          |
+| [`move.yml`](move.yml)     | &#x1F3B2; Play a move | A move picked on the tannergolden profile, ready to send. Open one from a move link there, tick the box at the bottom, and submit it.           |
 | [`README.md`](README.md)   | -                     | This file.                                                                                                                                      |
 
 <!-- AUTO-INDEX:END -->

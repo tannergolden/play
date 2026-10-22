@@ -1,5 +1,5 @@
 name: '🎲 Play a move'
-description: 'A move picked on the tannergolden profile, ready to send. Open one from a move link there, then submit it as it opens.'
+description: 'A move picked on the tannergolden profile, ready to send. Open one from a move link there, tick the box at the bottom, and submit it.'
 # Given as the issue opens, once the label exists; 🎲 Move Intake makes it the
 # first time it is needed, and adds the move's game, such as `game: chess`.
 labels: ['move']
@@ -9,7 +9,7 @@ body:
       value: |
         ## 🎲 Your move is ready
 
-        You picked a move on [@tannergolden's profile](https://github.com/tannergolden), and its link wrote that move into the title above. **Submit the issue as it is**, and the move is on its way.
+        You picked a move on [@tannergolden's profile](https://github.com/tannergolden), and its link wrote that move into the title above. **Tick the box at the bottom and submit the issue**, and the move is on its way.
 
   - type: markdown
     attributes:
@@ -81,3 +81,14 @@ body:
       placeholder: 'Good luck.'
     validations:
       required: false
+
+  # GitHub won't submit the form until this box is ticked. The intake reads
+  # only the title, so a move opened without the form carries no box.
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: '🤝 Before you send it'
+      description: 'Your move can only be sent with the box ticked.'
+      options:
+        - label: "I agree to play by the games' rules on this form and on the profile, and to the games showing my move, my GitHub username and my avatar on the profile, in replays and in the Hall of Fame, under section 8 of the [licence](https://github.com/tannergolden/play/blob/HEAD/LICENSE). Anything I write here follows GitHub's [Acceptable Use Policies](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)."
+          required: true

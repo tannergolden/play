@@ -23,7 +23,7 @@ _Click a move. An issue opens. A bot checks it, passes it on, and closes it._
 The four games on [@tannergolden's profile](https://github.com/tannergolden),
 Chess, Checkers, Pentago and Tic-Tac, are played with links. Every
 move on a board is a link that opens a ready-made issue in this repository,
-with the move already in its title. Submit it, and
+with the move already in its title. Tick its one box and submit it, and
 **🎲 Move Intake** checks it and passes it to that game's repository within a
 minute. The game then decides whether the move stands, redraws the board, says
 so on the same issue, and closes it, labelled `played` or `turned away`.
@@ -53,7 +53,9 @@ move by move, in [`replays/`](replays/README.md) and the
 
 1. **A player clicks a move** on the profile. Its link opens the **🎲 Play a
    move** form here, with the title filled in: `chess: e2e4 · game 1 · move 1`.
-2. **They submit it** as it opens. A GitHub account is all a player needs.
+2. **They tick its one box and submit it.** The box agrees to the games'
+   rules and to how they show a player's move, username and avatar. A GitHub
+   account is all a player needs.
 3. **🎲 Move Intake reads the title** against the table, and the Official
    Arbiter reacts with 👀 so the player sees it was picked up. Only a title that
    matches one game's pattern from end to end is a move, labelled `move` and its
