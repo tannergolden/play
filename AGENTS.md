@@ -127,7 +127,8 @@ request's title or description, an issue, a comment, a release note or a workflo
 - The author is Tanner Golden <24684994+tannergolden@users.noreply.github.com>, and the last trailer signs it off as
   the owner: `Signed-off-by: Tanner Golden <24684994+tannergolden@users.noreply.github.com>`. The committer stays this
   environment's own, whose key signs the commit.
-- Work lands on Development. Never force-push, and never rewrite its history.
+- Work lands on Development through a squash-merged pull request, never a direct push. Never force-push, and never
+  rewrite its history.
 - No em or en dashes anywhere, chat replies included.
 
 ## Where things live
