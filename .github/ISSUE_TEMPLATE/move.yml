@@ -69,7 +69,7 @@ body:
 
         - **A finished game's winning board stays up for two days**, and then a fresh board comes by itself. A move for the next game before then is turned away with the day it opens.
         - **The four games share one hourly limit**: 30 issues an hour from each player, whatever the game. A move past that is turned away, so pick your next one a little later.
-        - **This issue is public.** Your move and your GitHub username can appear on the profile, with the game's moves and in its Hall of Fame. Submitting a move lets the games record and show it that way, as section 8 of the [licence](https://github.com/tannergolden/play/blob/HEAD/LICENSE) sets out; the games themselves stay all rights reserved.
+        - **This issue is public.** Your move and your GitHub username can appear on the profile, with the game's moves and in its Hall of Fame, and a game's replay draws each player from their GitHub avatar. Submitting a move lets the games record and show your move, username and avatar that way, as section 8 of the [licence](https://github.com/tannergolden/play/blob/HEAD/LICENSE) sets out; the games themselves stay all rights reserved.
         - **One move per issue.** To play again, come back for the next turn and pick a new move.
         - **Got here without a move link?** Pick a move on [@tannergolden's profile](https://github.com/tannergolden) instead. An issue that is not a move is closed with a note on how to play.
 
