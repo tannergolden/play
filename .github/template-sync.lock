@@ -2,8 +2,8 @@
   "//": "Where each file here was last synced from. Written by 🔄 Template Sync alone; never edit it by hand.",
   "format": 1,
   "template": "tannergolden/path",
-  "version": "v1.4.0",
-  "commit": "047f5c1fbea57ac09e0582281dca361cd2033818",
+  "version": "v1.4.1",
+  "commit": "8e3e3c8c5fef177123e2a5de8a7c771d25a0d268",
   "identity": {
     "owner": "tannergolden",
     "repository": "tannergolden/play",
@@ -16,7 +16,7 @@
       "mode": "100644"
     },
     ".devcontainer/devcontainer.json": {
-      "blob": "e03d4877ad5e94585e5fd9aca53722ea5c502ebd",
+      "blob": "12a0303114b385012415b7518eb79dcf66a2aa01",
       "mode": "100644"
     },
     ".editorconfig": {
@@ -280,7 +280,7 @@
       "mode": "100644"
     },
     ".github/workflows/scorecard.yml": {
-      "blob": "908686a6e9298ca9248472ddc646ceff45450595",
+      "blob": "1ac033df02c76ee746c280063b299d488b4ae07b",
       "mode": "100644"
     },
     ".github/workflows/semantic-pr.yml": {
@@ -292,7 +292,7 @@
       "mode": "100644"
     },
     ".github/workflows/verify-stubs.yml": {
-      "blob": "976ff15e5548b9e59a22037a3c9e35feb0fef58b",
+      "blob": "fc83be4ff566bcd79d3c0dd3a314351ddfee5ed8",
       "mode": "100644"
     },
     ".gitignore": {
