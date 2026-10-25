@@ -1,0 +1,76 @@
+// Development container - deliberately language-neutral.
+//
+// This scaffold does not know what you are about to write, so it installs
+// nothing for your project's language. The base image plus git and the common
+// utilities is enough to clone, read, edit, and commit in any language.
+//
+// Python is the one exception, and it is not a language choice: the checks
+// this repository runs on its own configuration - the validator, the stub
+// checker, the commit-message hook and their tests - are Python, and a
+// container that cannot run them cannot tell you whether CI will pass.
+//
+// ADD YOUR OWN TOOLCHAIN below. The commented features cover the common ones;
+// the full catalogue is at https://containers.dev/features. Installing one
+// nobody needs costs a slow rebuild for everybody, which is why none is on.
+{
+  "name": "Golden Path",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    // For the repository's own checks; see above. The version matches the
+    // Python CI runs them on. `installTools` off: the feature would otherwise
+    // install a dozen linters and formatters through pipx that nothing here
+    // uses, on every rebuild.
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": false
+    }
+
+    // --- Uncomment what this project actually uses --------------------------
+    //
+    // "ghcr.io/devcontainers/features/node:1":   { "version": "lts" },
+    // "ghcr.io/devcontainers/features/go:1":     { "version": "latest" },
+    // "ghcr.io/devcontainers/features/rust:1":   { "version": "latest" },
+    // "ghcr.io/devcontainers/features/java:1":   { "version": "21" },
+    // "ghcr.io/devcontainers/features/dotnet:2": { "version": "latest" },
+    // "ghcr.io/devcontainers/features/ruby:1":   { "version": "latest" },
+    // "ghcr.io/devcontainers/features/php:1":    { "version": "latest" }
+  },
+
+  "customizations": {
+    "vscode": {
+      // Editor-agnostic essentials only. A formatter is a per-language choice,
+      // so none is installed and none is set as the default.
+      "extensions": [
+        "editorconfig.editorconfig",
+        "eamodio.gitlens",
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+        "tamasfe.even-better-toml"
+      ]
+
+      // No "settings" block here on purpose. VS Code reads
+      // .vscode/settings.json inside the container like anywhere else, so
+      // repeating editor.formatOnSave and markdownlint.config would create a
+      // second source of truth - and the copy that drifts is always the one
+      // nobody remembers exists.
+    }
+  },
+
+  // gitleaks, so the pre-commit hook scans what is staged for secrets before
+  // git records it. It comes from Ubuntu's own archive, signed and with no
+  // version to keep pinned here; that release trails gitleaks itself, and CI
+  // scans every pull request with the current one. A container that cannot
+  // reach the archive still builds, and the hook says it skipped the scan.
+  "onCreateCommand": "(sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends gitleaks) || echo 'gitleaks could not be installed, so the pre-commit hook will skip its secret scan.'",
+
+  // Installs what the repository's own checks need, switches on the git hooks
+  // in .github/scripts/hooks, which check a commit message before git records
+  // it, and sets the commit message template that spells out the format.
+  // Append your project's bootstrap command once it has one, for example
+  // `&& npm ci`, `&& pip install -e .`, `&& go mod download`, or
+  // `&& cargo fetch`.
+  "postCreateCommand": "python3 -m pip install --user --require-hashes --requirement .github/scripts/requirements.txt && git config core.hooksPath .github/scripts/hooks && git config commit.template .github/commit-template.txt"
+}

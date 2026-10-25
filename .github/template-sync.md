@@ -1,0 +1,270 @@
+<!--
+title: '🔄 TEMPLATE SYNC'
+description: 'How this repository takes its template''s later fixes when you run 🔄 Template Sync, what you control, and what waits on you.'
+type: guide
+-->
+
+<!-- markdownlint-disable MD041 -->
+<div align="center">
+
+# 🔄 TEMPLATE SYNC
+
+<a name="top"></a>
+
+**This repository can take its template's later fixes, whenever you ask, as a pull request you merge.**
+
+_On request. Per file. Merged with your changes. Nothing you did not choose._
+
+</div>
+
+---
+
+## 💡 What It Does
+
+This repository was generated from a template. Generating hands over a copy and then forgets it, so
+every fix the template got afterwards would otherwise stay there: a workflow stub, a repository
+script, a seeded document. **🔄 Template Sync** carries those fixes here - when you ask it to.
+
+**It never runs on its own.** Run **🔄 Template Sync** from the Actions tab and it fetches the
+template's latest release, then merges each file the template changed with whatever you changed in
+that file. The result arrives as **one pull request** on `chore/template-sync`, labeled
+`automated`, which later runs update in place. Nothing is ever pushed to your branch, and nothing
+you did not choose is synced. If you never run it, this repository never changes.
+
+| File                                  | What it is                                                    | Yours to edit?        |
+| :------------------------------------ | :------------------------------------------------------------ | :-------------------- |
+| `.github/workflows/template-sync.yml` | The button: it runs only when you run it                      | Yes                   |
+| `.github/template-sync`               | The list: every path the template ships, and whether it syncs | Yes - that is its job |
+| `.github/template-sync.lock`          | Where each file was last synced from                          | Never                 |
+| `.github/template-sync.md`            | This page                                                     | A sync updates it     |
+
+The engine itself lives in [`tannergolden/standards`](https://github.com/tannergolden/standards) and
+is called, never copied, so a fix to how syncing works reaches this repository on its next run.
+
+---
+
+## ✍️ What It Overwrites
+
+**A sync does overwrite files: every path the list keeps current, and nothing else.** That is how
+those files stay current with the template. In the pull request a sync opens:
+
+- **A file you had not changed** is overwritten with the template's version.
+- **A file you changed** is merged with the template's change. Where you both changed the same lines,
+  yours stays as it is, and the pull request shows the template's change.
+- **A file the template removed** is removed too, unless you had changed it.
+- **A folder log** between `AUTO-INDEX` markers is redrawn from your tree.
+
+**One page is shared, in two sections.** `docs/Prompts.md` is the template's down to its
+**✍️ This Repository's Prompts** section, and yours from there to the end. The template never changes
+your section, so a sync only ever brings changes to its own. To keep a change you made to the
+template's section, add `# keep mine: /docs/Prompts.md` under **Your rules**, as above.
+
+A path the list leaves to you, and any file the template does not ship, is never touched. So before
+you run it, look down the **Kept current** section for any file you put to a different use - a folder
+README you rewrote because this repository keeps a layout of its own, say - and put a `#` in front of
+its line. A file you deleted is switched off for you.
+
+---
+
+## 📋 Choosing What Syncs
+
+`.github/template-sync` names every path the template ships, in `.gitignore` syntax:
+
+```gitignore
+# --- Kept current ---------------------------------------------------------
+/.github/workflows/checks.yml
+/.github/scripts/validate-repository.py
+
+# --- Yours: seeded once, never synced ------------------------------------
+#/README.md
+#/LICENSE
+
+# --- Your rules ----------------------------------------------------------
+```
+
+**A line naming a path keeps it current. `#/path` - a hash with no space - leaves it to you.**
+
+| You want                                        | Do this                                                       |
+| :---------------------------------------------- | :------------------------------------------------------------ |
+| To keep a file as your own from now on          | Put a `#` in front of its line                                |
+| To keep your lines in a file, and take the rest | Add `# keep mine: /path/to/file` under **Your rules**         |
+| The template to keep it current again           | Take the `#` away                                             |
+| To stop a whole folder                          | Add a rule under **Your rules**, such as `!/.devcontainer/**` |
+| A file the template left to you, kept current   | Take the `#` away from its line                               |
+| To stop syncing altogether                      | Delete `.github/workflows/template-sync.yml`                  |
+
+Changes to the list take effect on the next sync you run. A few things worth knowing:
+
+- **Your rules come last and win**, exactly as later lines do in a `.gitignore`. Start every
+  pattern with `/`, or it matches that name in every folder.
+- **Every sync redraws the list** from the template's latest one and keeps every choice you made.
+  Anything you wrote that the template did not moves under **Your rules**, and stays.
+- **A deleted line reads as switched off**, and comes back with a `#` in front of it, so the list
+  always shows everything the template ships.
+- **A file the template adds arrives as a new line** in the same pull request as the file.
+- **Deleting the list does not switch syncing off.** The next run restores it with the template's
+  defaults and syncs nothing else that time. Delete the stub to remove the option altogether.
+
+---
+
+## 🔀 What The Pull Request Tells You
+
+| In the pull request                                    | Means                                                                        |
+| :----------------------------------------------------- | :--------------------------------------------------------------------------- |
+| ✅ Updated to the template's version                   | You had not changed the file, so it takes the template's version             |
+| 🔀 Merged with your changes                            | You both changed it, in different places; both changes are kept              |
+| 🆕 Added                                               | The template added it, written in your identity                              |
+| 🚚 Moved by the template                               | The template moved it; your changes moved with it                            |
+| 🗑️ Removed, as the template removed it                 | You had not changed it, so it goes too                                       |
+| 📌 Kept as yours after the template removed it         | You had changed it, so it stays - yours from now on                          |
+| 🙈 Switched off, because you deleted it                | It stays deleted, and its line in the list gains a `#`                       |
+| ♻️ Switched back on and restored                       | You took the `#` away from a file you had deleted, so it is back             |
+| ✋ Held off, as you chose                              | The template reshaped its list; your choice is written back by name          |
+| 🧷 Merged, your lines kept where you both changed them | Your `# keep mine` note: the rest arrived, the change to your lines is shown |
+| ⚠️ Needs you                                           | A conflict - see below                                                       |
+| ⏸️ Waiting on a token                                  | A workflow file - see below                                                  |
+| ⛔ Skipped as unsafe                                   | A path that would reach outside this repository, so it is never written      |
+
+Files the template added or changed arrive **in your identity**: the licence holder, funding
+target, maintainer and README credit name you, a link meant as this repository names yours, and
+links to the shared repositories the template relies on stay as they are.
+
+**Folder logs are redrawn, never merged.** A table between `AUTO-INDEX` markers lists the files
+beside it, so a sync never calls it a conflict: it merges the words around the table and redraws
+the table from your tree, as 🗂️ Machined Indexes would.
+
+**Two additions to `.gitignore` in one place are both kept** - the template's first and yours last,
+so yours still win. The same holds in other ignore files and in `.gitattributes`.
+
+**A release that changes nothing you would see opens no pull request** - one that only touches
+files you switched off, say, or the template's own folder logs.
+
+---
+
+## ⚠️ When Something Waits On You
+
+**A conflict** means you and the template changed the same lines. Your file is left exactly as it
+was - no conflict markers, nothing half-merged - and the pull request shows the template's change.
+Make the lines it changed match the template's, and the next sync stops asking; or put a `#` in
+front of the file in the list to keep your version for good. Make that change on your default
+branch, never on `chore/template-sync`: each sync rewrites that branch from your default branch, and
+what was committed to it goes with it.
+
+**To keep a line you made your own** - your command in `checks.yml`, say - without giving up the
+template's later fixes to the rest of the file, add a note under **Your rules** in the list:
+`# keep mine: /.github/workflows/checks.yml`. From the next sync on, wherever you and the template
+both changed the same lines, yours stand and the pull request shows what you kept them over; every
+other change still arrives, and nothing waits on you. Delete the note to be asked again.
+
+**A workflow file** under `.github/workflows/` cannot be written with the default token. It waits,
+named, until a `BOT_ACCESS_TOKEN` secret exists - see below.
+
+While anything waits, one issue stays open - **🔄 Template sync is waiting on you** - listing every
+waiting file and why. Each sync you run redraws it, and the first one that finds nothing left
+closes it.
+
+> [!TIP]
+> **Merging a sync pull request with a conflict still in it is safe.** Each file remembers where it
+> was last synced from, and a file that did not merge keeps its old place, so the template's change
+> is offered again on every run you make until it lands. Merge the rest; nothing is lost.
+
+---
+
+## 🔑 The Token
+
+| Without a `BOT_ACCESS_TOKEN`                                                             | With one                         |
+| :--------------------------------------------------------------------------------------- | :------------------------------- |
+| Files under `.github/workflows/` wait, named in the issue                                | They arrive like any other file  |
+| The pull request's checks wait until someone with write access approves them on its page | CI runs on it                    |
+| A private template cannot be fetched at all                                              | It can, if the token can read it |
+
+`BOT_ACCESS_TOKEN` is the same secret every automation pull request here uses: a token with the
+`repo` and `workflow` scopes, or a fine-grained one with **Contents**, **Pull requests**, **Issues**
+and **Workflows** write on this repository - and **Contents** read on the template, when the
+template is private. A token with the `repo` scope but not `workflow` counts as none for workflow
+files: they wait, and everything else arrives.
+
+---
+
+## 🏷️ Template Versions
+
+The template publishes releases as `v1.0.0`, `v1.1.0`, and so on, and moves `v1` to the latest one.
+This repository follows `v1`. A new major - `v2` - is a breaking change to the scaffold, so it is
+never followed on its own: change `ref:` in `.github/workflows/template-sync.yml` when you decide to.
+
+---
+
+## 🛡️ What It Never Does
+
+- **Run without you.** There is no schedule: it starts only when you run it.
+- **Write a conflict marker**, or touch a file it could not merge cleanly.
+- **Re-create a file you deleted**, under its old name or a new one - unless you take the `#` off
+  its line again.
+- **Go backwards.** A repository generated between a change to the template and the release after it
+  already holds that change, so it is left alone until the template releases past it.
+- **Touch a file the template does not ship**, or one your list leaves to you.
+- **Push to your branch.** It proposes; you merge - unless you set `automerge: true` in the stub,
+  which merges a sync with nothing waiting once its checks pass.
+- **Re-run initialisation**, write outside this repository, or write through a symlink.
+
+---
+
+## 🧰 In The Template Itself
+
+The same stub runs differently in the template: there it **checks** that `.github/template-sync`
+names every file the template ships, and fails a pull request that adds a file without a line for
+it. Template releases are cut with **🏷️ Cut Release**, which only runs in the template; a merge to
+the template reaches a generated repository only once a release moves `v1`. What each release
+changed is in the template's own `CHANGELOG.md`, which stays on the template and is never synced:
+read it [on the template](https://github.com/tannergolden/path/blob/Development/CHANGELOG.md) before
+you run a sync.
+
+What only the template needs is named under **Only ever in the template** in the list.
+Initialisation deleted each of those files from this repository and redrew its folder logs, so no
+sync offers one; take the `#` off a line to have the next sync add that file. A workflow file there
+is the one it cannot delete, since GitHub lets the workflow token change nothing under
+`.github/workflows/`: the initialisation run names it, for you to delete.
+
+### A template of your own
+
+Make this repository a template too - a vault, a kit, a service skeleton - and it does both: it
+checks its own list on every change, as its template does, and a dispatch of **🔄 Template Sync**
+still syncs it from the template it came from, as a mapped sync. Write that mapping in
+`.github/template-derive.json`, record its lock once, at the commit this repository was generated
+from, and name every file it ships in `.github/template-sync`: the standards' Template Sync guide
+shows how. Its other workflows keep running, since they are silent only in the two golden path
+templates; initialisation never runs in a template, and it releases with **🏷️ Cut Release**.
+
+---
+
+## 🩺 When Something Looks Wrong
+
+| You see                           | What to do                                                                                                                                            |
+| :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "has not published `v1` yet"      | Nothing: the template has no release yet                                                                                                              |
+| "has not been initialised yet"    | Let initialisation finish, or dispatch **🎯 Standards Lifecycle**                                                                                     |
+| Workflow files keep waiting       | Add a `BOT_ACCESS_TOKEN` with the workflow scope                                                                                                      |
+| "Failed to push branch"           | A fine-grained token needs **Workflows** write; or branch protection blocks `chore/template-sync`                                                     |
+| "Could not open the pull request" | Turn on **Allow GitHub Actions to create and approve pull requests**, or add a `BOT_ACCESS_TOKEN`                                                     |
+| "Could not fetch" the template    | The token cannot read it: a private template needs read access, and an expired `BOT_ACCESS_TOKEN` fails even for a public one. Renew it, or delete it |
+| "already holds a newer version"   | Nothing: this repository is ahead of the template's last release                                                                                      |
+| The same conflict on every run    | It is waiting on you: make its lines match the template's, add `# keep mine: /path` for it under Your rules, or put a `#` before it                   |
+| The lock is refused               | It was edited by hand: restore it from history                                                                                                        |
+
+The full standard - how each file is decided, how it is tested, what template authors must do - is
+[🔄 Template Sync](https://github.com/tannergolden/standards/blob/Development/docs/distribution/automation/Template-Sync.md)
+in the standards.
+
+---
+
+<div align="center">
+
+**One copy at the start. Every fix after it, when you want it. Nothing you did not choose.**
+
+[↑ Back to Top](#top)
+
+<br />
+
+Built with ❤️ by the Engineering Team. Distributed under the terms in [LICENSE](/LICENSE).
+
+</div>
