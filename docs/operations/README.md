@@ -48,9 +48,11 @@ the folder holds.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                    | Purpose    |
-| :----------------------- | :--------- |
-| [`README.md`](README.md) | This file. |
+| Entry                                                  | Purpose                                                                                                                                                                                                                                                              |
+| :----------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`GitHub-App.md`](GitHub-App.md)                       | How the Official Arbiter, the GitHub App behind the games, is set up, what it is allowed to do, and how its private key is stored and rotated.                                                                                                                       |
+| [`README.md`](README.md)                               | This file.                                                                                                                                                                                                                                                           |
+| [`Troubleshooting-Moves.md`](Troubleshooting-Moves.md) | What to do when a move is stranded, overdue or never answered, when a reply looks wrong, and when a replay is missing: how to read the issue and its run, what mends itself, and what the owner does about the rest. Read it when a move or a replay has gone wrong. |
 
 <!-- AUTO-INDEX:END -->
 

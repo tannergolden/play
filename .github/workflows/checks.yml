@@ -101,7 +101,7 @@ jobs:
     with:
       lint-command: 'python3 .github/scripts/validate-repository.py'
 
-      test-command: "python3 -m unittest discover -s .github/scripts -p 'test_*.py'"
+      test-command: "python3 -m unittest discover -s .github/scripts -p 'test_*.py' && PYTHONPATH=src/intake:src/replays python3 -m unittest discover -s tests/unit -p 'test_*.py'"
 
       frontmatter: 'enforce'
 

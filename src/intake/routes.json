@@ -1,0 +1,27 @@
+{
+  "//": "Every game the intake serves: where its moves go, and what a move for it looks like.",
+  "tictac": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "tictac.yml",
+    "ref": "Development",
+    "pattern": "(?P<move>[a-i][1-9]) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  },
+  "pentago": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "pentago.yml",
+    "ref": "Development",
+    "pattern": "(?P<move>[a-f][1-6](?:-(?:ul|ur|ll|lr)-(?:cw|acw))?) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  },
+  "checkers": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "checkers.yml",
+    "ref": "Development",
+    "pattern": "(?P<move>(?:3[0-2]|[12][0-9]|[1-9])(?:-(?:3[0-2]|[12][0-9]|[1-9])|(?:x(?:3[0-2]|[12][0-9]|[1-9]))+)) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  },
+  "chess": {
+    "repository": "tannergolden/tannergolden",
+    "workflow": "chess.yml",
+    "ref": "Development",
+    "pattern": "(?P<uci>[a-h][1-8][a-h][1-8][qrbn]?) · game (?P<game>[1-9][0-9]{0,8}) · move (?P<move_number>[1-9][0-9]{0,8})"
+  }
+}

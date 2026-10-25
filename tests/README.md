@@ -41,12 +41,13 @@ leaves this whole folder to you, this README included.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                                   | Purpose                                                                                                         |
-| :-------------------------------------- | :-------------------------------------------------------------------------------------------------------------- |
-| [`e2e/`](e2e/README.md)                 | End-to-end tests: whole user journeys driven against a running system, gating promotion to Preview and Release. |
-| [`integration/`](integration/README.md) | Integration tests: checks that cross a real boundary such as a database, the filesystem, or an HTTP service.    |
-| [`unit/`](unit/README.md)               | Unit tests: fast, isolated checks of one piece of logic each, run on every push.                                |
-| [`README.md`](README.md)                | This file.                                                                                                      |
+| Entry                                   | Purpose                                                                                                           |
+| :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------- |
+| [`e2e/`](e2e/README.md)                 | End-to-end tests: whole user journeys driven against a running system, gating promotion to Preview and Release.   |
+| [`fixtures/`](fixtures/README.md)       | Fixed inputs the tests read: real data as another repository writes it, one folder for each script that reads it. |
+| [`integration/`](integration/README.md) | Integration tests: checks that cross a real boundary such as a database, the filesystem, or an HTTP service.      |
+| [`unit/`](unit/README.md)               | Unit tests: fast, isolated checks of one piece of logic each, run on every push.                                  |
+| [`README.md`](README.md)                | This file.                                                                                                        |
 
 <!-- AUTO-INDEX:END -->
 

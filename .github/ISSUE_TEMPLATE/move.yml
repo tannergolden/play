@@ -1,0 +1,94 @@
+name: '🎲 Play a move'
+description: 'A move picked on the tannergolden profile, ready to send. Open one from a move link there, tick the box at the bottom, and submit it.'
+# Given as the issue opens, once the label exists; 🎲 Move Intake makes it the
+# first time it is needed, and adds the move's game, such as `game: chess`.
+labels: ['move']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎲 Your move is ready
+
+        You picked a move on [@tannergolden's profile](https://github.com/tannergolden), and its link wrote that move into the title above. **Tick the box at the bottom and submit the issue**, and the move is on its way.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 🏷️ Reading the title
+
+        Every game on the profile writes its titles the same way:
+
+        | Game     | A title                               |
+        | :------- | :------------------------------------ |
+        | Chess    | `chess: e2e4 · game 1 · move 12`      |
+        | Checkers | `checkers: 11-15 · game 6 · move 10`  |
+        | Pentago  | `pentago: e4-ur-cw · game 1 · move 9` |
+        | Tic-Tac  | `tictac: e5 · game 1 · move 3`        |
+
+        - **The first word is the game**: `chess`, `checkers`, `pentago` or `tictac`.
+        - **Then comes the move**, written the game's way:
+          - **Chess**: the square a piece leaves and the one it lands on, so `e2e4` moves the piece on e2 to e4. A fifth letter is what a pawn becomes when it reaches the far side, so `e7e8q` makes a queen. Castling is written as the king's move, such as `e1g1`.
+          - **Checkers**: the square your piece leaves and each square it lands on, numbered 1 to 32. `11-15` moves from 11 to 15, `22x15` jumps from 22 to 15, and `22x15x8` jumps on to 8.
+          - **Pentago**: the hole your marble goes in, `a` to `f` from the left and `1` to `6` from the bottom, then the quarter you turn, `ul`, `ur`, `ll` or `lr` for upper left, upper right, lower left or lower right, and which way, `cw` for clockwise or `acw` for anticlockwise. So `e4-ur-cw` sets a marble on e4 and turns the upper right quarter clockwise. A ghost is its hole alone, such as `b5`.
+          - **Tic-Tac**: the square you mark, `a` to `i` from the left and `1` to `9` from the bottom, across all nine boards, so `e5` is the centre of the centre board. A ghost is written the same way.
+        - **`game 1`** is the game on the profile the move is for.
+        - **`move 12`** is the move the board was on when you picked yours. In Pentago and Tic-Tac it counts the two ghosts, so move 3 is the first move after them.
+
+        **Leave the title exactly as it is.** It is all the game reads, and a title that no longer reads as a move is closed without being played.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 🚀 What happens next
+
+        1. **The Arbiter reacts with 👀 as this issue is picked up**, and the title is checked against the board.
+        2. **A 🚀 means your move was sent on to its game**, usually within a minute. This issue stays open until the game rules on it.
+        3. **The game plays the move** and redraws the board on the profile, usually within a few minutes.
+        4. **The Arbiter replies here** once the move is on the board, or says why it couldn't be played, then labels this issue `played` or `turned away` and closes it. That reply is the only one you get, so it's the only notification.
+
+        A move its game could only turn away, such as one on the other side's turn, is answered and closed at once instead, and goes no further. If something goes wrong on the way, this issue says so and your move is sent again by itself once it's fixed: there's nothing you need to do.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### ⏱️ Whose turn it is
+
+        - **Each player's side never changes.** @tannergolden always plays White in Chess, Checkers and Pentago, and X in Tic-Tac. GitHub, which is everyone else, always plays Black, or O.
+        - **Who opens depends on the game:**
+          - **Chess**: @tannergolden, as White.
+          - **Checkers**: GitHub, as Black, since Black moves first in American checkers.
+          - **Pentago and Tic-Tac**: the Ghost Rule. First each side places a ghost: a square nobody can take in Tic-Tac, or a marble that is nobody's in Pentago. The Arbiter draws the side that places the first, and the other side places the second. Then the Arbiter draws who moves first. The reasons are in [ADR-0001's amendment](https://github.com/tannergolden/play/blob/HEAD/docs/adrs/ADR-0001-Four-Games-One-Arbiter.md#-amendment-the-ghost-rule).
+        - **On GitHub's turn, anyone but @tannergolden can play**, its ghost included, and the first move to reach the game is the one played.
+        - **On @tannergolden's turn, only @tannergolden can.** A move or a ghost from anyone else is turned away with a reply.
+        - **If the board moved on before your move arrived**, the reply here says what happened to it. Pick a move from the new board to play again.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 👀 Good to know
+
+        - **A finished game's winning board stays up for two days**, and then a fresh board comes by itself. A move for the next game before then is turned away with the day it opens.
+        - **The four games share one hourly limit**: 30 issues an hour from each player, whatever the game. A move past that is turned away, so pick your next one a little later.
+        - **This issue is public.** Your move and your GitHub username can appear on the profile, with the game's moves and in its Hall of Fame, and a game's replay draws each player from their GitHub avatar. Submitting a move lets the games record and show your move, username and avatar that way, as section 8 of the [licence](https://github.com/tannergolden/play/blob/HEAD/LICENSE) sets out; the games themselves stay all rights reserved.
+        - **One move per issue.** To play again, come back for the next turn and pick a new move.
+        - **Got here without a move link?** Pick a move on [@tannergolden's profile](https://github.com/tannergolden) instead. An issue that is not a move is closed with a note on how to play.
+
+  - type: textarea
+    id: note
+    attributes:
+      label: '💬 A word with your move'
+      description: 'Optional, and only for people: it shows on this issue, and the game never reads it.'
+      placeholder: 'Good luck.'
+    validations:
+      required: false
+
+  # GitHub won't submit the form until this box is ticked. The intake reads
+  # only the title, so a move opened without the form carries no box.
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: '🤝 Before you send it'
+      description: 'Your move can only be sent with the box ticked.'
+      options:
+        - label: "I agree to play by the games' rules on this form and on the profile, and to the games showing my move, my GitHub username and my avatar on the profile, in replays and in the Hall of Fame, under section 8 of the [licence](https://github.com/tannergolden/play/blob/HEAD/LICENSE). Anything I write here follows GitHub's [Acceptable Use Policies](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies)."
+          required: true

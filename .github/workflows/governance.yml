@@ -46,8 +46,10 @@ on:
   # fork's pull request and so need the privileged trigger.
   pull_request_target:
     types: [opened, synchronize, reopened]
-  issues:
-    types: [opened]
+  # No `issues:` trigger, unlike the template. Every issue here is a move,
+  # and the welcome a new issue starts ("a maintainer will take a look
+  # shortly") is wrong for every one of them. 🎲 Move Intake and the game's
+  # Arbiter answer instead.
   issue_comment:
     types: [created]
   schedule:

@@ -46,9 +46,45 @@ again.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                    | Purpose    |
-| :----------------------- | :--------- |
-| [`README.md`](README.md) | This file. |
+| Entry                                                                              | Purpose    |
+| :--------------------------------------------------------------------------------- | :--------- |
+| [`official-arbiter-die-black-512.png`](official-arbiter-die-black-512.png)         | -          |
+| [`official-arbiter-die-black.svg`](official-arbiter-die-black.svg)                 | -          |
+| [`official-arbiter-die-blue-512.png`](official-arbiter-die-blue-512.png)           | -          |
+| [`official-arbiter-die-blue.svg`](official-arbiter-die-blue.svg)                   | -          |
+| [`official-arbiter-die-green-512.png`](official-arbiter-die-green-512.png)         | -          |
+| [`official-arbiter-die-green.svg`](official-arbiter-die-green.svg)                 | -          |
+| [`official-arbiter-die-indigo-512.png`](official-arbiter-die-indigo-512.png)       | -          |
+| [`official-arbiter-die-indigo.svg`](official-arbiter-die-indigo.svg)               | -          |
+| [`official-arbiter-die-orange-512.png`](official-arbiter-die-orange-512.png)       | -          |
+| [`official-arbiter-die-orange.svg`](official-arbiter-die-orange.svg)               | -          |
+| [`official-arbiter-die-red-512.png`](official-arbiter-die-red-512.png)             | -          |
+| [`official-arbiter-die-red.svg`](official-arbiter-die-red.svg)                     | -          |
+| [`official-arbiter-die-violet-512.png`](official-arbiter-die-violet-512.png)       | -          |
+| [`official-arbiter-die-violet.svg`](official-arbiter-die-violet.svg)               | -          |
+| [`official-arbiter-die-white-512.png`](official-arbiter-die-white-512.png)         | -          |
+| [`official-arbiter-die-white.svg`](official-arbiter-die-white.svg)                 | -          |
+| [`official-arbiter-die-yellow-512.png`](official-arbiter-die-yellow-512.png)       | -          |
+| [`official-arbiter-die-yellow.svg`](official-arbiter-die-yellow.svg)               | -          |
+| [`official-arbiter-scales-black-512.png`](official-arbiter-scales-black-512.png)   | -          |
+| [`official-arbiter-scales-black.svg`](official-arbiter-scales-black.svg)           | -          |
+| [`official-arbiter-scales-blue-512.png`](official-arbiter-scales-blue-512.png)     | -          |
+| [`official-arbiter-scales-blue.svg`](official-arbiter-scales-blue.svg)             | -          |
+| [`official-arbiter-scales-green-512.png`](official-arbiter-scales-green-512.png)   | -          |
+| [`official-arbiter-scales-green.svg`](official-arbiter-scales-green.svg)           | -          |
+| [`official-arbiter-scales-indigo-512.png`](official-arbiter-scales-indigo-512.png) | -          |
+| [`official-arbiter-scales-indigo.svg`](official-arbiter-scales-indigo.svg)         | -          |
+| [`official-arbiter-scales-orange-512.png`](official-arbiter-scales-orange-512.png) | -          |
+| [`official-arbiter-scales-orange.svg`](official-arbiter-scales-orange.svg)         | -          |
+| [`official-arbiter-scales-red-512.png`](official-arbiter-scales-red-512.png)       | -          |
+| [`official-arbiter-scales-red.svg`](official-arbiter-scales-red.svg)               | -          |
+| [`official-arbiter-scales-violet-512.png`](official-arbiter-scales-violet-512.png) | -          |
+| [`official-arbiter-scales-violet.svg`](official-arbiter-scales-violet.svg)         | -          |
+| [`official-arbiter-scales-white-512.png`](official-arbiter-scales-white-512.png)   | -          |
+| [`official-arbiter-scales-white.svg`](official-arbiter-scales-white.svg)           | -          |
+| [`official-arbiter-scales-yellow-512.png`](official-arbiter-scales-yellow-512.png) | -          |
+| [`official-arbiter-scales-yellow.svg`](official-arbiter-scales-yellow.svg)         | -          |
+| [`README.md`](README.md)                                                           | This file. |
 
 <!-- AUTO-INDEX:END -->
 

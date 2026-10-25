@@ -1,21 +1,203 @@
-MIT License
+PROPRIETARY LICENCE
 
-Copyright (c) 2026 Tanner Golden
+Copyright (c) 2026 Tanner Golden. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+SPDX-License-Identifier: LicenseRef-Proprietary
+Effective Date: 14 October 2026
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. DEFINITIONS
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   1.1 "Copyright Holder" means Tanner Golden, the sole author and owner of
+       the Materials, and no one else.
+
+   1.2 "Materials" means this repository and everything in it: the move intake
+       and its rules and routes, the checks, the replays, the games' designs,
+       artwork, animations and assets, the issue forms, documentation,
+       configuration, workflows and every other work of authorship, in every
+       form, format and version, whether published, unpublished, current or
+       superseded, together with any portion of any of them and any output
+       they produce, such as rendered boards, pieces, animations, replays and
+       other images.
+
+   1.3 "Use" means to access (other than as Sections 6 and 7 permit), run,
+       execute, copy, reproduce, store, cache, modify, adapt, translate, port,
+       merge, compile, decompile, disassemble, reverse engineer, display,
+       perform, publish, distribute, transmit, sublicense, license, sell,
+       resell, rent, lease, lend, host, offer as a service, commercialise or
+       otherwise exploit, in whole or in part, by any means or in any medium
+       now known or later devised.
+
+   1.4 "AI System" means any artificial intelligence, machine learning or
+       statistical model, including any large language model, neural network,
+       generative model, code-completion or code-generation tool, or
+       autonomous agent, and any dataset, corpus, index, embedding store or
+       retrieval system used to build, train, evaluate, fine-tune, ground or
+       operate one.
+
+   1.5 "Including" means including without limitation.
+
+2. RESERVATION OF RIGHTS
+
+   The Materials are the exclusive property of the Copyright Holder and are
+   protected by copyright, trade secret and other intellectual property laws
+   and international treaties. All right, title and interest in and to the
+   Materials are reserved to the Copyright Holder.
+
+   No licence, permission or right of any kind is granted to any person or
+   entity, whether expressly, by implication, by estoppel, by course of
+   dealing or otherwise. Access to, receipt of or possession of the Materials,
+   their availability on any hosting platform, and the absence of a notice in
+   any individual file confer no right to Use them.
+
+3. PROHIBITED CONDUCT
+
+   Without limiting Section 2, no person or entity may, directly or
+   indirectly:
+
+   (a) Use the Materials, or any part of them, for any purpose, commercial or
+       non-commercial;
+
+   (b) sell, resell, sublicense, license, rent, lease, lend, distribute or
+       otherwise make the Materials available to any third party, or offer any
+       product or service that incorporates, is based on or is substantially
+       similar to them;
+
+   (c) create any derivative work, adaptation, port, clone or imitation of the
+       Materials, including any game, game engine, ruleset implementation,
+       design, theme, artwork or user experience substantially similar to
+       them;
+
+   (d) remove, alter or obscure any copyright, licence or proprietary notice
+       in the Materials; or
+
+   (e) assist, authorise, induce or encourage any other person or entity to do
+       any of the above.
+
+4. ARTIFICIAL INTELLIGENCE AND DATA MINING
+
+   4.1 No person or entity may use the Materials, in whole or in part: (a) to
+       train, pre-train, fine-tune, evaluate, benchmark, ground or otherwise
+       develop or improve any AI System; (b) as input to, or as a source of
+       retrieval for, any AI System, including by prompting,
+       retrieval-augmented generation, embedding or indexing; or (c) to cause,
+       enable or allow any AI System to reproduce, translate, paraphrase,
+       summarise for reproduction, imitate, or generate output derived from or
+       substantially similar to the Materials.
+
+   4.2 No AI System, and no provider or operator of one, is authorised to
+       reproduce the Materials, verbatim or in substance, in whole or in part,
+       in any output.
+
+   4.3 The Copyright Holder expressly reserves all rights in the Materials
+       against text and data mining, including under Article 4(3) of Directive
+       (EU) 2019/790 on copyright and related rights in the Digital Single
+       Market and under any equivalent or successor provision in any
+       jurisdiction. This reservation is made in a machine-readable manner by
+       its inclusion in this file, and applies to every copy of the Materials
+       wherever it is found.
+
+   4.4 Any output of an AI System that reproduces, or is derived from, the
+       Materials is an unauthorised reproduction or derivative work, and no
+       right in it is granted.
+
+5. NO PERMISSION WILL BE GRANTED
+
+   The Copyright Holder does not offer, and will not grant, any licence,
+   permission, consent or waiver in respect of the Materials to any person or
+   entity. Any purported licence, permission, consent or waiver is void unless
+   it is set out in a written instrument that expressly refers to this Section
+   5 and is signed by the Copyright Holder personally. No failure or delay in
+   enforcing any right under this Licence is a waiver of it.
+
+6. THE COPYRIGHT HOLDER'S OWN USE
+
+   This Licence does not restrict the Copyright Holder, or any person,
+   service, tool or AI System acting solely on the Copyright Holder's express
+   instruction and for the Copyright Holder's sole benefit, including the
+   automated workflows and applications the Copyright Holder operates the
+   Materials with. Acting on such an instruction confers on that person,
+   service, tool or AI System, and on any provider of it, no right to retain,
+   reuse, train on or reproduce the Materials for any other purpose.
+
+7. VIEWING AND PLAYING ON GITHUB
+
+   The Materials are published in a public repository on GitHub. Solely to the
+   extent that GitHub's Terms of Service require, each GitHub user may view
+   the Materials, and fork them, through GitHub's own functionality and on
+   GitHub only. That permission extends no further than those Terms require:
+   it carries no right to Use any fork or copy outside GitHub, or for any
+   purpose this Licence prohibits.
+
+   Any person may view the games as the Copyright Holder displays them on the
+   Copyright Holder's GitHub profile, and may play them by submitting moves
+   through the move links and forms the Copyright Holder provides. Playing in
+   that way is permitted conduct, not a licence: it confers no right in the
+   Materials.
+
+8. MOVES SUBMITTED BY PLAYERS
+
+   A person who submits a move, a ghost or any other play to the games grants
+   the Copyright Holder a perpetual, irrevocable, worldwide, royalty-free and
+   non-exclusive licence to record, store, reproduce, display, publish and
+   otherwise use that play, together with the GitHub username and public
+   profile details that GitHub shows with it, as part of the games, their
+   boards, records, replays and Hall of Fame. Submitting a play confers no
+   right in the Materials.
+
+9. NAMES AND MARKS
+
+   No right is granted to use the name of the Copyright Holder, the names of
+   the games or of the Official Arbiter, or any logo, artwork or other mark
+   associated with them, as a trademark, or in any way that suggests
+   endorsement by, sponsorship by or affiliation with the Copyright Holder.
+
+10. THIRD-PARTY COMPONENTS
+
+   This repository calls shared workflows and actions that are published
+   separately, by the Copyright Holder and by others, and are not part of the
+   Materials. It may also include typefaces or other assets, each published
+   beside its own licence. Those components are governed solely by their own
+   licences, and this Licence claims no right in them.
+
+11. EARLIER VERSIONS
+
+   Versions of the Materials published before the Effective Date under the MIT
+   License remain subject to that licence only as to those earlier versions,
+   and only to the extent applicable law requires. Every version published on
+   or after the Effective Date, and every addition or change made on or after
+   it, is governed solely by this Licence.
+
+12. ENFORCEMENT AND REMEDIES
+
+   Any Use of the Materials not permitted by this Licence is unauthorised and
+   infringes the Copyright Holder's rights, and any right a person might
+   otherwise claim terminates automatically and immediately upon it.
+   Unauthorised Use may cause the Copyright Holder irreparable harm for which
+   damages alone would be inadequate. The Copyright Holder may seek injunctive
+   and other equitable relief, without the need to post a bond where the law
+   allows, together with actual or statutory damages, an account of profits,
+   costs and attorneys' fees, and any other remedy available at law or in
+   equity.
+
+13. DISCLAIMER OF WARRANTY
+
+   THE MATERIALS ARE PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF
+   ANY KIND, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, TITLE OR NON-INFRINGEMENT.
+
+14. LIMITATION OF LIABILITY
+
+   TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT SHALL THE COPYRIGHT
+   HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER DIRECT,
+   INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR EXEMPLARY, AND WHETHER IN
+   AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+   CONNECTION WITH THE MATERIALS OR ANY USE OF THEM.
+
+15. GENERAL
+
+   If any provision of this Licence is held invalid or unenforceable, it shall
+   be enforced to the greatest extent permitted, and the remaining provisions
+   shall remain in full force and effect. Headings are for convenience only.
+   Sections 2 to 5 and 12 to 15 survive any termination. The Copyright Holder
+   may revise this Licence at any time by publishing a revised version with
+   the Materials; no revision grants any right this version withholds.

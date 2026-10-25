@@ -27,11 +27,11 @@ their index.
 
 The folder is a living record, not a fill-in form, and its records are **yours
 from the first commit**: nothing upstream ever writes, moves or removes one. It
-arrives with one decision in it,
-[ADR-0001](ADR-0001-Record-Architecture-Decisions.md), the decision to keep
-these records, which doubles as a worked example, and gains a row each time a
-record is written. Only this README is ever updated from the template - when you
-run 🔄 Template Sync - merged with the rows your records add.
+holds play's own decisions, from
+[ADR-0001](ADR-0001-Four-Games-One-Arbiter.md) on, and gains a row each time a
+record is written. The template's seed record took the same number, so it was
+left out. Only this README is ever updated from the template - when you run
+🔄 Template Sync - merged with the rows your records add.
 
 ---
 
@@ -51,10 +51,11 @@ trade-offs that shaped it before changing it.
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log fields=status,date,evidence -->
 
-| Entry                                                                                    | Status   | Date       | Evidence | Purpose                                                                                                                           |
-| :--------------------------------------------------------------------------------------- | :------- | :--------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------- |
-| [`ADR-0001-Record-Architecture-Decisions.md`](ADR-0001-Record-Architecture-Decisions.md) | Accepted | 2026-10-24 | N/A      | The decision to record every significant architecture decision as a numbered record in this folder, and the first example of one. |
-| [`README.md`](README.md)                                                                 | -        | -          | -        | This file.                                                                                                                        |
+| Entry                                                                            | Status   | Date       | Evidence | Purpose                                                                                                                                                                                      |
+| :------------------------------------------------------------------------------- | :------- | :--------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`ADR-0001-Four-Games-One-Arbiter.md`](ADR-0001-Four-Games-One-Arbiter.md)       | Accepted | 2026-10-12 | N/A      | Chess, Checkers, Connect Four and Tic-Tac-Toe, and no other game, share one intake, one Arbiter, one Hall of Fame and one leaderboard, and each keeps its own voice, board and rules.        |
+| [`ADR-0002-The-Games-Are-Proprietary.md`](ADR-0002-The-Games-Are-Proprietary.md) | Accepted | 2026-10-14 | N/A      | Everything in this repository is proprietary to the owner: no use, reuse or resale by anyone, no permission ever granted, and no AI training on it or reproducing it; anyone may still play. |
+| [`README.md`](README.md)                                                         | -        | -          | -        | This file.                                                                                                                                                                                   |
 
 <!-- AUTO-INDEX:END -->
 

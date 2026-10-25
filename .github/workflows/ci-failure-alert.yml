@@ -42,6 +42,13 @@ on:
       # The weekly supply-chain score. A failure here is a broken publish or
       # a broken upload, and nothing else would ever mention it.
       - '🛡️ OpenSSF Scorecard'
+      # This repository's own: a replay that could not be drawn, saved or
+      # posted, and a sweep that could not answer the issues left waiting.
+      # 🎲 Move Intake is left off on purpose: a move that cannot reach its
+      # game already tells the owner once, in the Arbiter's outage notice,
+      # and an alert beside it would be a second public alarm for one fault.
+      - '🎬 Replays'
+      - '⏳ Move Sweep'
       # Add any workflow whose silent failure would cost something.
       #
       # ⚠️ NEVER ADD THIS WORKFLOW TO ITS OWN LIST. It cannot escalate its

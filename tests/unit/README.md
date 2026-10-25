@@ -20,13 +20,25 @@ _In-process, and no I/O._
 
 ## 💡 What This Folder Is For
 
-A unit test proves that one function or module behaves as designed, in process,
-with anything that would do I/O replaced by a test double. Unit tests are the
-bulk of the suite because they are cheap enough to run on every push, and the
-domain layer, which does no I/O, is where most of them point.
+One test file per script: [`test_route.py`](test_route.py),
+[`test_check.py`](test_check.py) and [`test_sweep.py`](test_sweep.py) for the
+[move intake](../../src/intake/README.md), and [`test_build.py`](test_build.py)
+for the [replays](../../src/replays/README.md), which draws from the four won
+games in [`fixtures/replays/`](../fixtures/replays/README.md). GitHub, the kit
+and ImageMagick are each replaced by a stand-in, so nothing here reads or
+writes outside a throwaway folder, but for the last test in `test_build.py`,
+which has the real kit draw every fixture when the kit is checked out beside
+this repository, and is skipped when it isn't.
 
-Co-locating them next to the source they test is fine too, if your language
-prefers it. This folder is the home for the ones that are not.
+Run them from the root of the repository, with both of `src/`'s folders on the
+path:
+
+```bash
+PYTHONPATH=src/intake:src/replays python3 -m unittest discover -s tests/unit -p 'test_*.py'
+```
+
+`checks.yml` runs the same command as part of the `ci` job's `test-command`,
+after the template's own script tests.
 
 The runner, coverage targets, naming, test layout, and mocking rules belong in
 the fill-in [Unit Test Standards](../../docs/templates/technical/testing/Unit-Test-Standards.md).
@@ -37,9 +49,13 @@ the fill-in [Unit Test Standards](../../docs/templates/technical/testing/Unit-Te
 
 <!-- AUTO-INDEX:BEGIN dir=. style=log -->
 
-| Entry                    | Purpose    |
-| :----------------------- | :--------- |
-| [`README.md`](README.md) | This file. |
+| Entry                            | Purpose                                                                                                        |
+| :------------------------------- | :------------------------------------------------------------------------------------------------------------- |
+| [`README.md`](README.md)         | This file.                                                                                                     |
+| [`test_build.py`](test_build.py) | Tests for the replays: what is drawn, what is kept, what is said, and what an account that is gone takes down. |
+| [`test_check.py`](test_check.py) | Tests for the pre-check of all four games.                                                                     |
+| [`test_route.py`](test_route.py) | Tests for the move router.                                                                                     |
+| [`test_sweep.py`](test_sweep.py) | Tests for the sweep.                                                                                           |
 
 <!-- AUTO-INDEX:END -->
 
