@@ -2,8 +2,8 @@
   "//": "Where each file here was last synced from. Written by 🔄 Template Sync alone; never edit it by hand.",
   "format": 1,
   "template": "tannergolden/path",
-  "version": "",
-  "commit": "",
+  "version": "v1.4.0",
+  "commit": "047f5c1fbea57ac09e0582281dca361cd2033818",
   "identity": {
     "owner": "tannergolden",
     "repository": "tannergolden/play",
@@ -48,7 +48,7 @@
       "mode": "100644"
     },
     ".github/CONTRIBUTING.md": {
-      "blob": "25f86da73506a075efe256017b6dd367928f8dfe",
+      "blob": "22fd21a9606891ab4e552871c504228214c15f33",
       "mode": "100644"
     },
     ".github/DISCUSSION_TEMPLATE/README.md": {
@@ -212,35 +212,35 @@
       "mode": "100644"
     },
     ".github/template-sync": {
-      "blob": "e5e889aa0a8ceb888ae0e514fd779a2c8114bc92",
+      "blob": "9785c01fd78a54f936716d1db52d3eb3f4d3539d",
       "mode": "100644"
     },
     ".github/template-sync.md": {
-      "blob": "07ec0ddf9a672571e76558233428c6b9493f644d",
+      "blob": "90047582d249003506239a827a16d2f874cc4f28",
       "mode": "100644"
     },
     ".github/workflows/README.md": {
-      "blob": "eab0a8c88bc0488e841051b7d95b4d7c3253c812",
+      "blob": "33d7d047b460e9b67c16bc5cee7844d676abd1f6",
       "mode": "100644"
     },
     ".github/workflows/apply-standards.yml": {
-      "blob": "25b793bbec2fa78d4247c359a1a638c28279e42b",
+      "blob": "1b48d4a0ab3b62612acfd0d042a9d178de862072",
       "mode": "100644"
     },
     ".github/workflows/auto-format.yml": {
-      "blob": "2f3077ae561be3348e3a3af6a9f1cd351d015e0f",
+      "blob": "9e230c4cfe9bc70cab901c7cec8f116c5d577003",
       "mode": "100644"
     },
     ".github/workflows/auto-index.yml": {
-      "blob": "af6a1a2eeda653a242b0f32406dadb6909c793c8",
+      "blob": "456751bce48a275ac499e81c403f407c09ec7b95",
       "mode": "100644"
     },
     ".github/workflows/checks.yml": {
-      "blob": "c098ad97b30ecde551ca81734148a80e79a70274",
+      "blob": "4a34ae1049c208e6fdde8ca948b3eefb5f879e99",
       "mode": "100644"
     },
     ".github/workflows/ci-failure-alert.yml": {
-      "blob": "99c64fee1e7cf5264e3a9165aa81e7886af9f79d",
+      "blob": "da3f29254d42ba23d9bd4017d6bfeb637d923961",
       "mode": "100644"
     },
     ".github/workflows/cut-release.yml": {
@@ -248,47 +248,51 @@
       "mode": "100644"
     },
     ".github/workflows/dependabot-automerge.yml": {
-      "blob": "d9bc749db35c41a24e2d5734a9e2caf87b595d6f",
+      "blob": "0c6e5b1f7b5148b08a8c8b1ccb6b985b9b379918",
       "mode": "100644"
     },
     ".github/workflows/governance.yml": {
-      "blob": "13c4c940840072ecbbdc4ed2969e684faa28a8f1",
+      "blob": "2799abbd1bdea97866d0e5410f19c35844dbbb98",
       "mode": "100644"
     },
     ".github/workflows/intelligence-sync.yml": {
-      "blob": "368dcb9bd001780626216f367591456ab4e9d55f",
+      "blob": "420338de172501077e96558df95af063c06ea56a",
       "mode": "100644"
     },
     ".github/workflows/lifecycle.yml": {
-      "blob": "0433aa25ca97abf396caa9c00f719db46242d383",
+      "blob": "959b16807d8406afd3080f2566df276fe87c0bbc",
       "mode": "100644"
     },
     ".github/workflows/maintenance.yml": {
-      "blob": "0b07631fe022462da36fb2451b2cd9d777940899",
+      "blob": "63409667290a8f706a25ad8cc2f062b6535b94d9",
       "mode": "100644"
     },
     ".github/workflows/preview-deploy.yml": {
-      "blob": "00ad0eddc82a36fb566af1aef3653a629b350116",
+      "blob": "8d04ea1e04d65fe9b9962994cf11815a25e59786",
       "mode": "100644"
     },
     ".github/workflows/prune-runs.yml": {
-      "blob": "669af65c98b25e974edc52edcbb393fcd1c33037",
+      "blob": "554cf301ff269dbd51291d9e4e60014b94a9dad0",
       "mode": "100644"
     },
     ".github/workflows/release.yml": {
-      "blob": "71b67dea18a9c66ef1408aa53694b9a23612ae40",
+      "blob": "5c707fa7058eb618ea9abcb8d8d46469126cb2bd",
       "mode": "100644"
     },
     ".github/workflows/scorecard.yml": {
-      "blob": "e4afa248ad204ca5005ca1af21897e8321943b9f",
+      "blob": "908686a6e9298ca9248472ddc646ceff45450595",
+      "mode": "100644"
+    },
+    ".github/workflows/semantic-pr.yml": {
+      "blob": "335a38d65e439d4c01b30fbd0c107381d43d566a",
       "mode": "100644"
     },
     ".github/workflows/template-sync.yml": {
-      "blob": "5ebc057d8bd161391eb97b6e2552644f3f9932e1",
+      "blob": "91ce8061ae89b5d5b0f922da88a8782e096c1543",
       "mode": "100644"
     },
     ".github/workflows/verify-stubs.yml": {
-      "blob": "28d3c9305135eba7ebe7aba9104df9448b010e4a",
+      "blob": "976ff15e5548b9e59a22037a3c9e35feb0fef58b",
       "mode": "100644"
     },
     ".gitignore": {
@@ -344,7 +348,7 @@
       "mode": "100644"
     },
     "docs/Prompts.md": {
-      "blob": "3343db0cc1fb44dac960458d79a817ea02dc7102",
+      "blob": "bc5375f0e984d45bcc7a3d2271c0271bf765187c",
       "mode": "100644"
     },
     "docs/README.md": {

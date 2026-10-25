@@ -58,7 +58,7 @@ means it can also be run by hand from the Actions tab.
 | [`ci-failure-alert.yml`](ci-failure-alert.yml)         | &#x1F6A8; CI Failure Alerts            | `workflow_run` (`Development`)                                                                                                                                                                 | Opens a labeled issue when a watched workflow fails on a long-lived branch, and closes it again when that workflow recovers.                                                                                                                                                                            |
 | [`cut-release.yml`](cut-release.yml)                   | &#x1F3F7;&#xFE0F; Cut Release          | `workflow_dispatch`                                                                                                                                                                            | Publishes this template's releases: `vX.Y.Z` for the version, and the moving `vX` that every repository generated from it follows through &#x1F504; Template Sync.                                                                                                                                      |
 | [`dependabot-automerge.yml`](dependabot-automerge.yml) | &#x1F9BE; Automate Dependabot          | `pull_request`                                                                                                                                                                                 | Approves and queues Dependabot's patch and minor updates.                                                                                                                                                                                                                                               |
-| [`governance.yml`](governance.yml)                     | &#x2696;&#xFE0F; Governance            | `pull_request`, `merge_group`, `pull_request_target`, `issue_comment`, `schedule` (`0 4 * * 1`), `workflow_dispatch`                                                                           | Everything that REACTS to humans, in one file: pull request title and sign-off validation, onboarding and triage, the stale sweep, and the slash commands in issue comments.                                                                                                                            |
+| [`governance.yml`](governance.yml)                     | &#x2696;&#xFE0F; Governance            | `pull_request_target`, `issue_comment`, `schedule` (`0 4 * * 1`), `workflow_dispatch`                                                                                                          | Everything that REACTS to humans, in one file: onboarding and triage, the stale sweep, and the slash commands in issue comments.                                                                                                                                                                        |
 | [`intake.yml`](intake.yml)                             | &#x1F3B2; Move Intake                  | `issues`, `workflow_dispatch`                                                                                                                                                                  | Takes every move played from the profile, checks it, and hands it to its game - and turns away anything that is not a move.                                                                                                                                                                             |
 | [`intelligence-sync.yml`](intelligence-sync.yml)       | &#x1F501; Intelligence Sync            | `schedule` (`23 6 * * 1`), `workflow_dispatch`                                                                                                                                                 | Keeps the universal rules for AI coding agents current in this repository's root AGENTS.md: the block between the INTELLIGENCE markers, which tannergolden/intelligence renders and releases.                                                                                                           |
 | [`lifecycle.yml`](lifecycle.yml)                       | &#x1F3AF; Standards Lifecycle          | `push` (`Development`), `schedule` (`0 7 * * 1`), `workflow_dispatch`                                                                                                                          | This repository's relationship with the standards, in one file: claimed for its new owner at generation, and told - once - when a new major of the standards exists.                                                                                                                                    |
@@ -69,6 +69,7 @@ means it can also be run by hand from the Actions tab.
 | [`release.yml`](release.yml)                           | &#x1F4E6; Release                      | `schedule` (`0 5 * * 1`), `release`, `workflow_dispatch`                                                                                                                                       | The whole release chain, in one file: draft the notes through the week, publish the assets when a release is cut, optionally push the package to its registries, and - only when someone asks - prune old releases.                                                                                     |
 | [`replay.yml`](replay.yml)                             | &#x1F3AC; Replays                      | `workflow_dispatch`, `schedule` (`38 * * * *`, `11 9 * * *`)                                                                                                                                   | Draws the replay of every game a player's own move won on the profile, keeps each game's newest 25, and posts each on its winning move's issue.                                                                                                                                                         |
 | [`scorecard.yml`](scorecard.yml)                       | &#x1F6E1;&#xFE0F; OpenSSF Scorecard    | `push` (`Development`), `schedule` (`0 2 * * 1`), `branch_protection_rule`                                                                                                                     | Scores this repository's supply-chain security with OpenSSF Scorecard - branch protection, pinned dependencies, token permissions, dangerous workflow patterns, signed releases and the rest - and files every finding under Security &#x2192; Code scanning, where it is tracked like any other alert. |
+| [`semantic-pr.yml`](semantic-pr.yml)                   | &#x2728; Semantic Pull Request         | `pull_request`, `merge_group`                                                                                                                                                                  | The required pull request check, in a file of its own: the title, the branch name, every commit message and the DCO sign-off, read through the API.                                                                                                                                                     |
 | [`sweep.yml`](sweep.yml)                               | &#x23F3; Move Sweep                    | `schedule` (`11 * * * *`), `workflow_dispatch`                                                                                                                                                 | Answers every issue left waiting here - marks each move whose ruling is overdue, and sends again each move that never reached its game.                                                                                                                                                                 |
 | [`template-sync.yml`](template-sync.yml)               | &#x1F504; Template Sync                | `push` (`Development`), `pull_request`, `workflow_dispatch`                                                                                                                                    | Brings this repository up to date with the template it was generated from WHEN YOU ASK, and never otherwise: run &#x1F504; Template Sync from the Actions tab.                                                                                                                                          |
 | [`verify-stubs.yml`](verify-stubs.yml)                 | &#x1F52C; Verify Stub Ceilings         | `push` (`Development`), `pull_request` (`.github/workflows/**`, `.github/scripts/verify-stub-ceilings.py`, `.github/scripts/requirements.txt`), `schedule` (`15 7 * * *`), `workflow_dispatch` | Checks that every stub in this repository declares the permission ceiling its called workflow actually needs, and passes only inputs that workflow accepts.                                                                                                                                             |
@@ -123,26 +124,36 @@ called workflow declares the secrets it reads under `secrets:` in its
 ## ⚠️ Before You Change One
 
 - **The checks run everywhere; most jobs that act on a repository do not run
-  in the two golden path templates.** Everything in `checks.yml`, the `pr` check
-  in `governance.yml`, `verify-stubs.yml`, `scorecard.yml`, `prune-runs.yml`
-  and `auto-index.yml` run in the templates as they do here. A job whose guard
-  names the two templates alongside `is_template` does nothing in either and
-  comes alive in every other repository, a template derived from one of them
+  in the golden path template.** Everything in `checks.yml`, the `pr` check
+  in `semantic-pr.yml`, `verify-stubs.yml`, `scorecard.yml`, `prune-runs.yml`
+  and `auto-index.yml` run in the template as they do here. A job whose guard
+  names the golden path template alongside `is_template` does nothing there
+  and comes alive in every other repository, a template derived from it
   included. Initialisation and `release.yml` stay silent in every template: a
   template never initialises itself, and releases with `cut-release.yml`.
   `template-sync.yml` checks its list in a template, and `cut-release.yml` runs
   only in a template until a repository released by tag adopts it.
-- **`governance.yml` mixes two kinds of trigger on purpose.** The `pr` check
-  reads only, so it runs on `pull_request` and `merge_group`; the triage and
-  the first-time welcome write labels and comments on a fork's pull request,
-  so they run on `pull_request_target`, which GitHub's default policy blocks
-  in a public repository, on 2 December 2026 at the latest, unless an Actions
-  event policy allows it. 🎯 Apply Standards writes that policy, and it lists
-  every event the file uses. Add a trigger to the file, and add it to the
-  policy through `actions.event_policy` in a settings override: the next
-  settings run puts the policy back as its settings file has it.
+- **A push starts a stub on `Development` alone.** Every other branch is
+  checked through its pull request, so each check shows there once: a push to
+  the branch would start a second run that skips every job, and each skipped
+  job would still show beside the real one. A trigger filter cannot be
+  resolved at run time, so each `push:` names the branch, as the filter in
+  `ci-failure-alert.yml` does. Rename `Development`, and rename it in all of
+  them.
+- **The pull request check and the triage sit in two files on purpose.** The
+  `pr` check reads only, so `semantic-pr.yml` runs it on `pull_request` and
+  `merge_group`; the triage and the first-time welcome in `governance.yml`
+  write labels and comments on a fork's pull request, so they run on
+  `pull_request_target`, which GitHub's default policy blocks in a public
+  repository, on 2 December 2026 at the latest, unless an Actions event policy
+  allows it. 🎯 Apply Standards writes that policy for `governance.yml` alone,
+  and it lists every event the file uses. Add a trigger to the file, and add it
+  to the policy through `actions.event_policy` in a settings override: the next
+  settings run puts the policy back as its settings file has it. One file
+  holding both showed the `pr` check twice on every pull request, because
+  GitHub lists every job of a run there, a skipped one included.
 - **Three job ids are check names.** `ci` and `secrets` in `checks.yml`, and
-  `pr` in `governance.yml`, report as `<job id> / <job name>`, which is what
+  `pr` in `semantic-pr.yml`, report as `<job id> / <job name>`, which is what
   branch protection requires. Rename one and every pull request waits on a
   check that never reports.
 - **`ci-failure-alert.yml` watches by name.** It matches the `name:` at the top
