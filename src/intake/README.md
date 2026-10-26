@@ -41,7 +41,7 @@ the title against one table, and nothing else acts on it.
   the next game while the last one's winning board is still up, or one from a
   player past the hour's share. A state read here can only be behind the game,
   so a move that looks ahead of the board always goes on to the game.
-- **`sweep.py` answers every move left waiting.** ⏳ Move Sweep runs it twice
+- **`sweep.py` answers every move left waiting.** ⏳ Move Sweep runs it once
   an hour: it marks a move whose ruling is overdue, and sends a move that
   never reached its game through 🎲 Move Intake again, as
   [below](#-no-move-left-waiting).

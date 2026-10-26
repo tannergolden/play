@@ -297,7 +297,8 @@ enough for one fault.
 | `sweep.yml`                | ⏳ Move Sweep: every move left waiting, marked or sent again. This repository's own               |
 | `replay.yml`               | 🎬 Replays: every won game drawn again, kept and posted. This repository's own                    |
 | `checks.yml`               | Lint and tests, the intake's and the replays' included; secret scan, CodeQL, workflow lint        |
-| `governance.yml`           | PR title and DCO checks, triage, stale sweep, slash commands                                      |
+| `semantic-pr.yml`          | The `pr` check: PR title, branch name, commit messages, DCO sign-off                              |
+| `governance.yml`           | Triage, stale sweep, slash commands                                                               |
 | `ci-failure-alert.yml`     | Opens an issue when a watched workflow fails, 🎬 Replays and ⏳ Move Sweep included               |
 | `release.yml`              | Draft notes, publish assets, prune superseded releases                                            |
 | `maintenance.yml`          | Prunes stale deployments and draft releases                                                       |
@@ -309,12 +310,14 @@ enough for one fault.
 | `preview-deploy.yml`       | Deploys pushes to a preview target, once configured                                               |
 | `prune-runs.yml`           | Deletes old workflow runs, with their logs and artifacts                                          |
 | `verify-stubs.yml`         | Proves every stub's permission ceiling matches its called workflow                                |
+| `scorecard.yml`            | A weekly OpenSSF Scorecard score, filed under code scanning                                       |
 | `template-sync.yml`        | Proposes the template's later fixes as one pull request, when run                                 |
 | `intelligence-sync.yml`    | 🔁 Intelligence Sync: the universal rules in `AGENTS.md`, proposed as a pull request each release |
 
 `cut-release.yml` belongs to the template, and its guard keeps it from ever
 running here. Of the rest, all but `intake.yml`, `sweep.yml`, `replay.yml`
-and `verify-stubs.yml`, which run scripts kept here, are stubs that call
+and `verify-stubs.yml`, which run scripts kept here, and `scorecard.yml`, which
+runs OpenSSF Scorecard itself, are stubs that call
 [`tannergolden/standards`](https://github.com/tannergolden/standards), so a fix
 there reaches this repository without a commit here. `intelligence-sync.yml`
 calls [`tannergolden/intelligence`](https://github.com/tannergolden/intelligence)
@@ -323,7 +326,7 @@ rules for AI agents as one pull request on `chore/intelligence`, which waits
 for you to merge it.
 
 **Do not rename the job ids** `ci` and `secrets` (in `checks.yml`) or `pr` (in
-`governance.yml`): branch protection depends on them. **Sign your commits
+`semantic-pr.yml`): branch protection depends on them. **Sign your commits
 off** with `git commit -s`; the DCO check is required once the rulesets are on.
 
 > [!NOTE]
